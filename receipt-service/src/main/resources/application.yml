@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: receipt-service
+  datasource:
+    url: jdbc:sqlserver://localhost:3333;databaseName=fm_dev
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: fm_login
+    password: Passw0rd!
+    platform: SqlServer
+#    initialization-mode: always
+#    data: classpath:data.sql
+  jpa:
+    database-platform: org.hibernate.dialect.SQLServerDialect
+    database: sql-server
+    show-sql: true
+    hibernate.ddl-auto: update
+#    nutrition_table_script.sql,
+    properties.hibernate.hbm2ddl.import_files: nutrition_table_script.sql,food_items.sql
+#    generate-ddl: true
+#   properties:
+#    javax:
+#      persistence:
+#        schema-generation:
+#          create-source: metadata
+#          scripts:
+#            action: create-drop
+#            create-target: fm_db_create.sql
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: https://dev-588838.okta.com/oauth2/default
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
+firebase:
+  credential:
+    resource-path: food-manager-bb596-firebase-adminsdk-asq3n-98af5fc484.json
+
+server:
+  port: 8081
+
+loadInitData: true
+#
+#auth0:
+#  audience: receipt-service
+
+#okta:
+#  oauth2:
+#    issuer: https://dev-588838-admin.okta.com/oauth2/default
+#    clientId: 0oajphh3qFDXTZ0nF4x6
+#    clientSecret: A_2BfSgSbLihpVQiRy22xNT8iPYBZ1Wlfj_37-3V
+#    scopes: openid

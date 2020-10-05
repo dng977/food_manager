@@ -1,0 +1,3 @@
+--insert into food_items values ('food1', 2);
+--insert into food_items values ('food2', 2);
+--insert into food_items values ('food3', 2);

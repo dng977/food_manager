@@ -1,0 +1,204 @@
+package com.dng.foodmanager.receiptservice.services;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import com.dng.foodmanager.receiptservice.domain.ReceiptItemStatus;
+import com.dng.foodmanager.receiptservice.image_to_text.ImageToReceipt;
+import com.dng.foodmanager.receiptservice.domain.FoodItem;
+import com.dng.foodmanager.receiptservice.domain.Receipt;
+import com.dng.foodmanager.receiptservice.domain.ReceiptItem;
+import com.dng.foodmanager.receiptservice.dto.ReceiptDto;
+import com.dng.foodmanager.receiptservice.dto.ReceiptItemDto;
+import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;
+import com.dng.foodmanager.receiptservice.repositories.ReceiptItemRepository;
+import com.dng.foodmanager.receiptservice.repositories.ReceiptRepository;
+
+import com.dng.foodmanager.receiptservice.util.DtoConverter;
+import com.google.cloud.storage.*;
+import com.google.firebase.cloud.StorageClient;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
+
+@SuppressWarnings("unused")
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ReceiptServiceImpl implements ReceiptService {
+    private final ReceiptRepository receiptRepository;
+    private final ImageToReceipt imageToReceipt;
+    private final ReceiptItemRepository receiptItemRepository;
+    private final FoodItemRepository foodItemRepository;
+    private final DtoConverter dtoConverter;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Nullable
+    @Override
+    @Transactional
+    public void uploadReceipt(String username, MultipartFile receiptImage) throws IOException {
+        //Create new receipt
+        byte[] imageBytes = receiptImage.getBytes();
+        Receipt receipt = imageToReceipt.convert(imageBytes);
+        receipt.setUsername(username);
+        receipt.setConfirmed(true);
+        receipt.setReceiptItems(receipt.getReceiptItems().stream().map(receiptItem -> {
+            List<FoodItem> foodItems = getFoodItems(receiptItem);
+            receiptItem.setRecognizedFoods(foodItems);
+            receiptItem.setStatus(foodItems.size() == 0 ? ReceiptItemStatus.UNRECOGNIZED
+                    : foodItems.size() == 1 ? ReceiptItemStatus.RECOGNIZED
+                    : ReceiptItemStatus.UNSURE
+            );
+            return receiptItem;
+        }).collect(Collectors.toList()));
+        //Save to db so that it gets an ID
+        receipt = receiptRepository.save(receipt);
+        //saveImageToFile(receiptImage,username, receipt.getId());
+
+        String fileName = "receipt-" + username + "-" + receipt.getId() + ".jpg";
+
+        uploadImageToBucket(imageBytes, fileName);
+        log.debug(getReceiptImage(username, receipt.getId()).toString());
+
+
+    }
+
+    @Override
+    public List<ReceiptDto> getReceipts(String userId) {
+        List<ReceiptDto> receiptSet = new ArrayList<>();
+        receiptRepository.findByUsername(userId).iterator().forEachRemaining((receipt -> {
+            receiptSet.add(dtoConverter.convertToDto(receipt, false));
+        }));
+        return receiptSet;
+    }
+
+    @Nullable
+    @Override
+    public ReceiptDto getReceipt(String userId, Long id) throws IOException {
+
+        Optional<Receipt> receiptOptional = receiptRepository.findById(id);
+
+        if (!receiptOptional.isPresent()) {
+            throw new RuntimeException("Receipt Not Found!");
+        }
+
+        Receipt receipt = receiptOptional.get();
+        //receipt.setImage(readImageFromFile(receipt.getId()));
+        return dtoConverter.convertToDto(receipt, true);
+    }
+
+
+    @Override
+    public List<ReceiptItemDto> getReceiptItemsById(String userId, Long id) {
+        List<ReceiptItem> receiptItems = receiptItemRepository.findByReceipt(id);
+        //TODO - ? Perhpas use receiptRepository instead
+        return receiptItems.stream().map(dtoConverter::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public byte[] getReceiptImage(String username, Long id) throws IOException {
+        String filePath = "receipts/receipt-" + username + "-" + id + ".jpg";
+
+        Bucket bucket = StorageClient.getInstance().bucket();
+
+        Blob receiptImage = bucket.get(filePath);
+        if (receiptImage == null) {
+            throw new StorageException(404, "There isn't such receipt id that corresponds to the requesting user.");
+        }
+        return Base64.getEncoder().encode(receiptImage.getContent());
+    }
+
+    @Override
+    public ReceiptDto editReceipt(String userId, Long id, ReceiptDto newReceipt) {
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public List<ReceiptDto> deleteReceipt(String userId, Long id) {
+        String filePath = "receipts/receipt-" + userId + "-" + id + ".jpg";
+
+        Bucket bucket = StorageClient.getInstance().bucket();
+        Blob receiptImage = bucket.get(filePath);
+        try {
+            receiptImage.delete();
+            receiptRepository.deleteById(id);
+        } catch (NullPointerException e) {
+            throw new StorageException(404, "There isn't such receipt id that corresponds to the requesting user.");
+        }
+
+
+        return getReceipts(userId);
+    }
+
+
+    private void uploadImageToBucket(byte[] imageBytes, String fileName) throws IOException, StorageException {
+        log.debug("Uploading receipt: " + fileName);
+
+        String folder = "receipts/";
+        String filePath = folder + fileName;
+
+        Bucket bucket = StorageClient.getInstance().bucket();
+        Blob blob = bucket.create(filePath, imageBytes, "receipt");
+    }
+
+    private void saveImageToFile(byte[] imageBytes, String username, Long imageId) throws IOException {
+        String fileName = "receipt" + imageId + ".jpg";
+        File imagefile = new File("src\\main\\resources\\data\\receiptimages\\" + fileName);
+
+        FileOutputStream s = FileUtils.openOutputStream(imagefile);
+        s.write(imageBytes);
+        s.close();
+    }
+
+    private byte[] readImageFromFile(Long imageId) throws IOException {
+        String fileName = "receipt" + imageId + ".jpg";
+        File imagefile = new File("src\\main\\resources\\data\\receiptimages\\" + fileName);
+
+        FileInputStream inputStream = FileUtils.openInputStream(imagefile);
+        byte[] imageBytes = inputStream.readAllBytes();
+        inputStream.close();
+
+        return imageBytes;
+        //return ArrayUtils.toObject(imageBytes);
+    }
+
+
+    private List<FoodItem> getFoodItems(ReceiptItem receiptItem) {
+        String referenceItemName = receiptItem.getReferenceName().toLowerCase();
+        List<FoodItem> candiateFoodItems = new ArrayList<>();
+        foodItemRepository.findAll().forEach(foodItem -> {
+            //1) Check if foodItem's name is contained in the itemReference
+            log.debug("referenceItemName: " + referenceItemName);
+            log.debug("foodItemName: " + foodItem.getName().toLowerCase());
+
+            if (referenceItemName.contains(foodItem.getName().toLowerCase())) {
+                candiateFoodItems.add(foodItem);
+            } else {
+                //2) Check foodItems's reference words Dictionary
+                foodItem.getReferenceWords().stream().forEach(foodReference -> {
+                    if (foodReference.getReferenceWord().toLowerCase().contains(referenceItemName)) {
+                        candiateFoodItems.add(foodItem);
+                    }
+                });
+            }
+        });
+        return candiateFoodItems;
+    }
+
+
+}
