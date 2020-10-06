@@ -82,6 +82,14 @@ public class ReceiptController {
         return receiptService.editReceiptItems(principal.getUid(), Long.valueOf(id), receiptItemDtoList);
     }
 
+    @PutMapping("/{rid}/items/{iid}")
+    @ResponseStatus(HttpStatus.OK)
+    public void editReceiptItem(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody ReceiptItemDto receiptItemDto, @PathVariable String rid, @PathVariable String iid) throws NumberFormatException, IOException {
+        log.debug(BASE_URL + "/" + rid + "/items/" + iid + " PUT mapping triggered");
+
+        receiptService.editReceiptItem(principal.getUid(), Long.valueOf(rid),Long.valueOf(iid), receiptItemDto);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<ReceiptDto> deleteReceipt(@AuthenticationPrincipal CustomPrincipal principal, @PathVariable String id) throws NumberFormatException, IOException {

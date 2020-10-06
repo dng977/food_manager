@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
@@ -15,11 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import requireAuth from '../requireAuth';
-import { Route, Switch, useRouteMatch, Redirect, withRouter } from 'react-router-dom';
-import Settings from './pages/Settings';
-import FoodStock from './pages/FoodStock';
-import Receipts from './pages/Receipts';
-import NutritionState from './pages/NutritionState';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { signOut } from '../../store/actions/authActions';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -31,17 +27,10 @@ import styles from './Dashboard.styles';
 import PersonIcon from '@material-ui/icons/Person';
 import { Copyright } from '../shared/renderMaterial';
 import { ListItemLink } from '../shared/ListItemLink';
-import ListItem from '@material-ui/core/ListItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { Link as RouterLink } from 'react-router-dom';
-import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import { useFirebase } from 'react-redux-firebase';
-import { useEffect } from 'react';
 import { fetchReceipts } from '../../store/actions/receiptsActions';
 import { getPathRegex } from '../../routes';
 
@@ -52,8 +41,8 @@ class Dashboard extends React.Component {
     this.state = { anchorEl: null, open: true };
   }
   componentDidMount() {
-    console.log("fetch receipts triggered");
-    this.props.fetchReceipts();
+    if(!this.props.location.pathname.match(/receipts\/\d/))
+      this.props.fetchReceipts();
   }
 
 

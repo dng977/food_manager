@@ -11,7 +11,7 @@ import { styles } from './Receipts.styles';
 import { Route, useRouteMatch, Link, Redirect, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { uploadReceipt, fetchReceiptItems, setCurrentReceipt } from '../../../store/actions/receiptsActions';
-import { EmptyTable } from './components';
+import { EmptyTable } from './shared_components';
 import { getReceipts } from './selectors';
 import { useState } from 'react';
 import { useRef } from 'react';

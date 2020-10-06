@@ -1,6 +1,7 @@
 import receipts from '../../apis/receipts';
-import { FETCH_RECEIPTS, LOADING, DELETE_RECEIPT, EDIT_RECEIPT, FETCH_RECEIPT_IMAGE, ERROR, SET_CURRENT_RECEIPT, FETCH_RECEIPT_ITEMS, UNDO_LOADING } from './types';
+import { FETCH_RECEIPTS, LOADING, DELETE_RECEIPT, EDIT_RECEIPT, FETCH_RECEIPT_IMAGE, ERROR, SET_CURRENT_RECEIPT, FETCH_RECEIPT_ITEMS, UNDO_LOADING, EDIT_RECEIPT_ITEM } from './types';
 import history from '../../history'; 
+import { itemStatus } from '../../components/dashboard/pages/receipt_page/constants';
 
 export const fetchReceipts = () => async (dispatch , getState, {getFirebase}) => {
   dispatch({type: LOADING});
@@ -16,6 +17,7 @@ export const fetchReceipts = () => async (dispatch , getState, {getFirebase}) =>
     dispatch({type: FETCH_RECEIPTS, payload: response.data});
   }).catch((error) => {
     console.log(error);
+    dispatch({type: ERROR, payload: error})
   })
 
 };
@@ -90,18 +92,19 @@ export const deleteReceipt = (id, callback) => async (dispatch , getState, {getF
   })
 
 };
-export const editReceipt = () => async (dispatch , getState, {getFirebase}) => {
+export const editReceiptItem = (receiptItemIndex,newFoodItemDto) => async (dispatch , getState, {getFirebase}) => {
   dispatch({type: LOADING});
+  const id = getState().receipts.currentReceipt.id
+  const oldReceiptItem = getState().receipts.currentReceipt.receiptItems[receiptItemIndex]
+  const newReceiptItem = {...oldReceiptItem, foodItemDto: [newFoodItemDto], status: itemStatus.RECOGNIZED}
   const firebase = getFirebase();
   firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
-    const response = await receipts.request({
-      method: 'get',
-      url: 'receipts',
+    const response = await receipts.put(`receipts/${id}/items/${newReceiptItem.id}`,newReceiptItem,{
       headers:{
-        'Authorization' : 'Bearer ' + idToken 
-      }
+        'Authorization' : 'Bearer ' + idToken,
+      },
     });
-    dispatch({type: EDIT_RECEIPT, payload: response.data});
+    dispatch({type: EDIT_RECEIPT_ITEM, payload: newReceiptItem});
   }).catch((error) => {
     console.log(error);
   })

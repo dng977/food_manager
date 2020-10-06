@@ -123,9 +123,36 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
     @Override
-    public ReceiptDto editReceipt(String userId, Long id, ReceiptDto newReceipt) {
+    public List<ReceiptItemDto> editReceiptItems(String userId, Long id, List<ReceiptItemDto> receiptItemDtoList) {
         return null;
     }
+
+    @Override
+    public List<ReceiptItemDto> editReceiptItem(String userId, Long rid, Long iid, ReceiptItemDto receiptItemDto) {
+        List<ReceiptItem> receiptItems = receiptItemRepository.findByReceipt(rid);
+        return receiptItems.stream().map(receiptItem -> {
+
+            if (receiptItem.getId() == iid) {
+                Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(receiptItemDto.getFoodItemDto().get(0).getId());
+                if (!newFoodItemOpt.isPresent()) {
+                    throw new RuntimeException("FoodItem id wrong.");
+                }
+                FoodItem newFoodItem = newFoodItemOpt.get();
+                receiptItem.setRecognizedFoods(new ArrayList<>(Arrays.asList(newFoodItem)));
+                receiptItem.setStatus(ReceiptItemStatus.RECOGNIZED);
+
+                log.debug("BEFORE SAVE");
+                log.debug("receiptItem: " + receiptItem.toString());
+
+                receiptItemRepository.save(receiptItem);
+
+                return dtoConverter.convertToDto(receiptItem);
+            }
+            return dtoConverter.convertToDto(receiptItem);
+        }).collect(Collectors.toList());
+
+    }
+
 
     @Transactional
     @Override

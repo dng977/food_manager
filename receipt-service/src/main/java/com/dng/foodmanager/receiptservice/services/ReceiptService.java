@@ -21,6 +21,8 @@ public interface ReceiptService {
 
     List<ReceiptItemDto> editReceiptItems(String userId,Long id, List<ReceiptItemDto> receiptItemDtoList);
 
+    List<ReceiptItemDto> editReceiptItem(String userId, Long rid, Long iid, ReceiptItemDto receiptItemDto);
+
     List<ReceiptDto> deleteReceipt(String userId, Long id);
 
 }

@@ -18,7 +18,7 @@ export const getReceipts = createSelector(
 export const getReceiptItems = createSelector(getItemsData,(itemsData) => {
   const receiptData = Object.values(itemsData).map((values) => {
     let foodItem = values.foodItemDto;
-    return [ values.referenceName, foodItem==null ? '?' : foodItem , foodItem==null ? true : false];
+    return [ values.referenceName, foodItem==null ? '?' : foodItem , values.status];
   })
   return receiptData;
   }

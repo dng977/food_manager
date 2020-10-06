@@ -11,7 +11,7 @@ import FoodStock from './components/dashboard/pages/FoodStock';
 import Receipts from './components/dashboard/pages/Receipts';
 import NutritionState from './components/dashboard/pages/NutritionState';
 import Settings from './components/dashboard/pages/Settings';
-import ReceiptPage from './components/dashboard/pages/ReceiptPage';
+import ReceiptPage from './components/dashboard/pages/receipt_page/ReceiptPage';
 
 
 const dashboardPath = '/dashboard';

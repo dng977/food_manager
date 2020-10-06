@@ -5,27 +5,30 @@ import MUIDataTable, { } from 'mui-datatables';
 import PlaylistAddCheckRoundedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { styles as muiStyles } from './Receipts.styles';
+import { styles as muiStyles } from '../Receipts.styles';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { deleteReceipt, editReceipt, fetchReceiptImage, fetchReceiptItems } from '../../../store/actions/receiptsActions';
+import { deleteReceipt, editReceiptItem, fetchReceiptImage, fetchReceiptItems } from '../../../../store/actions/receiptsActions';
 import { useRef } from 'react';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import { compose, bindActionCreators } from 'redux';
-import ImageSearchRoundedIcon from '@material-ui/icons/ImageSearchRounded'; import { CLEAR_ERROR } from '../../../store/actions/types';
+import ImageSearchRoundedIcon from '@material-ui/icons/ImageSearchRounded'; import { CLEAR_ERROR } from '../../../../store/actions/types';
 import { Lightbox } from "react-modal-image";
-import { getReceiptItems } from './selectors.js';
-import { EmptyTable } from './components';
+import { getReceiptItems } from '../selectors.js';
+import { EmptyTable } from '../shared_components';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
-import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
-
-const lookUpField = () => {
-
-}
+import HelpRoundedIcon from '@material-ui/icons/HelpRounded';
+import { FoodTypeCell } from './components';
+import { itemStatus } from './constants';
+import DoneAllRoundedIcon from '@material-ui/icons/DoneAllRounded';
+import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
 const ReceiptPage = (props) => {
   console.log("Rendering ReceiptPage...")
   const getMuiTheme = createMuiTheme(muiStyles);
 
+  const [ openDeleteDialog, setOpenDeleteDialog ] = React.useState(false);
+  const [ openViewImage, setOpenViewImage ] = React.useState(false);
+  const [ toggleConfirmButton, setToggleConfirmButton ] = React.useState(false);
 
   const { url, path, params } = useRouteMatch();
 
@@ -41,40 +44,39 @@ const ReceiptPage = (props) => {
     {
       name: 'Food Type',
       options: {
-        customBodyRender: (foodList, tableMeta, updateValue) => {
-          // console.log("value: ", foodList);
+        customBodyRender: (foodList, { rowIndex, rowData }, updateValue) => {
+          console.log("value: ", foodList);
+          console.log("rowData: ", rowData);
+          let status = rowData[ 2 ];
+          return (
+            <FoodTypeCell cellState={status} foodList={foodList}
+              onConfirm={
+                (selectedFoodItem) => {
+                  let selectedReceiptItem = props.rece
+                  props.editReceiptItem(rowIndex,selectedFoodItem)
 
-          return foodList.length == 0 ? <Tooltip title="Click here to look up"><SearchRoundedIcon color="primary"/></Tooltip>
-            :
-            foodList.length == 1 ? <div>{foodList[0].name}</div>
-              :
-              (
-                <>
-                  {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
-                  <Select
-                    value={foodList[ 0 ].name}
-                  >
-                    {foodList.map((food, index) => (
-                      <MenuItem key={index} value={food.name}>
-                        {food.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </>
-              );
+                }
+              }
+            />
+          );
         }
       }
     },
     {
       name: 'Status',
       options: {
-        customBodyRender: (value, {rowData}, updateValue) => {
-          let foodList = rowData[1]
-          return foodList.length == 0 ? <Tooltip title="This food is not recognized."><WarningRoundedIcon color="error" /></Tooltip>
+        customBodyRender: (value, { rowData }, updateValue) => {
+          // let foodList = rowData[1]
+          return value === itemStatus.UNRECOGNIZED ? <Tooltip title="This receipt item is not recognized. Search for the corresponding food item."><WarningRoundedIcon color="error" /></Tooltip>
             :
-            foodList.length == 1 ? <CheckRoundedIcon color="primary" />
-              : 
-              <Tooltip title="Make sure you choose the right variety of food."><WarningRoundedIcon color="error" /></Tooltip>
+            value === itemStatus.UNSURE ? <Tooltip title="Please confirm the selected variety."><WarningRoundedIcon color="error" /></Tooltip>
+              :
+              value === itemStatus.RECOGNIZED ? <Tooltip title="Item is ready to be added to Food Stock. "><CheckRoundedIcon color="primary" /></Tooltip>
+                :
+                value === itemStatus.INSTOCK ? <DoneAllRoundedIcon color="primary" />
+                  :
+                  alert("ERROR: itemStatus")
+
         },
 
       }
@@ -82,8 +84,6 @@ const ReceiptPage = (props) => {
   ];
 
 
-  const [ openDeleteDialog, setOpenDeleteDialog ] = React.useState(false);
-  const [ openViewImage, setOpenViewImage ] = React.useState(false);
 
   const onDeleteClick = () => {
     setOpenDeleteDialog(true);
@@ -148,6 +148,8 @@ const ReceiptPage = (props) => {
     setOpenViewImage(false);
   }
   const options = {
+    rowsPerPage: 20,
+    rowsPerPageOptions: [],
     filterType: "dropdown",
     responsive: "standard",
     tableBodyHeight: "600px",
@@ -186,9 +188,16 @@ const ReceiptPage = (props) => {
               <Grid item>
                 <Grid container spacing={2} alignItems="center" justify="flex-start">
                   <Grid item>
-                    <Button variant="contained" color="primary" startIcon={<PlaylistAddCheckRoundedIcon />} onClick={() => { }}>
-                      Add to Food Stock
-              </Button>
+                    {toggleConfirmButton ?
+                      <Button variant="contained" color="primary" startIcon={<CheckCircleOutlineRoundedIcon />} onClick={() => { }}>
+                        Confirm Changes
+                      </Button>
+                      :
+                      <Button variant="contained" color="primary" startIcon={<PlaylistAddCheckRoundedIcon />} onClick={() => { }}>
+                        Add to Food Stock
+                      </Button>
+                    }
+
                   </Grid>
                 </Grid>
               </Grid>
@@ -236,7 +245,7 @@ const mapDispatchToProps = dispatch => {
   return {
     clearError: () => dispatch({ type: CLEAR_ERROR }),
     dispatch,
-    ...bindActionCreators({ deleteReceipt, editReceipt, fetchReceiptItems, fetchReceiptImage }, dispatch)
+    ...bindActionCreators({ deleteReceipt, editReceiptItem, fetchReceiptItems, fetchReceiptImage }, dispatch)
   }
 }
 const mapStateToProps = (state) => {
