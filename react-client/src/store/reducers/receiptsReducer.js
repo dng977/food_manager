@@ -11,7 +11,7 @@ export default (state = initState, action) => {
   console.log("DISPATCH: ", action.type);
   switch (action.type) {
     case FETCH_RECEIPTS:
-      return { ...state, receipts: { ...(_.mapKeys(action.payload, 'id')) }, currentReceipt: initState.currentReceipt, loading: false };
+      return { ...state, receipts: { ...(_.mapKeys(action.payload, 'id')) }, loading: false };
     case FETCH_RECEIPT_ITEMS:
       return { ...state, 
         currentReceipt: action.payload, 

@@ -45,8 +45,8 @@ const ReceiptPage = (props) => {
       name: 'Food Type',
       options: {
         customBodyRender: (foodList, { rowIndex, rowData }, updateValue) => {
-          console.log("value: ", foodList);
-          console.log("rowData: ", rowData);
+          // console.log("value: ", foodList);
+          // console.log(foodList)
           let status = rowData[ 2 ];
           return (
             <FoodTypeCell cellState={status} foodList={foodList}

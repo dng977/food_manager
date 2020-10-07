@@ -132,7 +132,9 @@ public class ReceiptServiceImpl implements ReceiptService {
         List<ReceiptItem> receiptItems = receiptItemRepository.findByReceipt(rid);
         return receiptItems.stream().map(receiptItem -> {
 
-            if (receiptItem.getId() == iid) {
+            if (receiptItem.getId().equals(iid)) {
+                log.debug("ISIDE IF");
+
                 Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(receiptItemDto.getFoodItemDto().get(0).getId());
                 if (!newFoodItemOpt.isPresent()) {
                     throw new RuntimeException("FoodItem id wrong.");

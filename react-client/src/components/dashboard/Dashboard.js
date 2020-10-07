@@ -41,7 +41,7 @@ class Dashboard extends React.Component {
     this.state = { anchorEl: null, open: true };
   }
   componentDidMount() {
-    if(!this.props.location.pathname.match(/receipts\/\d/))
+    if(Object.keys(this.props.receipts).length == 0 || !this.props.location.pathname.match(/receipts\/\d/))
       this.props.fetchReceipts();
   }
 
@@ -69,9 +69,28 @@ class Dashboard extends React.Component {
 
 
   makeTitle = () => {
-    let route = this.props.routes.find((route) => {return getPathRegex(route.path).test(this.props.location.pathname);});
-    if (route)
+    let route = this.props.routes.find((route) => {
+      console.log(route.path, this.props.location.pathname)
+      return getPathRegex(route.path).exec(this.props.location.pathname);
+    });
+    
+    console.log("route: ", route)
+    console.log(this.props.receipts)
+    if (route){
+      if(route.path.includes("/receipts/:id")){
+        let receiptId = this.props.location.pathname.match(/.*\/receipts\/(\d+)/i)[1]
+        if(Object.keys(this.props.receipts).length){
+          let receipt = this.props.receipts[receiptId]
+          console.log(receipt)
+          let receiptTitle = receipt.storeName + " " + receipt.date
+  
+          return "Receipt: " + receiptTitle
+        }
+
+      }
       return route.title;
+
+    }
     else
       return 'Dashboard';
   }
