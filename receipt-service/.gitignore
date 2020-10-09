@@ -5,6 +5,7 @@ target/
 !**/src/test/**
 
 .history
+src/main/java/com/dng/foodmanager/receiptservice/converters/tesseract-text.txt
 
 ### STS ###
 .apt_generated

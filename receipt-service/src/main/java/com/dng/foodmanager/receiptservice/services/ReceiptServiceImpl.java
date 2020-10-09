@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLDataException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -167,8 +168,13 @@ public class ReceiptServiceImpl implements ReceiptService {
         Bucket bucket = StorageClient.getInstance().bucket();
         Blob receiptImage = bucket.get(filePath);
         try {
-            receiptImage.delete();
+            Long firstItemId = receiptItemRepository.findFirstIdByReceipt(id);
             receiptRepository.deleteById(id);
+            receiptRepository.resetIdSeed(id - 1);
+            log.debug(firstItemId.toString());
+            receiptItemRepository.resetIdSeed(firstItemId-1);
+            log.debug("GOING TO EXECUTE DELETEIMAGE");
+            receiptImage.delete();
         } catch (NullPointerException e) {
             throw new StorageException(404, "There isn't such receipt id that corresponds to the requesting user.");
         }

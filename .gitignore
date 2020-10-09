@@ -29,3 +29,4 @@ data
 
 ### VS Code ###
 .vscode/
+receipt-service/src/main/java/com/dng/foodmanager/receiptservice/converters/tesseract-text.txt

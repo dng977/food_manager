@@ -73,7 +73,7 @@ export const routes = [
 export const getPathRegex = (path) => {
   let regex = "^" + path + "$"
   if (regex.includes(":id")){
-    return new RegExp(regex.replace(":id","\\d"))
+    return new RegExp(regex.replace(":id","\\d+"))
   }
   else
     return new RegExp(regex)

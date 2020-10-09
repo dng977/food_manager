@@ -55,7 +55,8 @@ const RecognField = (props) => {
 }
 const SelectField = (props) => {
   console.log(props.foodList)
-  const [ selectedFood, setSelectedFood ] = React.useState(props.foodList[ 0 ]);
+  const [ selectedFood, setSelectedFood ] = React.useState(0);
+  console.log("SELECTED FOOD: ", selectedFood);
   const handleChange = (event) => {
     console.log("event: ", event)
     setSelectedFood(event.target.value)
@@ -68,7 +69,7 @@ const SelectField = (props) => {
           onChange={handleChange}
         >
           {props.foodList.map((food, index) => (
-            <MenuItem key={index} value={food}>
+            <MenuItem key={index} value={index}>
               {food.name}
             </MenuItem>
           ))}
@@ -77,7 +78,7 @@ const SelectField = (props) => {
       {
         props.cellState === 'search' && !props.foodList.length ? null :
           <Grid item>
-            <IconButton onClick={() => props.onConfirm(selectedFood)} size='small'>
+            <IconButton onClick={() => props.onConfirm(props.foodList[selectedFood])} size='small'>
               <Tooltip title="Confirm"><CheckRoundedIcon color="primary" fontSize="small" /></Tooltip>
             </IconButton>
           </Grid>

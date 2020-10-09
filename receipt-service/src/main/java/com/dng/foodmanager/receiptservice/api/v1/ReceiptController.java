@@ -93,7 +93,7 @@ public class ReceiptController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<ReceiptDto> deleteReceipt(@AuthenticationPrincipal CustomPrincipal principal, @PathVariable String id) throws NumberFormatException, IOException {
-        log.debug(BASE_URL + "/{id}" + " DELETE mapping triggered");
+        log.debug(BASE_URL + "/" + id + " DELETE mapping triggered");
 
         return receiptService.deleteReceipt(principal.getUid(), Long.valueOf(id));
     }
