@@ -12,6 +12,7 @@
     "@welldone-software/why-did-you-render": "^5.0.0-alpha.2",
     "auth0-js": "^9.13.4",
     "axios": "^0.19.2",
+    "blueimp-load-image": "^5.14.0",
     "firebase": "^7.22.1",
     "history": "^5.0.0",
     "jwt-decode": "^2.2.0",

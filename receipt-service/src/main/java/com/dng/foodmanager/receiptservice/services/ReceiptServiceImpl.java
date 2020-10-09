@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.dng.foodmanager.receiptservice.converters.ImageToReceipt;
 import com.dng.foodmanager.receiptservice.domain.ReceiptItemStatus;
-import com.dng.foodmanager.receiptservice.image_to_text.ImageToReceipt;
 import com.dng.foodmanager.receiptservice.domain.FoodItem;
 import com.dng.foodmanager.receiptservice.domain.Receipt;
 import com.dng.foodmanager.receiptservice.domain.ReceiptItem;
@@ -18,6 +18,7 @@ import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;
 import com.dng.foodmanager.receiptservice.repositories.ReceiptItemRepository;
 import com.dng.foodmanager.receiptservice.repositories.ReceiptRepository;
 
+import com.dng.foodmanager.receiptservice.services.exceptions.ResourceNotFoundException;
 import com.dng.foodmanager.receiptservice.util.DtoConverter;
 import com.google.cloud.storage.*;
 import com.google.firebase.cloud.StorageClient;
@@ -93,7 +94,7 @@ public class ReceiptServiceImpl implements ReceiptService {
         Optional<Receipt> receiptOptional = receiptRepository.findById(id);
 
         if (!receiptOptional.isPresent()) {
-            throw new RuntimeException("Receipt Not Found!");
+            throw new ResourceNotFoundException("Receipt Not Found!");
         }
 
         Receipt receipt = receiptOptional.get();
@@ -105,6 +106,8 @@ public class ReceiptServiceImpl implements ReceiptService {
     @Override
     public List<ReceiptItemDto> getReceiptItemsById(String userId, Long id) {
         List<ReceiptItem> receiptItems = receiptItemRepository.findByReceipt(id);
+        if(receiptItems.isEmpty())
+            throw new ResourceNotFoundException("There is no such receipt");
         //TODO - ? Perhpas use receiptRepository instead
         return receiptItems.stream().map(dtoConverter::convertToDto).collect(Collectors.toList());
     }
@@ -209,24 +212,31 @@ public class ReceiptServiceImpl implements ReceiptService {
 
     private List<FoodItem> getFoodItems(ReceiptItem receiptItem) {
         String referenceItemName = receiptItem.getReferenceName().toLowerCase();
-        List<FoodItem> candiateFoodItems = new ArrayList<>();
+        List<FoodItem> candidateFoodItems = new ArrayList<>();
         foodItemRepository.findAll().forEach(foodItem -> {
             //1) Check if foodItem's name is contained in the itemReference
-            log.debug("referenceItemName: " + referenceItemName);
-            log.debug("foodItemName: " + foodItem.getName().toLowerCase());
+//            log.debug("referenceItemName: " + referenceItemName);
+//            log.debug("foodItemName: " + foodItem.getName().toLowerCase());
 
-            if (referenceItemName.contains(foodItem.getName().toLowerCase())) {
-                candiateFoodItems.add(foodItem);
-            } else {
+            boolean candidateInFoodItemName = false;
+            for(String foodItemWord : foodItem.getName().toLowerCase().split(" ")){
+                log.debug("Food item word: " + foodItemWord);
+                if (referenceItemName.contains(foodItemWord)) {
+                    candidateFoodItems.add(foodItem);
+                    candidateInFoodItemName = true;
+                    break;
+                }
+            }
+             if(!candidateInFoodItemName) {
                 //2) Check foodItems's reference words Dictionary
                 foodItem.getReferenceWords().stream().forEach(foodReference -> {
                     if (foodReference.getReferenceWord().toLowerCase().contains(referenceItemName)) {
-                        candiateFoodItems.add(foodItem);
+                        candidateFoodItems.add(foodItem);
                     }
                 });
             }
         });
-        return candiateFoodItems;
+        return candidateFoodItems;
     }
 
 

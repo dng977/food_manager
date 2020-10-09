@@ -41,7 +41,7 @@ class Dashboard extends React.Component {
     this.state = { anchorEl: null, open: true };
   }
   componentDidMount() {
-    if(Object.keys(this.props.receipts).length == 0 || !this.props.location.pathname.match(/receipts\/\d/))
+    if(Object.keys(this.props.receipts).length === 0 || !this.props.location.pathname.match(/receipts\/\d/))
       this.props.fetchReceipts();
   }
 
@@ -81,10 +81,12 @@ class Dashboard extends React.Component {
         let receiptId = this.props.location.pathname.match(/.*\/receipts\/(\d+)/i)[1]
         if(Object.keys(this.props.receipts).length){
           let receipt = this.props.receipts[receiptId]
-          console.log(receipt)
-          let receiptTitle = receipt.storeName + " " + receipt.date
-  
-          return "Receipt: " + receiptTitle
+          if(receipt){
+            console.log(receipt)
+            let receiptTitle = receipt.storeName + " " + receipt.date
+             
+            return "Receipt: " + receiptTitle            
+          }
         }
 
       }
@@ -98,7 +100,7 @@ class Dashboard extends React.Component {
   receiptsWarning = () => {
     const receiptsArray = Object.values(this.props.receipts);
     for (let index = 0; index < receiptsArray.length; index++) {
-      if (receiptsArray[ index ].warning == 1) {
+      if (receiptsArray[ index ].warning === 1) {
         return true;
       }
     }

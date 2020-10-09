@@ -13,6 +13,8 @@ export const ERROR = 'ERROR';
 export const CLEAR_ERROR = 'CLEAR_ERROR';
 export const SET_CURRENT_RECEIPT = 'SET_CURRENT_RECEIPT';
 export const FETCH_RECEIPT_ITEMS = 'FETCH_RECEIPT_ITEMS';
+
 export const FETCH_FOOD_ITEMS = 'FETCH_FOOD_ITEMS';
+export const CLEAR_FOOD_ITEMS = 'CLEAR_FOOD_ITEMS';
 
 

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { FETCH_RECEIPTS, UPLOAD_RECEIPT, FETCH_RECEIPT, LOADING, DELETE_RECEIPT, EDIT_RECEIPT, FETCH_RECEIPT_IMAGE, ERROR, CLEAR_ERROR, SET_CURRENT_RECEIPT, FETCH_RECEIPT_ITEMS, EDIT_RECEIPT_ITEM } from '../actions/types';
+import { FETCH_RECEIPTS, UPLOAD_RECEIPT, LOADING, DELETE_RECEIPT, FETCH_RECEIPT_IMAGE, ERROR, CLEAR_ERROR, SET_CURRENT_RECEIPT, FETCH_RECEIPT_ITEMS, EDIT_RECEIPT_ITEM } from '../actions/types';
 
 const initState = { 
   receipts: {},
@@ -25,7 +25,7 @@ export default (state = initState, action) => {
     case EDIT_RECEIPT_ITEM:
       return { ...state, 
         currentReceipt: {
-         ...state.currentReceipt, receiptItems: state.currentReceipt.receiptItems.map(item => item.id === action.payload.id ? action.payload : item)
+         ...state.currentReceipt, receiptItems: state.currentReceipt.receiptItems.map(item => item.id === action.payload.newReceiptItem.id ? action.payload.newReceiptItem : item)
         }, 
          loading: false };
     case LOADING:

@@ -7,7 +7,7 @@ import FastfoodIcon from '@material-ui/icons/Fastfood';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsIcon from '@material-ui/icons/Settings';
-import FoodStock from './components/dashboard/pages/FoodStock';
+import FoodStock from './components/dashboard/pages/foodstock_page/FoodStock';
 import Receipts from './components/dashboard/pages/Receipts';
 import NutritionState from './components/dashboard/pages/NutritionState';
 import Settings from './components/dashboard/pages/Settings';

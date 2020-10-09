@@ -1,4 +1,4 @@
-package com.dng.foodmanager.receiptservice.image_to_text;
+package com.dng.foodmanager.receiptservice.converters;
 
 import com.dng.foodmanager.receiptservice.domain.Receipt;
 import com.dng.foodmanager.receiptservice.domain.ReceiptItem;
@@ -39,8 +39,28 @@ public class ImageToReceipt implements Converter<byte[], Receipt> {
             Tesseract tesseract = new Tesseract();
             tesseract.setDatapath("src\\main\\resources\\data");
             tesseract.setLanguage("eng");
+            //tesseract.setOcrEngineMode();
             BufferedImage bufferedImage = createImageFromBytes(imageBytes);
             String text = tesseract.doOCR(bufferedImage);
+            System.out.println(text);
+            Files.writeString(Path.of( "src/main/java/com/dng/foodmanager/receiptservice/converters/tesseract-text.txt"),text);
+            return pythonSpellingFilter();
+        } catch (TesseractException | FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public ArrayList<String> imageToText(BufferedImage bi) {
+        //byte[] bytes = ArrayUtils.toPrimitive(image);
+        try {
+            Tesseract tesseract = new Tesseract();
+            tesseract.setDatapath("src\\main\\resources\\data");
+            tesseract.setLanguage("eng");
+            //tesseract.setOcrEngineMode();
+            String text = tesseract.doOCR(bi);
+            System.out.println(text);
             Files.writeString(Path.of( "src/main/java/com/dng/foodmanager/receiptservice/converters/tesseract-text.txt"),text);
             return pythonSpellingFilter();
         } catch (TesseractException | FileNotFoundException e) {

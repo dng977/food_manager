@@ -1,22 +1,20 @@
 import React, { useEffect } from 'react';
-import { Paper, AppBar, Toolbar, Button, Grid, IconButton, Tooltip, Switch, Snackbar } from '@material-ui/core';
+import { Button, Grid, Tooltip, Snackbar } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import MaterialTable from 'material-table';
-import MUIDataTable, { TableBodyCell, TableBody as MuiTableBody } from 'mui-datatables';
+import MUIDataTable, {  } from 'mui-datatables';
 import PlaylistAddCheckRoundedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
-import EditIcon from '@material-ui/icons/Edit';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { styles } from './Receipts.styles';
-import { Route, useRouteMatch, Link, Redirect, useHistory } from 'react-router-dom';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { uploadReceipt, fetchReceiptItems, setCurrentReceipt } from '../../../store/actions/receiptsActions';
 import { EmptyTable } from './shared_components';
 import { getReceipts } from './selectors';
-import { useState } from 'react';
 import { useRef } from 'react';
 import { CLEAR_ERROR } from '../../../store/actions/types';
 import { bindActionCreators } from 'redux';
+import loadImage from 'blueimp-load-image';
 
 
 const Receipts = (props) => {
@@ -39,8 +37,8 @@ const Receipts = (props) => {
     {
       name: 'Status',
       options: {
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return tableMeta.rowData[ 2 ] == false ?
+        customBodyRender: (value, tableMeta) => {
+          return tableMeta.rowData[ 2 ] === false ?
             <PlaylistAddCheckRoundedIcon color="primary" />
             :
             <Tooltip title='There are unrecognized foods in this receipt.'><WarningRoundedIcon color="error" /></Tooltip>;
@@ -53,15 +51,26 @@ const Receipts = (props) => {
   const handleUpload = event => {
     console.log("onchangetriggered");
     console.log(event.target.files[ 0 ]);
+    
+    loadImage(event.target.files[0],{
+      maxWidth: 500,
+      canvas: true,
+      orientation: true
+    }).then((data) => {
+      data.image.toBlob((blob) => {
+        console.log("toblob called: ", blob)
+        const formData = new FormData();
+        formData.append('file', blob);
+        props.uploadReceipt(formData);
+      },'image/jpeg');
 
-    const data = new FormData();
-    data.append('file', event.target.files[ 0 ]);
-    props.uploadReceipt(data);
+    }).catch(function (err) {
+      // Handling image loading errors
+      console.log(err)
+    });
+
+
     event.target.value = null;
-  }
-  const onUploadClick = () => {
-
-    //props.uploadReceipt(data);
   }
   const options = {
     filterType: "dropdown",
@@ -77,7 +86,7 @@ const Receipts = (props) => {
     viewColumns: false,
     filter: false,
     expandableRowsOnClick: true,
-    onRowClick: (rowData, { dataIndex, rowIndex }) => {
+    onRowClick: (rowData, { dataIndex }) => {
       history.push(`${url}/${props.indexToKey[ dataIndex ]}`);
       // props.fetchReceiptItems(props.indexToKey[ dataIndex ]);
     },
@@ -109,7 +118,7 @@ const Receipts = (props) => {
                 }}
                 open={props.error!==''}
                 onClose={(event, reason) => {
-                  if(reason=="timeout"){
+                  if(reason==="timeout"){
                     props.clearError()
                   }
                 }}
@@ -129,7 +138,7 @@ const Receipts = (props) => {
               components={
                 props.loading ? {
                   TableBody: (props) => <EmptyTable {...props} text="Loading..." />
-                } : props.receipts.length == 0 ? {
+                } : props.receipts.length === 0 ? {
                   TableBody: (props) => <EmptyTable {...props} text="You haven't got any receipts." />
                 } : {}
               }

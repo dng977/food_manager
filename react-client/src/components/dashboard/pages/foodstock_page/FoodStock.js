@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Grid, Tooltip, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
-import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import { Button, Grid, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
 import MUIDataTable, { } from 'mui-datatables';
 import PlaylistAddCheckRoundedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
@@ -14,13 +13,9 @@ import ImageSearchRoundedIcon from '@material-ui/icons/ImageSearchRounded'; impo
 import { Lightbox } from "react-modal-image";
 import { getReceiptItems } from '../selectors.js';
 import { EmptyTable } from '../shared_components';
-import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
-import { FoodTypeCell } from './components';
-import { itemStatus } from './constants';
-import DoneAllRoundedIcon from '@material-ui/icons/DoneAllRounded';
 import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
-const ReceiptPage = (props) => {
-  console.log("Rendering ReceiptPage...")
+const FoodStock = (props) => {
+  console.log("Rendering FOOD STOCK...")
   const getMuiTheme = createMuiTheme(muiStyles);
 
   const [ openDeleteDialog, setOpenDeleteDialog ] = React.useState(false);
@@ -30,7 +25,6 @@ const ReceiptPage = (props) => {
   const { path, params } = useRouteMatch();
 
   useEffect(() => {
-    props.fetchReceiptItems(parseInt(params.id, 10));
   }, [])
 
   const history = useHistory();
@@ -40,42 +34,9 @@ const ReceiptPage = (props) => {
     },
     {
       name: 'Food Type',
-      options: {
-        customBodyRender: (foodList, { rowIndex, rowData }) => {
-          // console.log("value: ", foodList);
-          // console.log(foodList)
-          let status = rowData[ 2 ];
-          return (
-            <FoodTypeCell cellState={status} foodList={foodList} rowIndex={rowIndex}
-              onConfirm={
-                (selectedFoodItem) => {
-                  props.editReceiptItem(rowIndex,selectedFoodItem)
-
-                }
-              }
-            />
-          );
-        }
-      }
     },
     {
       name: 'Status',
-      options: {
-        customBodyRender: (value, { }) => {
-          // let foodList = rowData[1]
-          return value === itemStatus.UNRECOGNIZED ? <Tooltip title="This receipt item is not recognized. Search for the corresponding food item."><WarningRoundedIcon color="error" /></Tooltip>
-            :
-            value === itemStatus.UNSURE ? <Tooltip title="Please confirm the selected variety."><WarningRoundedIcon color="error" /></Tooltip>
-              :
-              value === itemStatus.RECOGNIZED ? <Tooltip title="Item is ready to be added to Food Stock. "><CheckRoundedIcon color="primary" /></Tooltip>
-                :
-                value === itemStatus.INSTOCK ? <DoneAllRoundedIcon color="primary" />
-                  :
-                  alert("ERROR: itemStatus")
-
-        },
-
-      }
     }
   ];
 
@@ -256,4 +217,4 @@ const mapStateToProps = (state) => {
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps))
-  (ReceiptPage);
+  (FoodStock);

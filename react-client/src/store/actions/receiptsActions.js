@@ -37,6 +37,7 @@ export const fetchReceiptItems = (id) => async (dispatch , getState, {getFirebas
     });
     dispatch({type: FETCH_RECEIPT_ITEMS, payload: {id: id, imageData: '', receiptItems: response.data}});
   }).catch((error) => {
+    dispatch({type: ERROR, payload: error})
     console.log(error);
   })
 
@@ -95,11 +96,12 @@ export const deleteReceipt = (id, callback) => async (dispatch , getState, {getF
   })
 
 };
-export const editReceiptItem = (receiptItemIndex,newFoodItemDto) => async (dispatch , getState, {getFirebase}) => {
+export const editReceiptItem = (rowIndex,newFoodItemDto) => async (dispatch , getState, {getFirebase}) => {
   dispatch({type: LOADING});
   const id = getState().receipts.currentReceipt.id
-  const oldReceiptItem = getState().receipts.currentReceipt.receiptItems[receiptItemIndex]
+  const oldReceiptItem = getState().receipts.currentReceipt.receiptItems[rowIndex]
   const newReceiptItem = {...oldReceiptItem, foodItemDto: [newFoodItemDto], status: itemStatus.RECOGNIZED}
+  dispatch({type: EDIT_RECEIPT_ITEM, payload: {newReceiptItem, rowIndex}});
   const firebase = getFirebase();
   firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
     const response = await api.put(`receipts/${id}/items/${newReceiptItem.id}`,newReceiptItem,{
@@ -107,7 +109,7 @@ export const editReceiptItem = (receiptItemIndex,newFoodItemDto) => async (dispa
         'Authorization' : 'Bearer ' + idToken,
       },
     });
-    dispatch({type: EDIT_RECEIPT_ITEM, payload: newReceiptItem});
+
   }).catch((error) => {
     console.log(error);
   })

@@ -1,6 +1,5 @@
-import { Box, Grid, IconButton, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
+import { Grid, IconButton, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 import PropTypes from 'prop-types';
@@ -15,9 +14,9 @@ export const FoodTypeCell = (props) => {
       props.cellState === itemStatus.UNRECOGNIZED ?
         <LookUpField {...props} />
         : props.cellState === itemStatus.UNSURE ?
-          SelectField(props)
+          <SelectField {...props} />
           :
-          RecognField(props)
+          <RecognField {...props} />
     }
   </Grid>
 }
@@ -29,26 +28,36 @@ FoodTypeCell.propTypes = {
 }
 
 const RecognField = (props) => {
-  return (
-    <>
-      <Grid item>
-        <div>{props.foodList[ 0 ].name}</div>
-      </Grid>
-      {props.cellState === itemStatus.RECOGNIZED ?
-        <Grid item>
-          <IconButton onClick={() => props.onConfirm} size='small'>
-            <Tooltip title="Edit"><EditRoundedIcon color="primary" fontSize="small" /></Tooltip>
-          </IconButton>
-        </Grid>
-        : null
-      }
-    </>
-  );
+  const [ editMode, setEditMode ] = useState(false)
 
+  const closeEditMode = () => {
+    setEditMode(false);
+  }
+
+  return (
+    editMode ?
+      <LookUpField {...props} editMode={editMode} closeEditMode={closeEditMode} />
+      :
+      <>
+        <Grid item>
+          <div>{props.foodList[ 0 ].name}</div>
+        </Grid>
+        {props.cellState === itemStatus.RECOGNIZED ?
+          <Grid item>
+            <IconButton onClick={() => { setEditMode(true); }} size='small'>
+              <Tooltip title="Edit"><EditRoundedIcon color="primary" fontSize="small" /></Tooltip>
+            </IconButton>
+          </Grid>
+          : null
+        }
+      </>
+  )
 }
 const SelectField = (props) => {
+  console.log(props.foodList)
   const [ selectedFood, setSelectedFood ] = React.useState(props.foodList[ 0 ]);
   const handleChange = (event) => {
+    console.log("event: ", event)
     setSelectedFood(event.target.value)
   }
   return (
@@ -66,7 +75,7 @@ const SelectField = (props) => {
         </Select>
       </Grid>
       {
-        props.cellState == 'search' && !props.foodList.length ? null :
+        props.cellState === 'search' && !props.foodList.length ? null :
           <Grid item>
             <IconButton onClick={() => props.onConfirm(selectedFood)} size='small'>
               <Tooltip title="Confirm"><CheckRoundedIcon color="primary" fontSize="small" /></Tooltip>
@@ -90,6 +99,7 @@ const LookUpField = connect(mapStateToProps, { fetchFoodItems })((props) => {
   const [ selectedValue, setSelectedValue ] = useState('');
   const [ input, setInput ] = useState('');
   const [ debouncedInput, setDebouncedInput ] = useState(input);
+  const foodItems = [props.rowIndex] in props.foodItems ? props.foodItems[props.rowIndex] : []
 
   useEffect(() => {
     // console.log("input change")
@@ -104,8 +114,8 @@ const LookUpField = connect(mapStateToProps, { fetchFoodItems })((props) => {
   }, [ input ])
 
   useEffect(() => {
-    if (debouncedInput.length && (!props.foodItems.length || !props.foodItems.some(item => item.name === debouncedInput))) {
-      props.fetchFoodItems(debouncedInput);
+    if (debouncedInput.length && (!foodItems.length || !foodItems.some(item => item.name === debouncedInput))) {
+      props.fetchFoodItems(debouncedInput, props.rowIndex);
     }
   }, [ debouncedInput ])
 
@@ -113,6 +123,7 @@ const LookUpField = connect(mapStateToProps, { fetchFoodItems })((props) => {
     <>
       <Grid item>
         <Autocomplete
+          loading={props.loading}
           style={{ width: 180 }}
           onChange={(event, newValue) => {
             setSelectedValue(newValue);
@@ -120,7 +131,7 @@ const LookUpField = connect(mapStateToProps, { fetchFoodItems })((props) => {
           onInputChange={(event, newValue) => {
             setInput(newValue);
           }}
-          options={props.foodItems}
+          options={foodItems}
           getOptionSelected={(option, value) => option.name === value.name}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
@@ -134,9 +145,26 @@ const LookUpField = connect(mapStateToProps, { fetchFoodItems })((props) => {
         >
         </Autocomplete>
       </Grid>
+      {props.editMode ?
+        <Grid item>
+          <IconButton onClick={() => props.closeEditMode()} size='small'>
+            <Tooltip title="Cancel"><CloseRoundedIcon color="primary" fontSize="small" /></Tooltip>
+          </IconButton>
+        </Grid>
+        :
+        null
+      }
       {selectedValue ?
         <Grid item>
-          <IconButton onClick={() => props.onConfirm(selectedValue)} size='small'>
+          <IconButton
+            onClick={
+              () => {
+                if(props.editMode)
+                  props.closeEditMode();
+                props.onConfirm(selectedValue);
+              }
+            } 
+            size='small'>
             <Tooltip title="Confirm"><CheckRoundedIcon color="primary" fontSize="small" /></Tooltip>
           </IconButton>
         </Grid>

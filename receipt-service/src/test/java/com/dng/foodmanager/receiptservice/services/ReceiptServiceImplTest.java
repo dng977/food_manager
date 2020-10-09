@@ -1,6 +1,6 @@
 package com.dng.foodmanager.receiptservice.services;
 
-import com.dng.foodmanager.receiptservice.image_to_text.ImageToReceipt;
+import com.dng.foodmanager.receiptservice.converters.ImageToReceipt;
 import com.dng.foodmanager.receiptservice.domain.Receipt;
 import com.dng.foodmanager.receiptservice.domain.ReceiptItem;
 import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;

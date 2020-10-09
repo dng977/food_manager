@@ -3,8 +3,12 @@ import pprint
 import sys
 import os
 import re
+
 #file_object = open("tesseract-text.txt", "r", encoding="utf8")
 main_path = os.path.dirname(os.path.abspath(__file__))
+
+import_new_words = True
+
 def main():
     #receipt_store = sys.argv[1]
     filepath = main_path+ "/tesseract-text.txt"
@@ -22,8 +26,6 @@ def main():
 
     return spellChecker(bag_of_words)
 
-
-
 def spellChecker(bag_of_words):
     store_name = ''
     store_array = ["aldi", "lidl"]
@@ -32,8 +34,11 @@ def spellChecker(bag_of_words):
     start_collecting_index = 0
 
     spell = SpellChecker(language=None, case_sensitive=False, distance=1)
-    #spell.word_frequency.load_text_file('food_words.txt')
-    spell.word_frequency.load_dictionary(main_path + '/dictionary.json')
+
+    if import_new_words:
+        spell.word_frequency.load_text_file(main_path + '/food_words.txt')
+    else:
+        spell.word_frequency.load_dictionary(main_path + '/dictionary.json')
 
     #print(spell.word_frequency.unique_words)
     #print(spell.word_frequency.total_words)
@@ -46,13 +51,12 @@ def spellChecker(bag_of_words):
         for word in words:
             if len(word) <= 2 or re.search("(.*[0-9][.,][0-9].*)|(.*[0-9]{3}.*)|(.*\W.*)", word) != None:
                 continue
-            if("total" in word.lower()):
-                end_loop_word = True
-                break
+
             # Get the one `most likely` answer
             candidates = spell.candidates(word)
             #print(word, candidates)
             word_to_add = ""
+
             if(len(candidates) > 2):
                 word_to_add = word
             else:
@@ -63,6 +67,9 @@ def spellChecker(bag_of_words):
 
             corrected_words = corrected_words + " " + word_to_add
 
+        if check_stopper(corrected_words):
+            break
+
         if check_starter(corrected_words):
             start_collecting_index = line + 1
 
@@ -72,34 +79,37 @@ def spellChecker(bag_of_words):
 
         #print(line, corrected_words)
         #print("------------")
-        if(end_loop_word):
-            break
     print(store_name)
     for food_value in food_values[start_collecting_index:]:
-        print(food_value)
-    #spell.export('dictionary.json', gzipped=False)
+        try:
+            print(food_value)
+        except:
+            pass
+
+    if import_new_words:
+        spell.export(main_path + '/dictionary.json', gzipped=False)
 
 
 
+store_array = ["aldi", "lidl"]
 
 def check_store(word):
-    store_array = ["aldi", "lidl"]
     if word in store_array:
         return store_array.index(word)
     return ''
 
+def check_stopper(line):
+    stopping_words = ["total","visa","card"]
+    for sw in stopping_words:
+        if sw in line.lower():
+            return True
+
+
 def check_starter(line):
-    starting_words = [
-    ["your", "cashier", "today", "was"],
-
-    ]
-    stack = 0
-    for group_words in starting_words:
-        for sw in group_words:
-            if sw in line:
-                stack+=1
-
-    return stack > 1
+    starting_words = ["your cashier", "today was", "selly", "oak"] + store_array
+    for sw in starting_words:
+        if sw in line.lower():
+            return True
 
 if __name__ == '__main__':
     main()
