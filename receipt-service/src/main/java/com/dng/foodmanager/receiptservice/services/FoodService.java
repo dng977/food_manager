@@ -9,4 +9,6 @@ import java.util.Set;
 public interface FoodItemService {
     Set<FoodItem> getFoodItems();
     List<FoodItemDto> getFoodItemsByName(String name);
+
+    List<FoodItemDto> addReceiptToFoodStock(String userId, Long receiptId);
 }

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class FoodItemServiceImpl implements FoodItemService {
     private final FoodItemRepository foodItemRepository;
     private final DtoConverter dtoConverter;
+    private final ReceiptRepository receiptRepository;
 
     @Override
     public Set<FoodItem> getFoodItems() {
@@ -32,5 +33,10 @@ public class FoodItemServiceImpl implements FoodItemService {
     public List<FoodItemDto> getFoodItemsByName(String name) {
         List<FoodItem> foodItems = foodItemRepository.findByNameLike("%" + name + "%");
         return foodItems.stream().map(dtoConverter::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FoodItemDto> addReceiptToFoodStock(String userId, Long receiptId) {
+        return null;
     }
 }
