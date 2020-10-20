@@ -1,5 +1,5 @@
 import React, { } from 'react';
-import { Button, Grid, Dialog, DialogTitle, DialogActions, Tabs, Tab, Paper } from '@material-ui/core';
+import { Button, Grid, Dialog, DialogTitle, DialogActions, Tabs, Tab, Paper, Container, Typography, CssBaseline } from '@material-ui/core';
 import MUIDataTable, { } from 'mui-datatables';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
@@ -13,7 +13,7 @@ import { CLEAR_MESSAGE } from '../../../../store/actions/types';
 import { Lightbox } from "react-modal-image";
 import { getFoodStock } from '../selectors.js';
 import { DeleteAlertDialog, EmptyTable } from '../shared_components';
-import { EatCell, QuantityCell, AddNewFoodDialog } from './components';
+import { EatCell, QuantityCell, AddNewFoodDialog, FoodTable } from './components';
 
 class FoodStock extends React.Component {
 
@@ -25,9 +25,9 @@ class FoodStock extends React.Component {
       rowsSelected: [],
       tableNumber: 0,
     }
-    this.path = this.props.match.path;
-    this.params = this.props.match.params;
-    this.history = this.props.history
+    // this.path = this.props.match.path;
+    // this.params = this.props.match.params;
+    // this.history = this.props.history
     this.getMuiTheme = createMuiTheme(muiStyles);
     this.onDeleteDialogNo = this.onDeleteDialogNo.bind(this);
     this.onDeleteDialogYes = this.onDeleteDialogYes.bind(this);
@@ -41,7 +41,7 @@ class FoodStock extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("NEXT PROPS: ", nextProps)
+    //Don't rerender when new items are selected
     let newLength = nextState.rowsSelected.length;
     let oldLength = this.state.rowsSelected.length;
     console.log(newLength, oldLength)
@@ -70,61 +70,6 @@ class FoodStock extends React.Component {
 
   };
 
-  options = {
-    rowsPerPage: 20,
-    rowsPerPageOptions: [],
-    filterType: "dropdown",
-    responsive: "standard",
-    tableBodyHeight: "600px",
-    tableBodyMaxHeight: "800px",
-    selectableRows: "multiple",
-    selectableRowsHeader: true,
-    selectToolbarPlacement: 'none',
-    customToolbar: null,
-    download: false,
-    search: false,
-    print: false,
-    viewColumns: false,
-    filter: false,
-    rowsSelected: [],
-    onRowSelectionChange: (currentRowsSelected, allRowsSelected, rowsSelected) => {
-      console.log(rowsSelected)
-      this.setState({ rowsSelected })
-      //setRowsSelected(rowsSelected)
-
-    },
-    expandableRowsOnClick: true,
-    onRowClick: (rowData, { }) => {
-      // history.push(`${url}/${dataIndex}`);
-    },
-
-  };
-
-  columns = [
-    {
-      name: 'Food Name',
-    },
-    {
-      name: 'Quantity',
-      options: {
-        customBodyRender: (value, { rowIndex }) => {
-          return <QuantityCell
-            value={value}
-            submitEdit={(newQuantity) => {
-              this.props.editFoodStockItem(this.props.indexToKey[ rowIndex ], { quantity: newQuantity })
-            }} />;
-        }
-      }
-    },
-    {
-      name: '',
-      options: {
-        customBodyRender: (value) => {
-          return <EatCell value={value} />;
-        }
-      }
-    }
-  ];
   render() {
     console.log("Rendering FOOD STOCK...")
     return (
@@ -193,19 +138,17 @@ class FoodStock extends React.Component {
                   <Tab label="Meals" />
                 </Tabs>
               </Paper>
-              <MUIDataTable
-                text="Loading"
-                data={this.props.foodStockItems}
-                columns={this.columns}
-                options={this.options}
-                components={
-                  this.props.loading ? {
-                    TableBody: (props) => <EmptyTable {...props} text="Loading..." />
-                  } : {}
-                }
-
-              />
             </Grid>
+              {this.state.tableNumber === 0 ? 
+              <Grid item>
+              <FoodTable foodStockItems={this.props.foodStockItems} setRowsSelected={(rowsSelected) => {this.setState({rowsSelected})}}/>
+              </Grid>
+              :
+              <Grid item>
+              <Typography align="center" gutterBottom variant="h5">Meals table coming soon...</Typography>         
+
+              </Grid>
+              }
 
           </Grid>
         </MuiThemeProvider>

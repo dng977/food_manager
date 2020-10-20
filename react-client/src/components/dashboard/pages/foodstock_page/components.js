@@ -10,7 +10,8 @@ import { connect, useSelector } from 'react-redux';
 import { editFoodStockItem } from '../../../../store/actions/foodActions';
 import { Fraction } from 'fractional';
 import PropTypes from 'prop-types';
-import { FoodLookUp } from "../shared_components";
+import { EmptyTable, FoodLookUp } from "../shared_components";
+import MUIDataTable from 'mui-datatables';
 
 const theme = createMuiTheme({
   overrides: {
@@ -36,15 +37,19 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
   const [ selectedFood, setSelectedFood ] = useState('');
   const [ servingUnits, setServingUnits ] = React.useState(new Fraction(1, 1));
   const [ servingInGrams, setServingInGrams ] = React.useState(0)
+  const [ emptyInput, setEmptyInput] = useState(true);
 
-  useEffect(()=>{
-    if(selectedFood){
+  useEffect(() => {
+    if (selectedFood) {
       setServingInGrams(selectedFood.servingSize);
       setServingUnits(new Fraction(1, 1));
-  
+      setEmptyInput(false);
+
+    }else{
+      setEmptyInput(true)
     }
-    
-  },[selectedFood])
+
+  }, [ selectedFood ])
   const onPortionChange = (servingUnits, servingInGrams) => {
     setServingUnits(servingUnits)
     setServingInGrams(servingInGrams)
@@ -105,7 +110,7 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
                     <Button fullWidth variant="outlined" onClick={onCancel} color="primary">
                       Cancel
                   </Button>
-                    <Button fullWidth variant="contained" onClick={() => { onConfirm(selectedFood.id, servingInGrams); setSelectedFood('');}} color="primary" autoFocus>
+                    <Button fullWidth disabled={emptyInput} variant="contained" onClick={() => { onConfirm(selectedFood.id, servingInGrams); setSelectedFood(''); }} color="primary" autoFocus>
                       Add
                   </Button>
                   </DialogActions>
@@ -127,6 +132,91 @@ AddNewFoodDialog.propTypes = {
 
 
 //TABLE
+
+export class FoodTable extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  options = {
+    rowsPerPage: 20,
+    rowsPerPageOptions: [],
+    filterType: "dropdown",
+    responsive: "standard",
+    tableBodyHeight: "600px",
+    tableBodyMaxHeight: "800px",
+    selectableRows: "multiple",
+    selectableRowsHeader: true,
+    selectToolbarPlacement: 'none',
+    customToolbar: null,
+    download: false,
+    search: false,
+    print: false,
+    viewColumns: false,
+    filter: false,
+    rowsSelected: [],
+    onRowSelectionChange: (currentRowsSelected, allRowsSelected, rowsSelected) => {
+      console.log(rowsSelected)
+      this.props.setRowsSelected(rowsSelected)
+      //setRowsSelected(rowsSelected)
+
+    },
+    expandableRowsOnClick: true,
+    onRowClick: (rowData, { }) => {
+      // history.push(`${url}/${dataIndex}`);
+    },
+
+  };
+  columns = [
+    {
+      name: 'Food Name',
+    },
+    {
+      name: 'Quantity',
+      options: {
+        customBodyRender: (value, { rowIndex }) => {
+          return <QuantityCell
+            value={value}
+            submitEdit={(newQuantity) => {
+              this.props.editFoodStockItem(this.props.indexToKey[ rowIndex ], { quantity: newQuantity })
+            }} />;
+        }
+      }
+    },
+    {
+      name: '',
+      options: {
+        customBodyRender: (value) => {
+          return <EatCell value={value} />;
+        }
+      }
+    }
+  ];
+
+  render() {
+    return (
+      <MUIDataTable
+        text="Loading"
+        data={this.props.foodStockItems}
+        columns={this.columns}
+        options={this.options}
+        components={
+          this.props.loading ? {
+            TableBody: (props) => <EmptyTable {...props} text="Loading..." />
+          } : {}
+        }
+
+      />
+    );
+  }
+}
+
+FoodTable.propTypes = {
+  setRowsSelected: PropTypes.func.isRequired,
+  foodStockItems: PropTypes.array.isRequired
+
+}
+
 
 export const EatCell = ({ value }) => {
   const [ servingUnits, setServingUnits ] = React.useState(new Fraction(1, 1));
@@ -163,16 +253,16 @@ export const QuantityCell = React.memo(({ submitEdit, value }) => {
   const [ quantityUnits, setQuantityUnits ] = useState(currentQuantity.units.numerator === 0 ? new Fraction(1) : currentQuantity.units);
   console.log("after", currentQuantity, quantityInGrams);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("QUANTITY CELL USE EFFECT")
-    if(value !== currentQuantity.grams){
+    if (value !== currentQuantity.grams) {
       let grams = value.quantity;
-      let units = new Fraction(value.quantity / value.servingSize) ;
-      setCurrentQuantity({grams,units});
+      let units = new Fraction(value.quantity / value.servingSize);
+      setCurrentQuantity({ grams, units });
       setQuantityInGrams(grams === null || grams === 0 ? value.servingSize : grams);
-      setQuantityUnits(units.numerator === 0 ? new Fraction(1) : units);  
+      setQuantityUnits(units.numerator === 0 ? new Fraction(1) : units);
     }
-    },[value]);
+  }, [ value ]);
 
   const onPortionChange = (servingUnits, servingInGrams) => {
     setQuantityUnits(servingUnits)
