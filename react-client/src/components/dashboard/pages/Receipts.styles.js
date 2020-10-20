@@ -20,6 +20,14 @@ export const styles = {
         color: 'rgba(0, 0, 0, 0.60)'
       }
     },
+    MUIDataTableSelectCell:{
+      fixedHeader: {
+        fontWeight: 'bold',
+        borderTop: '2px solid rgba(224, 224, 224, 1)',
+        borderBottom: '2px solid rgba(224, 224, 224, 1)',
+        color: 'rgba(0, 0, 0, 0.60)'
+      }
+    },
     MUIDataTableBody:{
       emptyTitle:{
         textAlign: 'center'

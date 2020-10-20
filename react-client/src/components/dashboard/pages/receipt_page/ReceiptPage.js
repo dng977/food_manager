@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Grid, Tooltip, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
+import { Button, Grid, Tooltip, Dialog, DialogTitle, DialogActions, Snackbar } from '@material-ui/core';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import MUIDataTable, { } from 'mui-datatables';
 import PlaylistAddCheckRoundedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
@@ -7,13 +7,13 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { styles as muiStyles } from '../Receipts.styles';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { deleteReceipt, editReceiptItem, fetchReceiptImage, fetchReceiptItems } from '../../../../store/actions/receiptsActions';
+import { addReceiptItemsToFoodStock, deleteReceipt, editReceiptItem, fetchReceiptImage, fetchReceiptItems } from '../../../../store/actions/receiptsActions';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import { compose, bindActionCreators } from 'redux';
-import ImageSearchRoundedIcon from '@material-ui/icons/ImageSearchRounded'; import { CLEAR_ERROR } from '../../../../store/actions/types';
+import ImageSearchRoundedIcon from '@material-ui/icons/ImageSearchRounded'; import { CLEAR_MESSAGE } from '../../../../store/actions/types';
 import { Lightbox } from "react-modal-image";
 import { getReceiptItems } from '../selectors.js';
-import { EmptyTable } from '../shared_components';
+import { DeleteAlertDialog, EmptyTable } from '../shared_components';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 import { FoodTypeCell } from './components';
 import { itemStatus } from './constants';
@@ -49,7 +49,7 @@ const ReceiptPage = (props) => {
             <FoodTypeCell cellState={status} foodList={foodList} rowIndex={rowIndex}
               onConfirm={
                 (selectedFoodItem) => {
-                  props.editReceiptItem(rowIndex,selectedFoodItem)
+                  props.editReceiptItem(rowIndex, selectedFoodItem)
 
                 }
               }
@@ -86,7 +86,7 @@ const ReceiptPage = (props) => {
   };
   const onDeleteDialogNo = () => {
     setOpenDeleteDialog(false);
-    if (props.error) {
+    if (props.message) {
       props.clearError();
     }
   };
@@ -97,43 +97,7 @@ const ReceiptPage = (props) => {
     })
 
   };
-  const deleteAlertDialog = () => {
-    console.log("render Dialog: ", openDeleteDialog)
-    return (
-      <Dialog
-        open={openDeleteDialog}
-        onClose={onDeleteDialogNo}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >{
-          props.loading ?
 
-            <DialogTitle>Deleting...</DialogTitle> :
-            props.error ?
-              <>
-                <DialogTitle>{`${props.error}`}</DialogTitle>
-                <DialogActions>
-                  <Button variant="outlined" onClick={onDeleteDialogNo} color="primary">
-                    Close
-              </Button>
-                </DialogActions>
-              </>
-              : openDeleteDialog ?
-                <>
-                  <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete this receipt?"}</DialogTitle>
-                  <DialogActions>
-                    <Button variant="outlined" onClick={onDeleteDialogNo} color="primary">
-                      No
-          </Button>
-                    <Button variant="contained" onClick={onDeleteDialogYes} color="secondary" autoFocus>
-                      Yes
-          </Button>
-                  </DialogActions>
-                </> : <></>
-        }
-      </Dialog>
-    );
-  }
 
   const onViewImage = () => {
     console.log(" On view image")
@@ -189,9 +153,9 @@ const ReceiptPage = (props) => {
                         Confirm Changes
                       </Button>
                       :
-                      <Button variant="contained" color="primary" startIcon={<PlaylistAddCheckRoundedIcon />} onClick={() => { }}>
+                      <Button variant="contained" color="primary" startIcon={<PlaylistAddCheckRoundedIcon />} onClick={() => { props.addReceiptItemsToFoodStock() }}>
                         Add to Food Stock
-                      </Button>
+                        </Button>
                     }
 
                   </Grid>
@@ -208,7 +172,15 @@ const ReceiptPage = (props) => {
                     <Button variant="contained" color="secondary" startIcon={<DeleteRoundedIcon />} onClick={onDeleteClick}>
                       Delete Receipt
               </Button>
-                    {deleteAlertDialog()}
+                    <DeleteAlertDialog
+                      dialogTitle="Are you sure you want to delete this receipt?"
+                      error={props.message}
+                      loading={props.loading}
+                      onDeleteDialogNo={onDeleteDialogNo}
+                      onDeleteDialogYes={onDeleteDialogYes}
+                      openDeleteDialog={openDeleteDialog}
+
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -239,16 +211,16 @@ const ReceiptPage = (props) => {
 }
 const mapDispatchToProps = dispatch => {
   return {
-    clearError: () => dispatch({ type: CLEAR_ERROR }),
+    clearError: () => dispatch({ type: CLEAR_MESSAGE }),
     dispatch,
-    ...bindActionCreators({ deleteReceipt, editReceiptItem, fetchReceiptItems, fetchReceiptImage }, dispatch)
+    ...bindActionCreators({ addReceiptItemsToFoodStock, deleteReceipt, editReceiptItem, fetchReceiptItems, fetchReceiptImage }, dispatch)
   }
 }
 const mapStateToProps = (state) => {
   // console.log(state.receipts.currentReceipt.receiptItems)
   return {
-    loading: state.receipts.loading,
-    error: state.receipts.error,
+    loading: state.feedback.loading,
+    message: state.feedback.message,
     imageData: state.receipts.currentReceipt.imageData,
     receiptItems: getReceiptItems(state)
   };

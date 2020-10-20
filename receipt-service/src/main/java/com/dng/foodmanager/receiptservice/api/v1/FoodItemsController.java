@@ -1,6 +1,7 @@
 package com.dng.foodmanager.receiptservice.api.v1;
 
 import com.dng.foodmanager.receiptservice.config.security.CustomPrincipal;
+import com.dng.foodmanager.receiptservice.dto.PlainFoodItemDto;
 import com.dng.foodmanager.receiptservice.dto.FoodItemDto;
 import com.dng.foodmanager.receiptservice.services.FoodService;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +17,24 @@ import java.util.List;
 @Slf4j
 @RestController
 //@CrossOrigin(value= {"http://localhost:3000"})
-@RequestMapping(path = FoodController.BASE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = FoodItemsController.BASE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-public class FoodController {
+public class FoodItemsController {
     public static final String BASE_URL = "/api/v1/fooditems/";
     private final FoodService foodService;
+
+    @GetMapping("plain/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PlainFoodItemDto> getPlainFoodItemsByName(@AuthenticationPrincipal CustomPrincipal principal, @PathVariable String name) throws NumberFormatException, IOException {
+        log.debug(BASE_URL  + name + " GET mapping triggered");
+
+        return foodService.getPlainFoodItemsByName(name);
+    }
 
     @GetMapping("{name}")
     @ResponseStatus(HttpStatus.OK)
     public List<FoodItemDto> getFoodItemsByName(@AuthenticationPrincipal CustomPrincipal principal, @PathVariable String name) throws NumberFormatException, IOException {
-        log.debug(BASE_URL + "/" + name + " GET mapping triggered");
+        log.debug(BASE_URL  + name + " GET mapping triggered");
 
         return foodService.getFoodItemsByName(name);
     }

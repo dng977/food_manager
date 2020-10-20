@@ -14,7 +14,7 @@ import java.util.List;
 @ToString(callSuper = true, includeFieldNames = true)
 public class Receipt extends BaseEntity {
 
-    private String username;
+    private String userId;
 
     private String storeName; // TODO - temporary - use the store object instead
     @OneToOne
@@ -23,7 +23,7 @@ public class Receipt extends BaseEntity {
 
     private Boolean confirmed;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "receipt")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "receipt", fetch = FetchType.LAZY)
     private List<ReceiptItem> receiptItems;
 
 

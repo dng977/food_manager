@@ -24,7 +24,7 @@ public class ReceiptItem extends BaseEntity{
     @ToString.Exclude
     private Receipt receipt;
 
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "receipt_items_foods",
             joinColumns = @JoinColumn(

@@ -4,6 +4,7 @@ import com.dng.foodmanager.receiptservice.converters.ImageToReceipt;
 import com.dng.foodmanager.receiptservice.domain.Receipt;
 import com.dng.foodmanager.receiptservice.domain.ReceiptItem;
 import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;
+import com.dng.foodmanager.receiptservice.repositories.FoodStockRepository;
 import com.dng.foodmanager.receiptservice.repositories.ReceiptItemRepository;
 import com.dng.foodmanager.receiptservice.repositories.ReceiptRepository;
 
@@ -41,13 +42,16 @@ class ReceiptServiceImplTest {
 
     @Mock
     FoodItemRepository foodItemRepository;
+
+    @Mock
+    FoodStockRepository foodStockRepository;
     @Mock
     DtoConverter dtoConverter;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        receiptService = new ReceiptServiceImpl(receiptRepository, imageToReceipt, receiptItemRepository,foodItemRepository, dtoConverter);
+        receiptService = new ReceiptServiceImpl(receiptRepository, imageToReceipt, receiptItemRepository,foodItemRepository,foodStockRepository, dtoConverter);
     }
 
     @Test

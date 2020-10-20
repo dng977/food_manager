@@ -10,9 +10,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReceiptRepository extends CrudRepository<Receipt, Long> {
 
-	List<Receipt> findByUsername(String username);
+	List<Receipt> findByUserId(String userId);
 
 	@Modifying
-	@Query(value = "DBCC CHECKIDENT (receipts, RESEED, ?1);", nativeQuery = true)
-	void resetIdSeed(Long id);
+	@Query(value = "DECLARE @maxVal INT;\n" +
+			"SELECT @maxVal = ISNULL(max(ID),0) from receipts;\n" +
+			"DBCC CHECKIDENT(receipts, RESEED, @maxVal);", nativeQuery = true)
+	void resetIdSeed();
 }

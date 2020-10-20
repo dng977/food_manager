@@ -41,4 +41,10 @@ public class RestResponseEntityExceptionHandler {
         return new ResponseEntity<Object>("Storage exception: " + exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
 
     }
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<Object> anyException(Exception exception, WebRequest request){
+        log.debug("AnyException..");
+        return new ResponseEntity<Object>("Exception: " + exception.getMessage(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
 }

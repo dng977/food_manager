@@ -8,17 +8,19 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "food_items")
 public class FoodItem extends BaseEntity {
 
     private String name;
     private int servingSize;
+    private boolean countable;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_nutrition_raw")
     private FoodNutrition nutritionRaw;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_nutrition_cooked")
     private FoodNutrition nutritionCooked;
 

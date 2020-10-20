@@ -102,6 +102,14 @@ public class ReceiptController {
         return (CustomPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
+    @GetMapping("/foodstock/{receiptId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReceiptItemDto> addReceiptToFoodStock(@AuthenticationPrincipal CustomPrincipal principal, @PathVariable String receiptId){
+        log.debug(BASE_URL + "/foodstock" + receiptId + " GET mapping triggered");
+
+        return receiptService.addReceiptToFoodStock(principal.getUid(), Long.valueOf(receiptId));
+    }
+
 //    @RequestMapping(value = "/{id}/image", method = RequestMethod.GET)
 //    public void getReceiptImage(HttpServletResponse response) throws IOException {
 //        InputStream in = servletContext.getResourceAsStream("/WEB-INF/images/image-example.jpg");

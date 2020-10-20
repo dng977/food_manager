@@ -12,7 +12,7 @@ import { uploadReceipt, fetchReceiptItems, setCurrentReceipt } from '../../../st
 import { EmptyTable } from './shared_components';
 import { getReceipts } from './selectors';
 import { useRef } from 'react';
-import { CLEAR_ERROR } from '../../../store/actions/types';
+import { CLEAR_MESSAGE } from '../../../store/actions/types';
 import { bindActionCreators } from 'redux';
 import loadImage from 'blueimp-load-image';
 
@@ -108,23 +108,10 @@ const Receipts = (props) => {
                 ref={fileInput}
                 onChange={handleUpload}
               />
-              <Button variant="contained" color="primary" startIcon={<CloudUploadIcon />} onClick={() => fileInput.current.click()}>
+              <Button disabled={props.loading} variant="contained" color="primary" startIcon={<CloudUploadIcon />} onClick={() => fileInput.current.click()}>
                 Upload Receipt
               </Button>
-              <Snackbar
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                open={props.error!==''}
-                onClose={(event, reason) => {
-                  if(reason==="timeout"){
-                    props.clearError()
-                  }
-                }}
-                autoHideDuration={2000}
-                message={"Receipt upload failed."}
-              />
+
             </Grid>
           </Grid>
         </Grid>
@@ -151,7 +138,7 @@ const Receipts = (props) => {
 }
 const mapDispatchToProps = dispatch => {
   return {
-    clearError: () => dispatch({ type: CLEAR_ERROR }),
+    // clearError: () => dispatch({ type: CLEAR_ERROR }),
     dispatch,
     ...bindActionCreators({ uploadReceipt, fetchReceiptItems, setCurrentReceipt }, dispatch)
   }
@@ -162,8 +149,8 @@ const mapStateToProps = (state) => {
     receipts,
     indexToKey,
     // receipts: [],
-    loading: state.receipts.loading,
-    error: state.receipts.error
+    loading: state.feedback.loading,
+    // error: state.receipts.error
   };
 };
 

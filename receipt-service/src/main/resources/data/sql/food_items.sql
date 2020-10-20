@@ -1,5 +1,5 @@
 DELETE FROM food_items 
-DBCC CHECKIDENT ('food_items', RESEED, 0)
+DBCC CHECKIDENT ('food_items', RESEED, 1)
 --VEGETABLES
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('cabbage', 100,1, 2893,2892)
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('eggplant', 100,1, 2967,2966)
@@ -10,7 +10,7 @@ INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nu
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('broccoli', 100,1, 2876,2875)
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('cauliflower', 100,0, 2913,2912)
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('cucumber', 100,1, null,2963)
-INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('pickled cucumber',1, 100, 3552,null)
+INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('pickled cucumber',100, 1, 3552,null)
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('leek', 100,1, 3001,3000)
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('romaine lettuce', 100,1, null,3005)
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('iceberg lettuce', 100,1, null,3006)

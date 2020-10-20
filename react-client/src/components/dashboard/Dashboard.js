@@ -17,9 +17,9 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import requireAuth from '../requireAuth';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { signOut } from '../../store/actions/authActions';
-import { compose } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
-import { Menu, MenuItem, Tooltip, Badge } from '@material-ui/core';
+import { Menu, MenuItem, Tooltip, Badge, Snackbar } from '@material-ui/core';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
@@ -32,17 +32,22 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { fetchReceipts } from '../../store/actions/receiptsActions';
+import { fetchFoodStock } from '../../store/actions/foodActions';
 import { getPathRegex } from '../../routes';
+import { CLEAR_MESSAGE, START_BATCH_LOADING, STOP_BATCH_LOADING } from '../../store/actions/types';
+import {startBatchLoading, stopBatchLoading} from '../../store/actions/feedbackActions';
 
 class Dashboard extends React.Component {
 
   constructor(props) {
-    super(props);
+    super();
     this.state = { anchorEl: null, open: true };
   }
   componentDidMount() {
-    if(Object.keys(this.props.receipts).length === 0 || !this.props.location.pathname.match(/receipts\/\d/))
+    this.props.startBatchLoading();
+    if (Object.keys(this.props.receipts).length === 0 || !this.props.location.pathname.match(/receipts\/\d/))
       this.props.fetchReceipts();
+    this.props.fetchFoodStock({actionsOnSuccess: [stopBatchLoading()]});
   }
 
 
@@ -73,19 +78,19 @@ class Dashboard extends React.Component {
       console.log(route.path, this.props.location.pathname)
       return getPathRegex(route.path).exec(this.props.location.pathname);
     });
-    
+
     console.log("route: ", route)
     console.log(this.props.receipts)
-    if (route){
-      if(route.path.includes("/receipts/:id")){
-        let receiptId = this.props.location.pathname.match(/.*\/receipts\/(\d+)/i)[1]
-        if(Object.keys(this.props.receipts).length){
-          let receipt = this.props.receipts[receiptId]
-          if(receipt){
+    if (route) {
+      if (route.path.includes("/receipts/:id")) {
+        let receiptId = this.props.location.pathname.match(/.*\/receipts\/(\d+)/i)[ 1 ]
+        if (Object.keys(this.props.receipts).length) {
+          let receipt = this.props.receipts[ receiptId ]
+          if (receipt) {
             console.log(receipt)
             let receiptTitle = receipt.storeName + " " + receipt.date
-             
-            return "Receipt: " + receiptTitle            
+
+            return "Receipt: " + receiptTitle
           }
         }
 
@@ -108,11 +113,26 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const {classes} = this.props;
+    const { classes } = this.props;
     console.log('Rendering dashboard...');
+    console.log("message:", this.props.message)
     return (
       <div className={classes.root}>
         <CssBaseline />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={this.props.message !== ''}
+          onClose={(event, reason) => {
+            if (reason === "timeout") {
+              this.props.clearError()
+            }
+          }}
+          autoHideDuration={2000}
+          message={this.props.message}
+        />
         <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
           <Toolbar className={classes.toolbar}>
             <IconButton
@@ -200,20 +220,24 @@ class Dashboard extends React.Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-            <Switch>
-              <Redirect exact from={'/dashboard'} to={'/dashboard/foodstock'} />
+            {this.props.batchLoading ?
+              <div>Loading...</div>
+              :
+              <Switch>
+                <Redirect exact from={'/dashboard'} to={'/dashboard/foodstock'} />
 
-              {this.props.routes.map((route, key) => {
-                return (
-                  <Route
-                    exact={route.exact}
-                    path={route.path}
-                    component={route.component}
-                    key={key}
-                  />
-                );
-              })}
-            </Switch>
+                {this.props.routes.map((route, key) => {
+                  return (
+                    <Route
+                      exact={route.exact}
+                      path={route.path}
+                      component={route.component}
+                      key={key}
+                    />
+                  );
+                })}
+              </Switch>
+            }
             <Box pt={4}>
               <Copyright />
             </Box>
@@ -227,19 +251,27 @@ class Dashboard extends React.Component {
 
 const mapStateToProps = (state) => {
 
-  return { 
+  return {
     receipts: state.receipts.receipts,
+    message: state.feedback.message,
+    batchLoading: state.feedback.batchLoading
+
     // firebase: state.firebase
-            
+
   };
 };
-
+const mapDispatchToProps = dispatch => {
+  return {
+    clearError: () => dispatch({ type: CLEAR_MESSAGE }),
+    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, startBatchLoading}, dispatch)
+  }
+}
 
 export default compose(
   requireAuth,
   withRouter,
   withStyles(styles),
-  connect(mapStateToProps, { signOut, fetchReceipts }),
+  connect(mapStateToProps, mapDispatchToProps),
 )(Dashboard);
 
 

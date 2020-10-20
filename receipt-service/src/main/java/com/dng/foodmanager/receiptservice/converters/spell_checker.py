@@ -21,12 +21,23 @@ def main():
     with open(filepath, "r", encoding="utf8") as fp:
         cnt = 0
         for line in fp:
+            if re.search('\skg\s|\sx\s', line.lower()):
+                continue
+            if not re.search('[a-z]{2}', line.lower()):
+                continue
+            line = re.sub(r'[/\\-]', ' ', line)
+            price_search = re.search(r'\d+\.\d\d', line)
+            if price_search:
+                line = line[:price_search.span()[0]]
+            starting_number_search = re.search(r'[a-zA-Z]', line)
+            if starting_number_search:
+                line = line[starting_number_search.span()[0]: ]
             bag_of_words[cnt] = line.strip().split(' ')
             cnt += 1
 
-    return spellChecker(bag_of_words)
+    return spell_checker(bag_of_words)
 
-def spellChecker(bag_of_words):
+def spell_checker(bag_of_words):
     store_name = ''
     store_array = ["aldi", "lidl"]
 
@@ -46,10 +57,12 @@ def spellChecker(bag_of_words):
     end_loop_word = False
     #print(spell.word_frequency.dictionary)
     for (line, words) in bag_of_words.items():
+        #DEBUG:
+        # print("WORDS: " + ', '.join(words))
 
         corrected_words = ''
         for word in words:
-            if len(word) <= 2 or re.search("(.*[0-9][.,][0-9].*)|(.*[0-9]{3}.*)|(.*\W.*)", word) != None:
+            if re.search("(.*[0-9][.,][0-9].*)|(.*[0-9]{3}.*)|(.*\W.*)", word) != None:
                 continue
 
             # Get the one `most likely` answer
@@ -106,7 +119,7 @@ def check_stopper(line):
 
 
 def check_starter(line):
-    starting_words = ["your cashier", "today was", "selly", "oak"] + store_array
+    starting_words = ["your cashier", "today was", "selly", "oak", "0ak", "piper"] + store_array
     for sw in starting_words:
         if sw in line.lower():
             return True

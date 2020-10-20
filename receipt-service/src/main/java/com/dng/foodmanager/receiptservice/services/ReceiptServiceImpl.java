@@ -4,18 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.SQLDataException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.dng.foodmanager.receiptservice.converters.ImageToReceipt;
-import com.dng.foodmanager.receiptservice.domain.ReceiptItemStatus;
-import com.dng.foodmanager.receiptservice.domain.FoodItem;
-import com.dng.foodmanager.receiptservice.domain.Receipt;
-import com.dng.foodmanager.receiptservice.domain.ReceiptItem;
+import com.dng.foodmanager.receiptservice.domain.*;
 import com.dng.foodmanager.receiptservice.dto.ReceiptDto;
 import com.dng.foodmanager.receiptservice.dto.ReceiptItemDto;
 import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;
+import com.dng.foodmanager.receiptservice.repositories.FoodStockRepository;
 import com.dng.foodmanager.receiptservice.repositories.ReceiptItemRepository;
 import com.dng.foodmanager.receiptservice.repositories.ReceiptRepository;
 
@@ -44,6 +41,8 @@ public class ReceiptServiceImpl implements ReceiptService {
     private final ImageToReceipt imageToReceipt;
     private final ReceiptItemRepository receiptItemRepository;
     private final FoodItemRepository foodItemRepository;
+    private final FoodStockRepository foodStockRepository;
+
     private final DtoConverter dtoConverter;
 
     @Autowired
@@ -56,7 +55,7 @@ public class ReceiptServiceImpl implements ReceiptService {
         //Create new receipt
         byte[] imageBytes = receiptImage.getBytes();
         Receipt receipt = imageToReceipt.convert(imageBytes);
-        receipt.setUsername(username);
+        receipt.setUserId(username);
         receipt.setConfirmed(true);
         receipt.setReceiptItems(receipt.getReceiptItems().stream().map(receiptItem -> {
             List<FoodItem> foodItems = getFoodItems(receiptItem);
@@ -74,7 +73,6 @@ public class ReceiptServiceImpl implements ReceiptService {
         String fileName = "receipt-" + username + "-" + receipt.getId() + ".jpg";
 
         uploadImageToBucket(imageBytes, fileName);
-        log.debug(getReceiptImage(username, receipt.getId()).toString());
 
 
     }
@@ -82,9 +80,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     @Override
     public List<ReceiptDto> getReceipts(String userId) {
         List<ReceiptDto> receiptSet = new ArrayList<>();
-        receiptRepository.findByUsername(userId).iterator().forEachRemaining((receipt -> {
-            receiptSet.add(dtoConverter.convertToDto(receipt, false));
-        }));
+        receiptRepository.findByUserId(userId).iterator().forEachRemaining((receipt -> receiptSet.add(dtoConverter.convertToDto(receipt, false))));
         return receiptSet;
     }
 
@@ -132,30 +128,18 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
     @Override
-    public List<ReceiptItemDto> editReceiptItem(String userId, Long rid, Long iid, ReceiptItemDto receiptItemDto) {
-        List<ReceiptItem> receiptItems = receiptItemRepository.findByReceipt(rid);
-        return receiptItems.stream().map(receiptItem -> {
+    public void editReceiptItem(String userId, Long rid, Long iid, ReceiptItemDto receiptItemDto) {
+        Optional<ReceiptItem> receiptItemOpt = receiptItemRepository.findById(iid);
+        Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(receiptItemDto.getPlainFoodItemDto().get(0).getId());
+        if (!newFoodItemOpt.isPresent() || !receiptItemOpt.isPresent()) {
+            throw new RuntimeException("FoodItem id wrong.");
+        }
+        ReceiptItem receiptItem = receiptItemOpt.get();
+        FoodItem newFoodItem = newFoodItemOpt.get();
+        receiptItem.setRecognizedFoods(new ArrayList<>(Arrays.asList(newFoodItem)));
+        receiptItem.setStatus(ReceiptItemStatus.RECOGNIZED);
 
-            if (receiptItem.getId().equals(iid)) {
-                log.debug("ISIDE IF");
-
-                Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(receiptItemDto.getFoodItemDto().get(0).getId());
-                if (!newFoodItemOpt.isPresent()) {
-                    throw new RuntimeException("FoodItem id wrong.");
-                }
-                FoodItem newFoodItem = newFoodItemOpt.get();
-                receiptItem.setRecognizedFoods(new ArrayList<>(Arrays.asList(newFoodItem)));
-                receiptItem.setStatus(ReceiptItemStatus.RECOGNIZED);
-
-                log.debug("BEFORE SAVE");
-                log.debug("receiptItem: " + receiptItem.toString());
-
-                receiptItemRepository.save(receiptItem);
-
-                return dtoConverter.convertToDto(receiptItem);
-            }
-            return dtoConverter.convertToDto(receiptItem);
-        }).collect(Collectors.toList());
+        receiptItemRepository.save(receiptItem);
 
     }
 
@@ -168,11 +152,10 @@ public class ReceiptServiceImpl implements ReceiptService {
         Bucket bucket = StorageClient.getInstance().bucket();
         Blob receiptImage = bucket.get(filePath);
         try {
-            Long firstItemId = receiptItemRepository.findFirstIdByReceipt(id);
+            //Long firstItemId = receiptItemRepository.findFirstIdByReceipt(id);
             receiptRepository.deleteById(id);
-            receiptRepository.resetIdSeed(id - 1);
-            log.debug(firstItemId.toString());
-            receiptItemRepository.resetIdSeed(firstItemId-1);
+            receiptRepository.resetIdSeed();
+            receiptItemRepository.resetIdSeed();
             log.debug("GOING TO EXECUTE DELETEIMAGE");
             receiptImage.delete();
         } catch (NullPointerException e) {
@@ -181,6 +164,35 @@ public class ReceiptServiceImpl implements ReceiptService {
 
 
         return getReceipts(userId);
+    }
+
+    @Transactional
+    @Override
+    public List<ReceiptItemDto> addReceiptToFoodStock(String userId, Long receiptId) {
+        List<FoodStock> foodStockList = new ArrayList<>();
+        List<ReceiptItem> foodItemList = receiptItemRepository.findByReceipt(receiptId);
+        for(ReceiptItem receiptItem : foodItemList){
+            if(receiptItem.getStatus().equals(ReceiptItemStatus.RECOGNIZED)) {
+                FoodItem newFoodItem = receiptItem.getRecognizedFoods().get(0);
+                Optional<FoodStock> foodItemInStockOpt = foodStockRepository.findByUserIdAndFoodItemId(userId, newFoodItem.getId());
+                if(foodItemInStockOpt.isPresent()){
+                    FoodStock foodItemInStock = foodItemInStockOpt.get();
+                    Integer oldQuantity = foodItemInStock.getQuantity();
+                    //TODO - Implement Quantity (maybe)
+                    Integer newQuantity = 500;
+                    if(oldQuantity != null){
+                        foodItemInStock.setQuantity(oldQuantity + newQuantity);
+                    }
+                }
+                else{
+                    foodStockRepository.save(new FoodStock(userId, receiptItem.getRecognizedFoods().get(0), null));
+                }
+
+                receiptItem.setStatus(ReceiptItemStatus.INSTOCK);
+
+            }
+        }
+        return foodItemList.stream().map(dtoConverter::convertToDto).collect(Collectors.toList());
     }
 
 
@@ -226,7 +238,6 @@ public class ReceiptServiceImpl implements ReceiptService {
 
             boolean candidateInFoodItemName = false;
             for(String foodItemWord : foodItem.getName().toLowerCase().split(" ")){
-                log.debug("Food item word: " + foodItemWord);
                 if (referenceItemName.contains(foodItemWord)) {
                     candidateFoodItems.add(foodItem);
                     candidateInFoodItemName = true;

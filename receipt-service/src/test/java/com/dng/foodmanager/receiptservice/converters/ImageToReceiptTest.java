@@ -40,14 +40,14 @@ class ImageToReceiptTest {
     void imageToText() throws IOException, URISyntaxException {
         String receiptFile = "receipt6.jpg";
 
-        Image image = new Image(ResourceUtils.getFile("classpath:data/" + receiptFile));
+        Image image = new Image(ResourceUtils.getFile("classpath:data/receiptimages/" + receiptFile));
         image.rotate();
         image.setWidth(500);
         image.setOutputQuality(70);
         image.saveAs(new File("src/test/java/com/dng/foodmanager/receiptservice/converters/testImageJXT.jpg"));
 
         byte[] byteArray = image.getByteArray();
-        ArrayList<String> food_values = imageToReceipt.imageToText(image.getBufferedImage());
+        ArrayList<String> food_values = imageToReceipt.imageToText(byteArray);
         for (String element : food_values) {
             System.out.println(element);
         }

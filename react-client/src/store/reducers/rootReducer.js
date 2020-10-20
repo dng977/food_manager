@@ -5,6 +5,7 @@ import { reducer as formReducer } from 'redux-form';
 import { firebaseReducer } from 'react-redux-firebase';
 import receiptsReducer from './receiptsReducer';
 import foodReducer from './foodReducer';
+import feedbackReducer from './feedbackReducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   firebase: firebaseReducer,
   form: formReducer,
   receipts: receiptsReducer,
-  foodItems: foodReducer
+  food: foodReducer,
+  feedback: feedbackReducer
 
 });
 

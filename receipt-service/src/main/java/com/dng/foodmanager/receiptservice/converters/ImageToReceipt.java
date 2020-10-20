@@ -37,7 +37,7 @@ public class ImageToReceipt implements Converter<byte[], Receipt> {
         //byte[] bytes = ArrayUtils.toPrimitive(image);
         try {
             Tesseract tesseract = new Tesseract();
-            tesseract.setDatapath("src\\main\\resources\\data");
+            tesseract.setDatapath("src\\main\\resources\\data\\tesseract");
             tesseract.setLanguage("eng");
             //tesseract.setOcrEngineMode();
             BufferedImage bufferedImage = createImageFromBytes(imageBytes);
