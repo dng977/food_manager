@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -19,177 +16,184 @@ public class NutritionRDA extends BaseEntity{
     @OneToOne
     private LifeStageGroup lifeStageGroup;
 
-    @Column(name= "[energy_(kcal)]")
-    private int energy;
-
-    //----MacroNutrients----
+    //--MacroNutrients--
 
     @Column(name = "[water_(l)]")
-    private float water;// L/d
+    private Float water;// L/d
     @Column(name = "[carb_(g)]")
-    private int carbohydrates; // g/d
+    private Integer carbohydrates; // g/d
     @Column(name = "[fiber_(g)]")
-    private int fiber; // g/d
+    private Integer fiber; // g/d
     @Column(name = "[fat_(g)]")
-    private int fat; // g/d
+    private Integer fat; // g/d
     @Column(name = "[omega_6_(g)]") //linolenic
-    private float omega6; // g/d
+    private Float omega6; // g/d
     @Column(name = "[omega_3_(g)]") //alpha-linolenic
-    private float omega3; // g/d
+    private Float omega3; // g/d
     @Column(name = "[protein_(g)]")
-    private int protein; // g/d
+    private Integer protein; // g/d
 
-    //Acceptable Macronutrient Distribution Ranges:
+    //Acceptable MacroNutrient Distribution Ranges:
     @Column(name = "[fat_l_limit_(%)]")
-    private int fatLLimit; // %
+    private Integer fatLLimit; // %
     @Column(name = "[fat_u_limit_(%)]")
-    private int fatULimit; // %
+    private Integer fatULimit; // %
 
     @Column(name = "[omega6_l_limit_(%)]")
-    private int omega6LLimit; // %
+    private Integer omega6LLimit; // %
     @Column(name = "[omega6_limit_(%)]")
-    private int omega6ULimit; // %
+    private Integer omega6ULimit; // %
 
     @Column(name = "[omega_3_l_limit_(%)]")
-    private int omega3LLimit; // %
+    private Integer omega3LLimit; // %
     @Column(name = "[omega3_u_limit_(%)]")
-    private int omega3ULimit; // %
+    private Integer omega3ULimit; // %
 
     @Column(name = "[carb_l_limit_(%)]")
-    private int carbLLimit; // %
+    private Integer carbLLimit; // %
     @Column(name = "[carb_u_limit_(%)]")
-    private int carbULimit; // %
+    private Integer carbULimit; // %
 
     @Column(name = "[protein_l_limit_(%)]")
-    private int proteinLLimit; // %
+    private Integer proteinLLimit; // %
     @Column(name = "[protein_u_limit_(%)]")
-    private int proteinULimit; // %
+    private Integer proteinULimit; // %
+
+    //--Tolerable Upper Intakes Levels--
+    //----Vitamins----
+    @Column(name = "[vitamin_a_upper_(μg)]")
+    private Integer vitaminAUpper; // μg/d
+    @Column(name = "[vitamin_c_upper_(mg)]")
+    private Integer vitaminCUpper; // mg/d
+    @Column(name = "[vitamin_d_upper(μg)]")
+    private Integer vitaminDUpper; // μg/d
+    @Column(name = "[vitamin_e_upper_(mg)]")
+    private Integer vitaminEUpper; // mg/d
+    @Column(name = "[niacin_b3_upper_(mg)]")
+    private Integer niacinB3Upper; // mg/d
+    @Column(name = "[vitamin_b6_upper_(mg)]")
+    private Integer vitaminB6Upper; // mg/d
+    @Column(name = "[folate_b9_upper_(μg)]")
+    private Integer folateB9Upper; // μg/d
+    @Column(name = "[choline_upper(mg)]")
+    private Integer cholineUpper; // mg/d
+
+    //----Minerals----
+    @Column(name = "[calcium_upper_(mg)]")
+    private Integer calciumUpper; // mg/d
+    @Column(name = "[copper_upper_(μg)]")
+    private Integer copperUpper; // μg/d
+    @Column(name = "[fluoride_upper_(mg)]")
+    private Integer fluorideUpper; // mg/d
+    @Column(name = "[iodine_upper_(μg)]")
+    private Integer iodineUpper; // μg/d
+    @Column(name = "[iron_upper_(mg)]")
+    private Integer ironUpper; // mg/d
+    @Column(name = "[magnesium_upper_(mg)]")
+    private Integer magnesiumUpper; // mg/d
+    @Column(name = "[manganese_upper_(mg)]")
+    private Integer manganeseUpper; // mg/d
+    @Column(name = "[molybdenum_upper_(μg)]")
+    private Integer molybdenumUpper; // μg/d
+    @Column(name = "[phosphorus_upper_(mg)]")
+    private Integer phosphorusUpper; // mg/d
+    @Column(name = "[selenium_upper_(μg)]")
+    private Integer seleniumUpper; // μg/d
+    @Column(name = "[zinc_upper_(mg)]")
+    private Integer zincUpper; // mg/d
+    @Column(name = "[chloride_upper_(g)]")
+    private Float chlorideUpper; // g/d
+
+
 
     //----MicroNutrients----
 
     //Vitamins
     @Column(name = "[vitamin_a_(μg)]")
-    private int vitaminA; // μg/d
-    @Column(name = "[vitamin_a_upper_(μg)]")
-    private int vitaminAUpper; // μg/d
+    private Integer vitaminA; // μg/d
 
     @Column(name = "[vitamin_c_(mg)]")
-    private int vitaminC; // mg/d
-    @Column(name = "[vitamin_c_upper_(mg)]")
-    private int vitaminCUpper; // mg/d
+    private Integer vitaminC; // mg/d
 
     @Column(name = "[vitamin_d_(μg)]")
-    private int vitaminD; // μg/d
-    @Column(name = "[vitamin_d_upper(μg)]")
-    private int vitaminDUpper; // μg/d
+    private Integer vitaminD; // μg/d
 
     @Column(name = "[vitamin_e_(mg)]")
-    private int vitaminE; // mg/d
-    @Column(name = "[vitamin_e_upper_(mg)]")
-    private int vitaminEUpper; // mg/d
+    private Integer vitaminE; // mg/d
 
     @Column(name = "[vitamin_k_(μg)]")
-    private int vitaminK; // μg/d
+    private Integer vitaminK; // μg/d
     @Column(name = "[thiamin_b1_(mg)]")
-    private int thiaminB1; // mg/d
+    private Integer thiaminB1; // mg/d
     @Column(name = "[riboflavin_b2_(mg)]")
-    private int riboflavinB2; // mg/d
+    private Integer riboflavinB2; // mg/d
 
     @Column(name = "[niacin_b3_(mg)]")
-    private int niacinB3; // mg/d
-    @Column(name = "[niacin_b3_upper_(mg)]")
-    private int niacinB3Upper; // mg/d
+    private Integer niacinB3; // mg/d
 
     @Column(name = "[vitamin_b6_(mg)]")
-    private int vitaminB6; // mg/d
-    @Column(name = "[vitamin_b6_upper_(mg)]")
-    private int vitaminB6Upper; // mg/d
+    private Integer vitaminB6; // mg/d
 
     @Column(name = "[folate_b9_(μg)]")
-    private int folateB9; // μg/d
-    @Column(name = "[folate_b9_upper_(μg)]")
-    private int folateB9Upper; // μg/d
+    private Integer folateB9; // μg/d
 
     @Column(name = "[vitamin_b12_(μg)]")
-    private int vitaminB12; // μg/d
+    private Integer vitaminB12; // μg/d
     @Column(name = "[pantothenic_acid_b5_(mg)]")
-    private int pantothenicAcidB5; // mg/d
+    private Integer pantothenicAcidB5; // mg/d
     @Column(name = "[biotin_b7_(μg)]")
-    private int biotinB7; // μg/d
+    private Integer biotinB7; // μg/d
 
     @Column(name = "[choline_(mg)]")
-    private int choline; // mg/d
-    @Column(name = "[choline_upper(mg)]")
-    private int cholineUpper; // mg/d
+    private Integer choline; // mg/d
+
 
     //Minerals
     @Column(name = "[calcium_(mg)]")
-    private int calcium; // mg/d
-    @Column(name = "[calcium_upper_(mg)]")
-    private int calciumUpper; // mg/d
+    private Integer calcium; // mg/d
 
     @Column(name = "[chromium_(μg)]")
-    private int chromium; // μg/d
+    private Integer chromium; // μg/d
 
     @Column(name = "[copper_(μg)]")
-    private int copper; // μg/d
-    @Column(name = "[copper_upper_(μg)]")
-    private int copperUpper; // μg/d
+    private Integer copper; // μg/d
 
     @Column(name = "[fluoride_(mg)]")
-    private int fluoride; // mg/d
-    @Column(name = "[fluoride_upper_(mg)]")
-    private int fluorideUpper; // mg/d
+    private Integer fluoride; // mg/d
 
     @Column(name = "[iodine_(μg)]")
-    private int iodine; // μg/d
-    @Column(name = "[iodine_upper_(μg)]")
-    private int iodineUpper; // μg/d
+    private Integer iodine; // μg/d
 
     @Column(name = "[iron_(mg)]")
-    private int iron; // mg/d
-    @Column(name = "[iron_upper_(mg)]")
-    private int ironUpper; // mg/d
+    private Integer iron; // mg/d
 
     @Column(name = "[magnesium_(mg)]")
-    private int magnesium; // mg/d
-    @Column(name = "[magnesium_upper_(mg)]")
-    private int magnesiumUpper; // mg/d
+    private Integer magnesium; // mg/d
 
     @Column(name = "[manganese_(mg)]")
-    private int manganese; // mg/d
-    @Column(name = "[manganese_upper_(mg)]")
-    private int manganeseUpper; // mg/d
+    private Integer manganese; // mg/d
 
     @Column(name = "[molybdenum_(μg)]")
-    private int molybdenum; // μg/d
-    @Column(name = "[molybdenum_upper_(μg)]")
-    private int molybdenumUpper; // μg/d
+    private Integer molybdenum; // μg/d
 
     @Column(name = "[phosphorus_(mg)]")
-    private int phosphorus; // mg/d
-    @Column(name = "[phosphorus_upper_(mg)]")
-    private int phosphorusUpper; // mg/d
+    private Integer phosphorus; // mg/d
 
     @Column(name = "[selenium_(μg)]")
-    private int selenium; // μg/d
-    @Column(name = "[selenium_upper_(μg)]")
-    private int seleniumUpper; // μg/d
+    private Integer selenium; // μg/d
 
     @Column(name = "[zinc_(mg)]")
-    private int zinc; // mg/d
-    @Column(name = "[zinc_upper_(mg)]")
-    private int zincUpper; // mg/d
+    private Integer zinc; // mg/d
 
     @Column(name = "[potassium_(mg)]")
-    private int potassium; // mg/d
+    private Integer potassium; // mg/d
     @Column(name = "[sodium_(mg)]")
-    private int sodium; // mg/d
+    private Integer sodium; // mg/d
 
     @Column(name = "[chloride_(g)]")
-    private float chloride; // g/d
-    @Column(name = "[chloride_upper_(g)]")
-    private float chlorideUpper; // g/d
+    private Float chloride; // g/d
+
+
 
 
 

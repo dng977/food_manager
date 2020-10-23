@@ -101,4 +101,9 @@ public class FoodServiceImpl implements FoodService {
 
         return getFoodStock(userId);
     }
+
+    @Override
+    public void eat(String userId, Long foodItemId) {
+
+    }
 }

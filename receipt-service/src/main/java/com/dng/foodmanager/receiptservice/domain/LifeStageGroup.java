@@ -7,15 +7,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "life_stage_groups")
 @AllArgsConstructor
 @NoArgsConstructor
-public class LifeStageGroup extends BaseEntity {
+public class LifeStageGroup {
+    @Id
+    private String id;
     private int lowerLimit;
     private int upperLimit;
     private boolean pregnancy = false;

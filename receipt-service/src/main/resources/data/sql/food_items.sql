@@ -1,4 +1,7 @@
-DELETE FROM food_items 
+USE [fm_dev]
+GO
+
+DELETE FROM food_items
 DBCC CHECKIDENT ('food_items', RESEED, 1)
 --VEGETABLES
 INSERT INTO food_items (name,serving_size, countable, fk_nutrition_cooked, fk_nutrition_raw) VALUES ('cabbage', 100,1, 2893,2892)
