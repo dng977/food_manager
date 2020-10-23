@@ -1,3 +1,5 @@
+import api from '../../apis/v1';
+
 export const signIn = (credentials) => {
   return (dispatch, getState, {getFirebase}) => {
     const firebase = getFirebase();
@@ -33,6 +35,8 @@ export const signUp = (newUser) => {
       newUser.email, 
       newUser.password
     ).then(resp => {
+      // console.log("RESPONSE: ", resp);
+      sendUserDataToServer(resp.user.xa, {})
       return firestore.collection('users').doc(resp.user.uid).set({
         firstName: newUser.firstName,
         lastName: newUser.lastName,
@@ -44,4 +48,18 @@ export const signUp = (newUser) => {
       dispatch({ type: 'SIGNUP_ERROR', err});
     });
   }
+}
+
+const sendUserDataToServer = (token, userDto) => {
+    api.post('users',userDto,{
+      headers:{
+        'Authorization' : 'Bearer ' + token,
+        'Content-Type': 'application/json' 
+      }
+    }).then(response => {
+      console.log("Success: ", response);
+    })
+    .catch(error => {
+      console.log(error)
+    });
 }

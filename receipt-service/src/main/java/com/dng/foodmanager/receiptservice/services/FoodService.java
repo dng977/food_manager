@@ -23,4 +23,7 @@ public interface FoodService {
     void deleteFoodStockItems(String uid, List<Long> idsArray);
 
     List<FoodStockDto> addItemToFoodStock(String userId, AddFoodStockDto addFoodStockDto);
+
+    void eat(String userId, Long foodItemId);
+
 }

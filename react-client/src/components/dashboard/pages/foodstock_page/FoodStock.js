@@ -141,11 +141,11 @@ class FoodStock extends React.Component {
             </Grid>
               {this.state.tableNumber === 0 ? 
               <Grid item>
-              <FoodTable foodStockItems={this.props.foodStockItems} setRowsSelected={(rowsSelected) => {this.setState({rowsSelected})}}/>
+              <FoodTable editFoodStockItem={this.props.editFoodStockItem} foodStockItems={this.props.foodStockItems} indexToKey={this.props.indexToKey} setRowsSelected={(rowsSelected) => {this.setState({rowsSelected})}}/>
               </Grid>
               :
               <Grid item>
-              <Typography align="center" gutterBottom variant="h5">Meals table coming soon...</Typography>         
+              <Paper variant="outlined" ><Typography align="center" gutterBottom variant="h5">Meals table coming soon...</Typography>         </Paper>
 
               </Grid>
               }

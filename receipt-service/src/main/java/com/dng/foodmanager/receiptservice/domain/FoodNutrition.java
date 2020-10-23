@@ -152,6 +152,12 @@ public class FoodNutrition extends BaseEntity {
     @Column(name = "[FA_Poly_(g)]")
     private Float fatPoly;
 
+    @Column(name = "[omega_3_(g)]")
+    private Float omega_3;
+
+    @Column(name = "[omega_6_(g)]")
+    private Float omega_6;
+
     @Column(name = "[Cholestrl_(mg)]")
     private Integer cholesterol;
 

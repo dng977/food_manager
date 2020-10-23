@@ -12,7 +12,7 @@ import { Fraction } from 'fractional';
 import PropTypes from 'prop-types';
 import { EmptyTable, FoodLookUp } from "../shared_components";
 import MUIDataTable from 'mui-datatables';
-
+import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 const theme = createMuiTheme({
   overrides: {
     MuiDialogTitle: {
@@ -154,6 +154,7 @@ export class FoodTable extends React.Component {
     print: false,
     viewColumns: false,
     filter: false,
+    sort: false,
     rowsSelected: [],
     onRowSelectionChange: (currentRowsSelected, allRowsSelected, rowsSelected) => {
       console.log(rowsSelected)
@@ -167,6 +168,7 @@ export class FoodTable extends React.Component {
     },
 
   };
+
   columns = [
     {
       name: 'Food Name',
@@ -180,7 +182,15 @@ export class FoodTable extends React.Component {
             submitEdit={(newQuantity) => {
               this.props.editFoodStockItem(this.props.indexToKey[ rowIndex ], { quantity: newQuantity })
             }} />;
-        }
+        },
+        sortCompare: (order) =>{
+          return (obj1, obj2) => {
+            console.log(order);
+            let val1 = obj1.data.quantity;
+            let val2 = obj2.data.quantity;
+            return (val1 - val2) * (order === 'asc' ? 1 : -1);
+          }
+        } 
       }
     },
     {
@@ -188,6 +198,22 @@ export class FoodTable extends React.Component {
       options: {
         customBodyRender: (value) => {
           return <EatCell value={value} />;
+        }
+      }
+    },
+    {
+      name: 'Expiry Date',
+      options: {
+        customBodyRender: (value) => {
+          return <Typography variant="caption">-</Typography>;
+        }
+      }
+    },
+    {
+      name: 'Info',
+      options: {
+        customBodyRender: (value) => {
+          return <InfoRoundedIcon color="action"/>;
         }
       }
     }
@@ -213,7 +239,8 @@ export class FoodTable extends React.Component {
 
 FoodTable.propTypes = {
   setRowsSelected: PropTypes.func.isRequired,
-  foodStockItems: PropTypes.array.isRequired
+  foodStockItems: PropTypes.array.isRequired,
+  indexToKey: PropTypes.array.isRequired
 
 }
 
@@ -245,16 +272,13 @@ export const EatCell = ({ value }) => {
 }
 
 export const QuantityCell = React.memo(({ submitEdit, value }) => {
-  console.log("LOAD QUANTITY CELL", value)
   //console.log("before", currentQuantity);
   const [ currentQuantity, setCurrentQuantity ] = useState({ grams: value.quantity, units: new Fraction(value.quantity / value.servingSize) });
   const [ editMode, setEditMode ] = useState(false)
   const [ quantityInGrams, setQuantityInGrams ] = useState(currentQuantity.grams === null || currentQuantity.grams === 0 ? value.servingSize : currentQuantity.grams)
   const [ quantityUnits, setQuantityUnits ] = useState(currentQuantity.units.numerator === 0 ? new Fraction(1) : currentQuantity.units);
-  console.log("after", currentQuantity, quantityInGrams);
 
   useEffect(() => {
-    console.log("QUANTITY CELL USE EFFECT")
     if (value !== currentQuantity.grams) {
       let grams = value.quantity;
       let units = new Fraction(value.quantity / value.servingSize);
