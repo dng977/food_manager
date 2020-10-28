@@ -19,7 +19,10 @@ GO
 DROP TABLE [dbo].[food_items]
 GO
 
-DROP TABLE [dbo].[nutrition_state]
+DROP TABLE [dbo].[nutrition_rda]
+GO
+
+DROP TABLE [dbo].nutrition_state
 GO
 
 DROP TABLE [dbo].[users]

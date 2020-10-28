@@ -1,5 +1,5 @@
 import api from '../../apis/v1';
-import { MESSAGE, FETCH_FOOD_ITEMS, FETCH_FOODSTOCK, UPDATE_FOODSTOCK, DELETE_FOODSTOCK, LOADING, FOOD_LOADING, ADD_ITEM_FOODSTOCK, DIALOG_LOADING } from './types';
+import { MESSAGE, FETCH_FOOD_ITEMS, FETCH_FOODSTOCK, UPDATE_FOODSTOCK, DELETE_FOODSTOCK, LOADING, FOOD_LOADING, ADD_ITEM_FOODSTOCK, DIALOG_LOADING, EAT_ITEM_FOODSTOCK, FETCH_NUTRITION_STATE } from './types';
 
 export const fetchFoodItems = (foodName, rowIndex) => async (dispatch , getState, {getFirebase}) => {
   console.log("Fetch food items: ", foodName)
@@ -101,6 +101,31 @@ export const addFoodItem = (foodItemId, quantity, callBackOnSuccess) => async (d
     }).then(response => {
       dispatch({type: ADD_ITEM_FOODSTOCK, payload: response.data});
       callBackOnSuccess();
+    })
+    .catch(error => {dispatch({type: MESSAGE, payload: "ERROR: " + error.message})});
+
+  }).catch((error) => {
+    console.log(error);
+    dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
+
+  })
+};
+
+export const eatFoodStockItem = (eatFoodStockDto={foodItemId: null, quantity: null, cooked: false}) => async (dispatch , getState, {getFirebase}) => {
+  dispatch({type: LOADING});
+  //const eatFoodStockDto = {foodItemId: }
+  const firebase = getFirebase();
+  firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
+    api.post('foodstock/item/eat',eatFoodStockDto,{
+      headers:{
+        'Authorization' : 'Bearer ' + idToken 
+      }
+    }).then(response => {
+      dispatch({type: FETCH_NUTRITION_STATE, payload: response.data});
+
+      const oldFoodStockItem = getState().food.foodStock[eatFoodStockDto.foodItemId];
+      const newFoodStockItem = {...oldFoodStockItem, quantity:  oldFoodStockItem.quantity ? oldFoodStockItem.quantity - eatFoodStockDto.quantity : oldFoodStockItem.quantity};
+      dispatch({type: UPDATE_FOODSTOCK, payload: newFoodStockItem});
     })
     .catch(error => {dispatch({type: MESSAGE, payload: "ERROR: " + error.message})});
 

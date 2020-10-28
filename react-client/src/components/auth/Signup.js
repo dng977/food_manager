@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import {signUp} from '../../store/actions/authActions';
-import { Redirect } from 'react-router-dom';
+import { signUp } from '../../store/actions/authActions';
+import { Redirect, useHistory } from 'react-router-dom';
 import styles from './Signup.styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -17,21 +17,39 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {renderTextField, Copyright} from '../shared/renderMaterial';
-import {Link as RouterLink} from 'react-router-dom';
+import { renderTextField, Copyright } from '../shared/renderMaterial';
+import { Link as RouterLink } from 'react-router-dom';
+import { Snackbar } from '@material-ui/core';
 
 const useStyles = makeStyles(styles);
 
 const Signup = (props) => {
-  const onSubmit = formProps => {
-    props.signUp(formProps);
-  };
-
-  const {handleSubmit , auth, authError } = props;
+  const history = useHistory();
+  const { handleSubmit,auth,  error, submitFailed, submitSucceeded, clearAsyncError } = props;
+  useEffect(()=>{
+   console.log(error);
+    if(!error && !auth.isEmpty)
+      history.push('/bodydetails');
+  }, [error, submitSucceeded])
   const classes = useStyles();
-  if (!auth.isEmpty) return <Redirect to='/' /> 
+  console.log(error);
+  // if (!submitFailed && !error && !auth.isEmpty) return <Redirect to='/bodydetails' />
   return (
     <Container component="main" maxWidth="xs">
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={Boolean(error)}
+        onClose={(event, reason) => {
+          if (reason === "timeout") {
+            clearAsyncError("_error");
+          }
+        }}
+        autoHideDuration={2000}
+        message={error}
+      />
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -40,7 +58,7 @@ const Signup = (props) => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+        <form className={classes.form} onSubmit={handleSubmit(formProps => props.signUp(formProps))}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Field
@@ -128,13 +146,12 @@ const Signup = (props) => {
 }
 
 function mapStateToProps(state) {
-  return{
-    authError: state.auth.authError,
+  return {
     auth: state.firebase.auth
   }
 }
 
 export default compose(
-  connect(mapStateToProps, {signUp}),
+  connect(mapStateToProps, { signUp }),
   reduxForm({ form: 'signup' })
 )(Signup);

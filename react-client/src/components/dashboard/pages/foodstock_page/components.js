@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, createMuiTheme, ThemeProvider, } from '@material-ui/core';
+import { IconButton, Tooltip, Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, createMuiTheme, ThemeProvider, RadioGroup, FormControlLabel, Radio, } from '@material-ui/core';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
@@ -37,7 +37,7 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
   const [ selectedFood, setSelectedFood ] = useState('');
   const [ servingUnits, setServingUnits ] = React.useState(new Fraction(1, 1));
   const [ servingInGrams, setServingInGrams ] = React.useState(0)
-  const [ emptyInput, setEmptyInput] = useState(true);
+  const [ emptyInput, setEmptyInput ] = useState(true);
 
   useEffect(() => {
     if (selectedFood) {
@@ -45,7 +45,7 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
       setServingUnits(new Fraction(1, 1));
       setEmptyInput(false);
 
-    }else{
+    } else {
       setEmptyInput(true)
     }
 
@@ -183,21 +183,21 @@ export class FoodTable extends React.Component {
               this.props.editFoodStockItem(this.props.indexToKey[ rowIndex ], { quantity: newQuantity })
             }} />;
         },
-        sortCompare: (order) =>{
+        sortCompare: (order) => {
           return (obj1, obj2) => {
             console.log(order);
             let val1 = obj1.data.quantity;
             let val2 = obj2.data.quantity;
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           }
-        } 
+        }
       }
     },
     {
       name: '',
       options: {
         customBodyRender: (value) => {
-          return <EatCell value={value} />;
+          return <EatCell value={value} onEat={(eatFoodStockDto) => this.props.eatFoodStockItem(eatFoodStockDto)} />;
         }
       }
     },
@@ -213,7 +213,7 @@ export class FoodTable extends React.Component {
       name: 'Info',
       options: {
         customBodyRender: (value) => {
-          return <InfoRoundedIcon color="action"/>;
+          return <InfoRoundedIcon color="action" />;
         }
       }
     }
@@ -245,31 +245,64 @@ FoodTable.propTypes = {
 }
 
 
-export const EatCell = ({ value }) => {
+export const EatCell = ({ value, onEat }) => {
   const [ servingUnits, setServingUnits ] = React.useState(new Fraction(1, 1));
   const [ servingInGrams, setServingInGrams ] = React.useState(value.servingSize)
+  const [ condition, setCondition ] = React.useState(value.hasRaw ? "raw" : "cooked");
   //eval(servingUnits)
   const onPortionChange = (servingUnits, servingInGrams) => {
     setServingUnits(servingUnits)
     setServingInGrams(servingInGrams)
   }
-  const onEat = () => {
 
+  useEffect(()=>{
+    setServingUnits( new Fraction(1, 1));
+    setServingInGrams(value.servingSize);
+    setCondition(value.hasRaw ? "raw" : "cooked");
+  }, [value])
+  const handleOnEatClick = () => {
+    let eatFoodStockDto = {
+      foodItemId: value.foodItemId,
+      quantity: servingInGrams,
+      cooked: condition === "cooked"
+    }
+    onEat(eatFoodStockDto);
   }
 
   return (
     <Grid container alignItems="center" justify="flex-start" spacing={2}>
       <Grid item>
-        <Button variant="contained" color="primary" onClick={onEat}>
-          Eat
-      </Button>
+        <FoodPortionControl countable={value.countable} basePortion={value.servingSize} portionUnits={servingUnits} portionInGrams={servingInGrams} onPortionChange={onPortionChange} />
       </Grid>
       <Grid item>
-        <FoodPortionControl countable={value.countable} basePortion={value.servingSize} portionUnits={servingUnits} portionInGrams={servingInGrams} onPortionChange={onPortionChange} />
+        <RadioGroup aria-label="gender" name="condition" value={condition} onChange={event => { setCondition(event.target.value) }}>
+          <FormControlLabel value="raw" disabled={!value.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
+          <FormControlLabel value="cooked" disabled={!value.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
+        </RadioGroup>
+      </Grid>
+      <Grid item>{
+        value.quantity === 0 ?
+          <Tooltip title="No more quantiy left of this item.">
+            <Button variant="contained" disabled color="primary" onClick={handleOnEatClick}>
+              Eat
+            </Button>
+          </Tooltip>
+        :
+        <Button variant="contained" color="primary" onClick={handleOnEatClick}>
+        Eat
+      </Button>
+      }
+
       </Grid>
     </Grid>
   );
 }
+EatCell.propTypes = {
+  value: PropTypes.object,
+  onEat: PropTypes.func
+
+}
+
 
 export const QuantityCell = React.memo(({ submitEdit, value }) => {
   //console.log("before", currentQuantity);
@@ -279,7 +312,7 @@ export const QuantityCell = React.memo(({ submitEdit, value }) => {
   const [ quantityUnits, setQuantityUnits ] = useState(currentQuantity.units.numerator === 0 ? new Fraction(1) : currentQuantity.units);
 
   useEffect(() => {
-    if (value !== currentQuantity.grams) {
+    if (value.quantity !== currentQuantity.grams) {
       let grams = value.quantity;
       let units = new Fraction(value.quantity / value.servingSize);
       setCurrentQuantity({ grams, units });
@@ -352,9 +385,13 @@ const FoodPortionControl = ({ countable, basePortion, portionUnits, portionInGra
       if (portionUnits.numerator <= portionUnits.denominator) {
         let newUnits = portionUnits.multiply(new Fraction(2, 1));
         if (portionUnits.numerator < portionUnits.denominator && newUnits.numerator > newUnits.denominator) {
+          //Reset to base Portion
           newUnits = new Fraction(1)
+          onPortionChange(newUnits, basePortion)
         }
-        onPortionChange(newUnits, portionInGrams * 2)
+        else {
+          onPortionChange(newUnits, portionInGrams * 2)
+        }
       }
       else
         onPortionChange(portionUnits.add(new Fraction(1, 1)), portionInGrams + basePortion)

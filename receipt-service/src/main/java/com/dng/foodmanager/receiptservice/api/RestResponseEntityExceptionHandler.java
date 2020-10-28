@@ -41,6 +41,18 @@ public class RestResponseEntityExceptionHandler {
         return new ResponseEntity<Object>("Storage exception: " + exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
 
     }
+    @ExceptionHandler({NullPointerException.class})
+    public ResponseEntity<Object> handleNullPointerException(Exception exception, WebRequest request){
+        log.debug("NullPointerException..");
+        exception.printStackTrace();
+        return new ResponseEntity<Object>("Exception: " + exception.getMessage(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<Object> handleIllegalArgumentException(Exception exception, WebRequest request){
+        log.debug("IllegalArgumentException..");
+        return new ResponseEntity<Object>("Exception: " + exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
+
+    }
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> anyException(Exception exception, WebRequest request){
         log.debug("AnyException..");

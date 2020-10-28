@@ -185,7 +185,7 @@ public class ReceiptServiceImpl implements ReceiptService {
                     }
                 }
                 else{
-                    foodStockRepository.save(new FoodStock(userId, receiptItem.getRecognizedFoods().get(0), null));
+                    foodStockRepository.save(new FoodStock(userId,newFoodItem, null));
                 }
 
                 receiptItem.setStatus(ReceiptItemStatus.INSTOCK);

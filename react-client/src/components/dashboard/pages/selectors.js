@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 const getReceiptsData = (state) => state.receipts.receipts;
 const getReceiptItemsData = (state) => state.receipts.currentReceipt.receiptItems;
 const getFoodStockData = (state) => state.food.foodStock;
+const getActivityFactorsData = (state) => state.nutrition.activityFactors;
 
 export const getReceipts = createSelector(
   getReceiptsData,(data) => {
@@ -28,9 +29,18 @@ export const getFoodStock = createSelector(
   getFoodStockData,(data) => {
     const indexToKey = [];
     const foodStockData = Object.values(data).map((values, index) => {
-      indexToKey[index] = parseInt(values.id, 10);
-      return [ values.foodName, {countable: values.countable, quantity: values.quantity, servingSize: values.servingSize}, {servingSize: values.servingSize, countable: values.countable} ];
+      indexToKey[index] = parseInt(values.foodItemId, 10);
+      return [ values.foodName, {countable: values.countable, quantity: values.quantity, servingSize: values.servingSize}, {...values} ];
     })
     return [foodStockData, indexToKey];
   }
 )
+
+export const getActivityFactors = createSelector(
+  getActivityFactorsData,(data) => {
+    return data.map(item => {
+      return item.activityFactor + ": " + item.description;
+    })
+  }
+)
+

@@ -15,7 +15,7 @@ export default (state = initState, action) => {
     case MESSAGE:
       return { ...state, message: action.payload, loading: false }
     case CLEAR_MESSAGE:
-      return { ...state, message: ''}
+      return { ...state, message: '', loading: false}
     case START_BATCH_LOADING:
       return{...state, batchLoading: true}
     case STOP_BATCH_LOADING:

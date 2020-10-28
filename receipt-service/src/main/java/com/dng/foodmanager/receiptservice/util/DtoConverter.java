@@ -33,11 +33,13 @@ public class DtoConverter {
     public FoodStockDto convertToDto(FoodStock foodStock){
         FoodItem foodItem = foodStock.getFoodItem();
         return new FoodStockDto(
-                foodStock.getId(),
+                foodStock.getFoodItemId(),
                 foodItem.getName(),
                 foodStock.getQuantity(),
                 foodItem.getServingSize(),
-                foodItem.isCountable()
+                foodItem.isCountable(),
+                foodItem.getNutritionRaw().isPresent(),
+                foodItem.getNutritionCooked().isPresent()
         );
     }
     public FoodItemDto convertToDto(FoodItem foodItem) {

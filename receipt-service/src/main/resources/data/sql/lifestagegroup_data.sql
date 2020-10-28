@@ -2,6 +2,8 @@
 USE [fm_dev]
 GO
 
+DELETE FROM life_stage_groups
+
 --children
 INSERT INTO
     life_stage_groups (id, lower_limit, upper_limit, male, pregnancy, lactation, description)

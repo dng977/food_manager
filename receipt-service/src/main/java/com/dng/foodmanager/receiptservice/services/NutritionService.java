@@ -1,6 +1,10 @@
 package com.dng.foodmanager.receiptservice.services;
 
-public interface NutritionService {
+import com.dng.foodmanager.receiptservice.dto.ActivityDto;
 
+import java.util.List;
+
+public interface NutritionService {
+    List<ActivityDto> getActivities();
 
 }

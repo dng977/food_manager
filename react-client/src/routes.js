@@ -8,10 +8,11 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsIcon from '@material-ui/icons/Settings';
 import FoodStock from './components/dashboard/pages/foodstock_page/FoodStock';
-import Receipts from './components/dashboard/pages/Receipts';
-import NutritionState from './components/dashboard/pages/NutritionState';
-import Settings from './components/dashboard/pages/Settings';
+import Receipts from './components/dashboard/pages/receipts_page/Receipts';
+import NutritionState from './components/dashboard/pages/nutritionstate_page/NutritionState';
+import Settings from './components/dashboard/pages/settings_page/Settings';
 import ReceiptPage from './components/dashboard/pages/receipt_page/ReceiptPage';
+import BodyDetails from './components/auth/BodyDetails';
 
 
 const dashboardPath = '/dashboard';
@@ -52,6 +53,10 @@ const dashboardRoutes = [
 ]
 
 export const routes = [
+  {
+    path: '/bodydetails',
+    component: BodyDetails
+  },
   {
     path: '/',
     component: Welcome,

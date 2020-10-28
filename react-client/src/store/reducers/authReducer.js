@@ -8,7 +8,7 @@ const authReducer = (state = initState, action) => {
       console.log('login error');
       return {
         ...state,
-        authError: 'Login failed'
+        authError: action.err.code
       }
 
     case 'LOGIN_SUCCESS':
@@ -33,7 +33,7 @@ const authReducer = (state = initState, action) => {
       console.log('signup error: ', action.err.message)
       return {
         ...state,
-        authError: action.err.message
+        authError: action.err.code
       }
 
     default:

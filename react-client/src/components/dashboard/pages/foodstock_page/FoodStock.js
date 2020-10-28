@@ -3,10 +3,10 @@ import { Button, Grid, Dialog, DialogTitle, DialogActions, Tabs, Tab, Paper, Con
 import MUIDataTable, { } from 'mui-datatables';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { styles as muiStyles } from '../Receipts.styles';
+import { styles as muiStyles } from '../receipts_page/Receipts.styles';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addFoodItem,editFoodStockItem, deleteFoodStockItems } from '../../../../store/actions/foodActions';
+import {eatFoodStockItem, addFoodItem,editFoodStockItem, deleteFoodStockItems } from '../../../../store/actions/foodActions';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import { compose, bindActionCreators } from 'redux';
 import { CLEAR_MESSAGE } from '../../../../store/actions/types';
@@ -141,7 +141,7 @@ class FoodStock extends React.Component {
             </Grid>
               {this.state.tableNumber === 0 ? 
               <Grid item>
-              <FoodTable editFoodStockItem={this.props.editFoodStockItem} foodStockItems={this.props.foodStockItems} indexToKey={this.props.indexToKey} setRowsSelected={(rowsSelected) => {this.setState({rowsSelected})}}/>
+              <FoodTable eatFoodStockItem={this.props.eatFoodStockItem} editFoodStockItem={this.props.editFoodStockItem} foodStockItems={this.props.foodStockItems} indexToKey={this.props.indexToKey} setRowsSelected={(rowsSelected) => {this.setState({rowsSelected})}}/>
               </Grid>
               :
               <Grid item>
@@ -162,7 +162,7 @@ const mapDispatchToProps = dispatch => {
   return {
     clearMessage: () => dispatch({ type: CLEAR_MESSAGE }),
     dispatch,
-    ...bindActionCreators({ editFoodStockItem, deleteFoodStockItems, addFoodItem }, dispatch)
+    ...bindActionCreators({ editFoodStockItem, deleteFoodStockItems, addFoodItem, eatFoodStockItem }, dispatch)
   }
 }
 const mapStateToProps = (state) => {

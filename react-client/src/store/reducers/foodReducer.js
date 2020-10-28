@@ -14,9 +14,9 @@ export default (state = initState, action) => {
     case EDIT_RECEIPT_ITEM:
       return { ...state, searchedItems: _.omit(state.searchedItems, action.payload.rowIndex)}
     case FETCH_FOODSTOCK:
-      return {...state, foodStock: {...(_.mapKeys(action.payload, 'id'))}, searchedItems: {}}
+      return {...state, foodStock: {...(_.mapKeys(action.payload, 'foodItemId'))}, searchedItems: {}}
     case UPDATE_FOODSTOCK:
-      return {...state, foodStock: {...state.foodStock, [action.payload.id]: action.payload}}
+      return {...state, foodStock: {...state.foodStock, [action.payload.foodItemId]: action.payload}}
     case DELETE_FOODSTOCK:
       return {...state, foodStock: _.omit(state.foodStock, action.payload)};
     case DELETE_FOODSTOCK:
@@ -24,7 +24,7 @@ export default (state = initState, action) => {
     case FOOD_LOADING:
       return {...state, food_loading: true}
     case ADD_ITEM_FOODSTOCK:
-      return {...state, foodStock: {...(_.mapKeys(action.payload, 'id'))}, searchedItems: {}}
+      return {...state, foodStock: {...(_.mapKeys(action.payload, 'foodItemId'))}, searchedItems: {}}
     default:
       return state;
   }

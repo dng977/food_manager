@@ -4,7 +4,7 @@ import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import MUIDataTable, { } from 'mui-datatables';
 import PlaylistAddCheckRoundedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { styles as muiStyles } from '../Receipts.styles';
+import { styles as muiStyles } from '../receipts_page/Receipts.styles';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { addReceiptItemsToFoodStock, deleteReceipt, editReceiptItem, fetchReceiptImage, fetchReceiptItems } from '../../../../store/actions/receiptsActions';

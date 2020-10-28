@@ -1,9 +1,8 @@
 package com.dng.foodmanager.receiptservice.services;
 
 import com.dng.foodmanager.receiptservice.domain.FoodItem;
-import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;
-import com.dng.foodmanager.receiptservice.repositories.FoodStockRepository;
-import com.dng.foodmanager.receiptservice.repositories.ReceiptItemRepository;
+import com.dng.foodmanager.receiptservice.domain.NutritionState;
+import com.dng.foodmanager.receiptservice.repositories.*;
 import com.dng.foodmanager.receiptservice.util.DtoConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,10 @@ class FoodServiceImplTest {
     ReceiptItemRepository receiptItemRepository;
     @Mock
     FoodStockRepository foodStockRepository;
+    @Mock
+    NutritionStateRepository nutritionStateRepository;
+    @Mock
+    UserRepository userRepository;
 
     @Mock
     DtoConverter dtoConverter;
@@ -32,7 +35,7 @@ class FoodServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        foodItemService = new FoodServiceImpl(foodItemRepository,foodStockRepository,dtoConverter);
+        foodItemService = new FoodServiceImpl(foodItemRepository,foodStockRepository,dtoConverter, nutritionStateRepository, userRepository);
     }
 
     @Test
