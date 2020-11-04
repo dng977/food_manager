@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -12,6 +13,6 @@ import java.util.Date;
 @EqualsAndHashCode
 public class NutritionStateId implements Serializable {
     private String userId;
-    private Date date;
+    private LocalDate date;
 
 }

@@ -22,6 +22,6 @@ public interface FoodService {
 
     List<FoodStockDto> addItemToFoodStock(String userId, PlainFoodStockDto plainFoodStockDto);
 
-    NutritionState eat(String userId, EatFoodStockDto eatFoodStockDto);
+    NutritionStateDto eat(String userId, EatFoodStockDto eatFoodStockDto);
 
 }

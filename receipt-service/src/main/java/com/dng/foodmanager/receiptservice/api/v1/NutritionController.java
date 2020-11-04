@@ -3,6 +3,8 @@ package com.dng.foodmanager.receiptservice.api.v1;
 import com.dng.foodmanager.receiptservice.config.security.CustomPrincipal;
 import com.dng.foodmanager.receiptservice.dto.ActivityDto;
 import com.dng.foodmanager.receiptservice.dto.FoodStockDto;
+import com.dng.foodmanager.receiptservice.dto.NutritionRdaDto;
+import com.dng.foodmanager.receiptservice.dto.NutritionStateDto;
 import com.dng.foodmanager.receiptservice.services.FoodService;
 import com.dng.foodmanager.receiptservice.services.NutritionService;
 import lombok.RequiredArgsConstructor;
@@ -14,20 +16,35 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLDataException;
 import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping(path = com.dng.foodmanager.receiptservice.api.v1.NutritionController.BASE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class NutritionController {
 
-        public static final String BASE_URL = "/api/v1/nutrition";
-        private final NutritionService nutritionService;
+    public static final String BASE_URL = "/api/v1/nutrition";
+    private final NutritionService nutritionService;
 
 
-        @GetMapping("/activity")
-        @ResponseStatus(HttpStatus.OK)
-        public List<ActivityDto> getActivityFactors(){
+    @GetMapping("/activity")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ActivityDto> getActivityFactors() {
 
-            return nutritionService.getActivities();
-        }
+        return nutritionService.getActivities();
+    }
+
+    @GetMapping("/state")
+    @ResponseStatus(HttpStatus.OK)
+    public NutritionStateDto getNutritionState(@AuthenticationPrincipal CustomPrincipal principal) {
+
+        return nutritionService.getNutritionStateDto(principal.getUid());
+    }
+
+    @GetMapping("/rda")
+    @ResponseStatus(HttpStatus.OK)
+    public NutritionRdaDto getNutritionRda(@AuthenticationPrincipal CustomPrincipal principal) {
+
+        return nutritionService.getNutritionRda(principal.getUid());
+    }
 }

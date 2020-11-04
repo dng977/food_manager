@@ -1,9 +1,6 @@
 package com.dng.foodmanager.receiptservice.util;
 
-import com.dng.foodmanager.receiptservice.domain.FoodItem;
-import com.dng.foodmanager.receiptservice.domain.FoodStock;
-import com.dng.foodmanager.receiptservice.domain.Receipt;
-import com.dng.foodmanager.receiptservice.domain.ReceiptItem;
+import com.dng.foodmanager.receiptservice.domain.*;
 import com.dng.foodmanager.receiptservice.dto.*;
 import org.springframework.stereotype.Component;
 
@@ -50,4 +47,5 @@ public class DtoConverter {
     public PlainFoodItemDto convertToPlainDto(FoodItem foodItem) {
         return new PlainFoodItemDto(foodItem.getId(), foodItem.getName());
     }
+
 }

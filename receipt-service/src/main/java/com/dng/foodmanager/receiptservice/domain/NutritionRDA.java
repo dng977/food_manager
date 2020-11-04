@@ -1,5 +1,7 @@
 package com.dng.foodmanager.receiptservice.domain;
 
+import com.dng.foodmanager.receiptservice.dto.NutritionRdaDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,27 +13,33 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Table(name = "[nutrition_rda]")
-public class NutritionRDA extends BaseEntity{
+public class NutritionRDA {
+
+    @Id
+    private String lifeStageGroupId;
 
     @OneToOne
+    @MapsId
+    @JoinColumn(name = "lifeStageGroupId")
+    @JsonIgnore
     private LifeStageGroup lifeStageGroup;
 
     //--MacroNutrients--
 
     @Column(name = "[water_(l)]")
-    private Float water;// L/d
+    private Float water_g;// L/d
     @Column(name = "[carb_(g)]")
-    private Integer carbohydrates; // g/d
+    private Integer carbohydrates_g; // g/d
     @Column(name = "[fiber_(g)]")
-    private Integer fiber; // g/d
+    private Integer fiber_g; // g/d
     @Column(name = "[fat_(g)]")
-    private Integer fat; // g/d
+    private Integer fat_g; // g/d
     @Column(name = "[omega_6_(g)]") //linolenic
-    private Float omega6; // g/d
+    private Float omega6_g; // g/d
     @Column(name = "[omega_3_(g)]") //alpha-linolenic
-    private Float omega3; // g/d
+    private Float omega3_g; // g/d
     @Column(name = "[protein_(g)]")
-    private Integer protein; // g/d
+    private Integer protein_g; // g/d
     @Column(name = "[cholesterol_(mg)]")
     private Integer cholesterol_mg; // mg/d(CLVC)
 
@@ -81,48 +89,47 @@ public class NutritionRDA extends BaseEntity{
 
     //----Vitamins----
     @Column(name = "[vitamin_a_upper_(μg)]")
-    private Integer vitaminAUpper; // μg/d
+    private Integer vitaminAUpper_mcg; // μg/d
     @Column(name = "[vitamin_c_upper_(mg)]")
-    private Integer vitaminCUpper; // mg/d
+    private Integer vitaminCUpper_mg; // mg/d
     @Column(name = "[vitamin_d_upper(μg)]")
-    private Integer vitaminDUpper; // μg/d
+    private Integer vitaminDUpper_mcg; // μg/d
     @Column(name = "[vitamin_e_upper_(mg)]")
-    private Integer vitaminEUpper; // mg/d
+    private Integer vitaminEUpper_mg; // mg/d
     @Column(name = "[niacin_b3_upper_(mg)]")
-    private Integer niacinB3Upper; // mg/d
+    private Integer niacinB3Upper_mg; // mg/d
     @Column(name = "[vitamin_b6_upper_(mg)]")
-    private Integer vitaminB6Upper; // mg/d
+    private Integer vitaminB6Upper_mg; // mg/d
     @Column(name = "[folate_b9_upper_(μg)]")
-    private Integer folateB9Upper; // μg/d
+    private Integer folateB9Upper_mcg; // μg/d
     @Column(name = "[choline_upper(mg)]")
-    private Integer cholineUpper; // mg/d
+    private Integer cholineUpper_mg; // mg/d
 
     //----Minerals----
     @Column(name = "[calcium_upper_(mg)]")
-    private Integer calciumUpper; // mg/d
+    private Integer calciumUpper_mg; // mg/d
     @Column(name = "[copper_upper_(μg)]")
-    private Integer copperUpper; // μg/d
+    private Integer copperUpper_mcg; // μg/d
     @Column(name = "[fluoride_upper_(mg)]")
-    private Integer fluorideUpper; // mg/d
+    private Integer fluorideUpper_mg; // mg/d
     @Column(name = "[iodine_upper_(μg)]")
-    private Integer iodineUpper; // μg/d
+    private Integer iodineUpper_mcg; // μg/d
     @Column(name = "[iron_upper_(mg)]")
-    private Integer ironUpper; // mg/d
+    private Integer ironUpper_mg; // mg/d
     @Column(name = "[magnesium_upper_(mg)]")
-    private Integer magnesiumUpper; // mg/d
+    private Integer magnesiumUpper_mg; // mg/d
     @Column(name = "[manganese_upper_(mg)]")
-    private Integer manganeseUpper; // mg/d
+    private Integer manganeseUpper_mg; // mg/d
     @Column(name = "[molybdenum_upper_(μg)]")
-    private Integer molybdenumUpper; // μg/d
+    private Integer molybdenumUpper_mcg; // μg/d
     @Column(name = "[phosphorus_upper_(mg)]")
-    private Integer phosphorusUpper; // mg/d
+    private Integer phosphorusUpper_mg; // mg/d
     @Column(name = "[selenium_upper_(μg)]")
-    private Integer seleniumUpper; // μg/d
+    private Integer seleniumUpper_mcg; // μg/d
     @Column(name = "[zinc_upper_(mg)]")
-    private Integer zincUpper; // mg/d
+    private Integer zincUpper_mg; // mg/d
     @Column(name = "[chloride_upper_(g)]")
-    private Float chlorideUpper; // g/d
-
+    private Float chlorideUpper_g; // g/d
 
 
     //----MicroNutrients----
@@ -189,8 +196,83 @@ public class NutritionRDA extends BaseEntity{
     @Column(name = "[chloride_(g)]")
     private Float chloride_g; // g/d
 
-
-
+    public NutritionRdaDto convertToDto() {
+        return new NutritionRdaDto(
+                this.water_g,
+                this.carbohydrates_g,
+                this.fiber_g,
+                this.fat_g,
+                this.omega6_g,
+                this.omega3_g,
+                this.protein_g,
+                this.cholesterol_mg,
+                this.fatLLimit,
+                this.fatULimit,
+                this.monoFatLLimit,
+                this.monoFatULimit,
+                this.polyFatLLimit,
+                this.polyFatULimit,
+                this.omega6LLimit,
+                this.omega6ULimit,
+                this.omega3LLimit,
+                this.omega3ULimit,
+                this.carbLLimit,
+                this.carbULimit,
+                this.satFatULimit,
+                this.sugarULimit,
+                this.proteinLLimit,
+                this.proteinULimit,
+                this.vitaminAUpper_mcg,
+                this.vitaminCUpper_mg,
+                this.vitaminDUpper_mcg,
+                this.vitaminEUpper_mg,
+                this.niacinB3Upper_mg,
+                this.vitaminB6Upper_mg,
+                this.folateB9Upper_mcg,
+                this.cholineUpper_mg,
+                this.calciumUpper_mg,
+                this.copperUpper_mcg,
+                this.fluorideUpper_mg,
+                this.iodineUpper_mcg,
+                this.ironUpper_mg,
+                this.magnesiumUpper_mg,
+                this.manganeseUpper_mg,
+                this.molybdenumUpper_mcg,
+                this.phosphorusUpper_mg,
+                this.seleniumUpper_mcg,
+                this.zincUpper_mg,
+                this.chlorideUpper_g,
+                this.vitaminA_mcg,
+                this.vitaminC_mg,
+                this.vitaminD_mcg,
+                this.vitaminE_mg,
+                this.vitaminK_mcg,
+                this.thiaminB1_mg,
+                this.riboflavinB2_mg,
+                this.niacinB3_mg,
+                this.vitaminB6_mg,
+                this.folateB9_mcg,
+                this.vitaminB12_mcg,
+                this.pantothenicAcidB5_mg,
+                this.biotinB7_mcg,
+                this.choline_mg,
+                this.calcium_mg,
+                this.chromium_mcg,
+                this.copper_mcg,
+                this.fluoride_mg,
+                this.iodine_mcg,
+                this.iron_mg,
+                this.magnesium_mg,
+                this.manganese_mg,
+                this.molybdenum_mcg,
+                this.phosphorus_mg,
+                this.selenium_mcg,
+                this.zinc_mg,
+                this.potassium_mg,
+                this.sodium_mg,
+                this.chloride_g
+        );
+    }
 
 
 }

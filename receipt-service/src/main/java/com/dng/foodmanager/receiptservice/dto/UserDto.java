@@ -14,6 +14,9 @@ public class UserDto {
     private final Integer weightKg;//kg
     private final Integer heightCm;//cm
     private final Integer ageY;
-    private final boolean male;
+    private final Boolean male;
+//    private final boolean lactation;
+//    private final boolean pregnancy;
     private final ActivityFactor activityFactor;
+
 }

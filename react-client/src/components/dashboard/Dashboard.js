@@ -36,6 +36,7 @@ import { fetchFoodStock } from '../../store/actions/foodActions';
 import { getPathRegex } from '../../routes';
 import { CLEAR_MESSAGE, START_BATCH_LOADING, STOP_BATCH_LOADING } from '../../store/actions/types';
 import {startBatchLoading, stopBatchLoading} from '../../store/actions/feedbackActions';
+import {fetchNutritionRda,fetchNutritionState} from '../../store/actions/nutritionActions';
 
 class Dashboard extends React.Component {
 
@@ -47,7 +48,10 @@ class Dashboard extends React.Component {
     this.props.startBatchLoading();
     if (Object.keys(this.props.receipts).length === 0 || !this.props.location.pathname.match(/receipts\/\d/))
       this.props.fetchReceipts();
-    this.props.fetchFoodStock({actionsOnSuccess: [stopBatchLoading()]});
+      this.props.fetchNutritionRda();
+      this.props.fetchNutritionState();
+      this.props.fetchFoodStock({actionsOnSuccess: [stopBatchLoading()]});
+    
   }
 
 
@@ -263,7 +267,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return {
     clearError: () => dispatch({ type: CLEAR_MESSAGE }),
-    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, startBatchLoading}, dispatch)
+    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, startBatchLoading, fetchNutritionRda, fetchNutritionState}, dispatch)
   }
 }
 

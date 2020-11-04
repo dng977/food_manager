@@ -56,7 +56,7 @@ public class FoodStockController {
 
     @PostMapping("/item/eat")
     @ResponseStatus(HttpStatus.OK)
-    public NutritionState eatAnItem(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody EatFoodStockDto eatFoodStockDto) throws SQLDataException {
+    public NutritionStateDto eatAnItem(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody EatFoodStockDto eatFoodStockDto) throws SQLDataException {
 
         return foodService.eat(principal.getUid(), eatFoodStockDto);
     }

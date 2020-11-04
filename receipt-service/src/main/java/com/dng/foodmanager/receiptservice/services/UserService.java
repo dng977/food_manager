@@ -6,5 +6,5 @@ import com.dng.foodmanager.receiptservice.dto.UserDto;
 import java.util.List;
 
 public interface UserService {
-    void addNewUser(String uid, UserDto userDto);
+    void updateUser(String uid, UserDto userDto);
 }

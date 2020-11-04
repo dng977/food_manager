@@ -1,18 +1,19 @@
 package com.dng.foodmanager.receiptservice.dto;
 
 import com.dng.foodmanager.receiptservice.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
+@Setter
 @RequiredArgsConstructor
 public class NutritionStateDto {
-    private final Date date;
+    private final LocalDate date;
 
     //----Nutrition----
 
@@ -27,6 +28,14 @@ public class NutritionStateDto {
     //Minerals
     private Minerals minerals;
 
+    public NutritionStateDto(LocalDate date){
+        this.date = date;
+        this.energy = 0;
+        this.macroNutrients = new MacroNutrients();
+        this.vitamins = new Vitamins();
+        this.minerals = new Minerals();
+    }
+
     public void setMacroNutrients(float water_g, float carbohydrates_g, float fiber_g, float fat_g, float satFat_g, float monoFat_g, float polyFat_g, float omega6_g, float omega3_g, float protein_g, int cholesterol_mg, float sugar_g) {
         this.macroNutrients = new MacroNutrients(water_g, carbohydrates_g, fiber_g, fat_g, satFat_g, monoFat_g, polyFat_g, omega6_g, omega3_g, protein_g, cholesterol_mg, sugar_g);
     }
@@ -35,12 +44,14 @@ public class NutritionStateDto {
         this.vitamins = new Vitamins(vitaminA_mcg, vitaminC_mg, vitaminD_mcg, vitaminE_mg, vitaminK_mcg, thiaminB1_mg, riboflavinB2_mg, niacinB3_mg, vitaminB6_mg, folateB9_mcg, vitaminB12_mcg, pantothenicAcidB5_mg, biotinB7_mcg, choline_mg);
     }
 
-    public void setMinerals(float calcium_mg, float chromium_mcg, float copper_mcg, float fluoride_mg, float iodine_mcg, float iron_mg, float magnesium_mg, float manganese_mg, float molybdenum_mcg, float phosphorus_mg, float selenium_mcg, float zinc_mg, float potassium_mg, float sodium_mg, float chloride_g) {
+    public void setMinerals(int calcium_mg, float chromium_mcg, float copper_mcg, float fluoride_mg, float iodine_mcg, float iron_mg, float magnesium_mg, float manganese_mg, float molybdenum_mcg, int phosphorus_mg, float selenium_mcg, float zinc_mg, int potassium_mg, int sodium_mg, float chloride_g) {
         this.minerals = new Minerals(calcium_mg, chromium_mcg, copper_mcg, fluoride_mg, iodine_mcg, iron_mg, magnesium_mg, manganese_mg, molybdenum_mcg, phosphorus_mg, selenium_mcg, zinc_mg, potassium_mg, sodium_mg, chloride_g);
     }
 
     @AllArgsConstructor
-    private class MacroNutrients{
+    @NoArgsConstructor
+    @Getter
+    private class MacroNutrients {
 
         private float water_g;// L/d
 
@@ -68,7 +79,9 @@ public class NutritionStateDto {
     }
 
     @AllArgsConstructor
-    private class Vitamins{
+    @NoArgsConstructor
+    @Getter
+    private class Vitamins {
         private float vitaminA_mcg; // μg/d RAE
 
         private float vitaminC_mg; // mg/d
@@ -100,8 +113,10 @@ public class NutritionStateDto {
     }
 
     @AllArgsConstructor
-    private class Minerals{
-        private float calcium_mg; // mg/d
+    @NoArgsConstructor
+    @Getter
+    private class Minerals {
+        private int calcium_mg; // mg/d
 
         private float chromium_mcg; // μg/d -- NEED TO INCLUDE IN FOOD
 
@@ -119,15 +134,15 @@ public class NutritionStateDto {
 
         private float molybdenum_mcg; // μg/d -- NEED TO INCLUDE IN FOOD
 
-        private float phosphorus_mg; // mg/d
+        private int phosphorus_mg; // mg/d
 
         private float selenium_mcg; // μg/d
 
         private float zinc_mg; // mg/d
 
-        private float potassium_mg; // mg/d
+        private int potassium_mg; // mg/d
 
-        private float sodium_mg; // mg/d
+        private int sodium_mg; // mg/d
 
         private float chloride_g; // g/d -- NEED TO INCLUDE IN FOOp
 

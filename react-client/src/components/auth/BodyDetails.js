@@ -3,7 +3,7 @@ import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { fetchActivityFactors, sendUserData } from '../../store/actions/nutritionActions';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import styles from './BodyDetails.styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -32,11 +32,15 @@ const BodyDetails = (props) => {
   useEffect(() => {
     props.fetchActivityFactors();
   }, []);
+  
+  const history = useHistory();
 
   const classes = useStyles();
   const { handleSubmit, userDetails, sendUserData } = props;
 
-  if (props.userDetails) return <Redirect to='/' />;
+  if (props.userDetails) {
+    history.goBack(); //or redirect "/"  
+  };
   return (
     <Container component="main" maxWidth="xs" >
       <CssBaseline />
@@ -102,7 +106,7 @@ const BodyDetails = (props) => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Field name="sex" label="Sex" component={renderRadioGroup}>
+              <Field required name="male" label="Sex" component={renderRadioGroup}>
                 <FormControlLabel value="male" control={<Radio />} label="Male" />
                 <FormControlLabel value="female" control={<Radio />} label="Female" />
               </Field>
@@ -133,5 +137,5 @@ function mapStateToProps(state) {
 
 export default compose(
   connect(mapStateToProps, { fetchActivityFactors, sendUserData }),
-  reduxForm({ initialValues: { weightKg: "70", ageY: "20", heightCm: "170", sex: "male" }, form: 'bodyDetails' })
+  reduxForm({ initialValues: { weightKg: "70", ageY: "20", heightCm: "170", male: "male" }, form: 'bodyDetails' })
 )(BodyDetails);

@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void addNewUser(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody UserDto userDto) {
-        userService.addNewUser(principal.getUid(), userDto);
+    public void updateUser(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody UserDto userDto) {
+        userService.updateUser(principal.getUid(), userDto);
     }
 }

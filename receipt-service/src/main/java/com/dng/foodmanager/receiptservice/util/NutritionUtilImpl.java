@@ -41,6 +41,7 @@ public class NutritionUtilImpl implements NutritionUtil {
         return new ArrayList<>(activityList.values());
     }
 
+
     private float calculateBMR(boolean men, int weight, int height, int age) {
         return men
                 ? initConstantMen + (weightConstantMen * weight) + (heightConstantMen * height) - (ageConstantMen * age)

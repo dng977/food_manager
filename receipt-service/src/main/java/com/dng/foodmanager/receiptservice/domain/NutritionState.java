@@ -1,11 +1,13 @@
 package com.dng.foodmanager.receiptservice.domain;
 
+import com.dng.foodmanager.receiptservice.dto.NutritionStateDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -15,14 +17,14 @@ import java.util.Date;
 @Table(name = "[nutrition_state]")
 @IdClass(NutritionStateId.class)
 public class NutritionState {
-    
+
     @JsonIgnore
     @Id
     private String userId;
 
     @Id
-    @Temporal(TemporalType.DATE)
-    private Date date;
+//    @Temporal(TemporalType.DATE)
+    private LocalDate date;
 
     @JsonIgnore
     @ManyToOne
@@ -64,76 +66,80 @@ public class NutritionState {
     // ----MicroNutrients----
 
     //Vitamins
-    @Column(name = "[vitamin_a_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[vitamin_a_(μg)]", precision = 9, scale = 2)
     private BigDecimal vitaminA_mcg; // μg/d RAE
-    @Column(name = "[vitamin_c_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[vitamin_c_(mg)]", precision = 9, scale = 2)
     private BigDecimal vitaminC_mg; // mg/d
-    @Column(name = "[vitamin_d_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[vitamin_d_(μg)]", precision = 9, scale = 2)
     private BigDecimal vitaminD_mcg; // μg/d
-    @Column(name = "[vitamin_e_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[vitamin_e_(mg)]", precision = 9, scale = 2)
     private BigDecimal vitaminE_mg; // mg/d
-    @Column(name = "[vitamin_k_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[vitamin_k_(μg)]", precision = 9, scale = 2)
     private BigDecimal vitaminK_mcg; // μg/d
-    @Column(name = "[thiamin_b1_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[thiamin_b1_(mg)]", precision = 9, scale = 2)
     private BigDecimal thiaminB1_mg; // mg/d
-    @Column(name = "[riboflavin_b2_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[riboflavin_b2_(mg)]", precision = 9, scale = 2)
     private BigDecimal riboflavinB2_mg; // mg/d
-    @Column(name = "[niacin_b3_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[niacin_b3_(mg)]", precision = 9, scale = 2)
     private BigDecimal niacinB3_mg; // mg/d
-    @Column(name = "[vitamin_b6_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[vitamin_b6_(mg)]", precision = 9, scale = 2)
     private BigDecimal vitaminB6_mg; // mg/d
-    @Column(name = "[folate_b9_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[folate_b9_(μg)]", precision = 9, scale = 2)
     private BigDecimal folateB9_mcg; // μg/d
-    @Column(name = "[vitamin_b12_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[vitamin_b12_(μg)]", precision = 9, scale = 2)
     private BigDecimal vitaminB12_mcg; // μg/d
-    @Column(name = "[pantothenic_acid_b5_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[pantothenic_acid_b5_(mg)]", precision = 9, scale = 2)
     private BigDecimal pantothenicAcidB5_mg; // mg/d
-    @Column(name = "[biotin_b7_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[biotin_b7_(μg)]", precision = 9, scale = 2)
     private BigDecimal biotinB7_mcg; // μg/d -- NEED TO INCLUDE IN FOOD
-    @Column(name = "[choline_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[choline_(mg)]", precision = 9, scale = 2)
     private BigDecimal choline_mg; // mg/d
 
     //Minerals
-    @Column(name = "[calcium_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[calcium_(mg)]", precision = 9, scale = 2)
     private Integer calcium_mg; // mg/d
-    @Column(name = "[chromium_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[chromium_(μg)]", precision = 9, scale = 2)
     private BigDecimal chromium_mcg; // μg/d -- NEED TO INCLUDE IN FOOD
-    @Column(name = "[copper_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[copper_(μg)]", precision = 9, scale = 2)
     private BigDecimal copper_mcg; // μg/d
-    @Column(name = "[fluoride_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[fluoride_(mg)]", precision = 9, scale = 2)
     private BigDecimal fluoride_mg; // mg/d -- NEED TO INCLUDE IN FOOD
-    @Column(name = "[iodine_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[iodine_(μg)]", precision = 9, scale = 2)
     private BigDecimal iodine_mcg; // μg/d -- NEED TO INCLUDE IN FOOD
-    @Column(name = "[iron_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[iron_(mg)]", precision = 9, scale = 2)
     private BigDecimal iron_mg; // mg/d
-    @Column(name = "[magnesium_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[magnesium_(mg)]", precision = 9, scale = 2)
     private BigDecimal magnesium_mg; // mg/d
-    @Column(name = "[manganese_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[manganese_(mg)]", precision = 9, scale = 2)
     private BigDecimal manganese_mg; // mg/d
-    @Column(name = "[molybdenum_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[molybdenum_(μg)]", precision = 9, scale = 2)
     private BigDecimal molybdenum_mcg; // μg/d -- NEED TO INCLUDE IN FOOD
-    @Column(name = "[phosphorus_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[phosphorus_(mg)]", precision = 9, scale = 2)
     private Integer phosphorus_mg; // mg/d
-    @Column(name = "[selenium_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[selenium_(μg)]", precision = 9, scale = 2)
     private BigDecimal selenium_mcg; // μg/d
-    @Column(name = "[zinc_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[zinc_(mg)]", precision = 9, scale = 2)
     private BigDecimal zinc_mg; // mg/d
-    @Column(name = "[potassium_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[potassium_(mg)]", precision = 9, scale = 2)
     private Integer potassium_mg; // mg/d
-    @Column(name = "[sodium_(mg)]", precision = 9, scale = 2 )
+    @Column(name = "[sodium_(mg)]", precision = 9, scale = 2)
     private Integer sodium_mg; // mg/d
-    @Column(name = "[chloride_(g)]", precision = 9, scale = 2 )
+    @Column(name = "[chloride_(g)]", precision = 9, scale = 2)
     private BigDecimal chloride_g; // g/d -- NEED TO INCLUDE IN FOOD
 
 
     //OTHER - important but not essential
 
-    @Column(name = "[lycopene_(μg)]", precision = 9, scale = 2 )
+    @Column(name = "[lycopene_(μg)]", precision = 9, scale = 2)
     private BigDecimal lycopene_mcg;
-    @Column(name = "[Lut+Zea_ (μg)]", precision = 9, scale = 2 )
+    @Column(name = "[Lut+Zea_ (μg)]", precision = 9, scale = 2)
     private BigDecimal lutZea_mcg;
 
-    
+    public NutritionState(String userId, LocalDate date) {
+        this.userId = userId;
+        this.date = date;
+    }
+
     public void setNutrients(int amountEaten, boolean update, int energy_kcal, double water_g, double carbohydrates_g, double fiber_g, double fat_g, double satFat_g, double monoFat_g, double polyFat_g, double omega6_g, double omega3_g, double protein_g, int cholesterol_mg, double sugar_g, double vitaminA_mcg, double vitaminC_mg, double vitaminD_mcg, double vitaminE_mg, double vitaminK_mcg, double thiaminB1_mg, double riboflavinB2_mg, double niacinB3_mg, double vitaminB6_mg, double folateB9_mcg, double vitaminB12_mcg, double pantothenicAcidB5_mg, double biotinB7_mcg, double choline_mg, int calcium_mg, double chromium_mcg, double copper_mcg, double fluoride_mg, double iodine_mcg, double iron_mg, double magnesium_mg, double manganese_mg, double molybdenum_mcg, int phosphorus_mg, double selenium_mcg, double zinc_mg, int potassium_mg, int sodium_mg, double chloride_g, double lycopene_mcg, double lutZea_mcg) {
         if (update) {
             this.energy_kcal += amountEaten * energy_kcal / 100;
@@ -226,5 +232,64 @@ public class NutritionState {
             this.lycopene_mcg = BigDecimal.valueOf(amountEaten * lycopene_mcg / 100);
             this.lutZea_mcg = BigDecimal.valueOf(amountEaten * lutZea_mcg / 100);
         }
+    }
+
+    public NutritionStateDto convertToDto() {
+        NutritionStateDto nutritionStateDto = new NutritionStateDto(
+                this.date,
+                this.energy_kcal
+        );
+
+        nutritionStateDto.setMacroNutrients(
+                this.water_g.floatValue(),
+                this.carbohydrates_g.floatValue(),
+                this.fiber_g.floatValue(),
+                this.fat_g.floatValue(),
+                this.satFat_g.floatValue(),
+                this.monoFat_g.floatValue(),
+                this.polyFat_g.floatValue(),
+                this.omega6_g.floatValue(),
+                this.omega3_g.floatValue(),
+                this.protein_g.floatValue(),
+                this.cholesterol_mg,
+                this.sugar_g.floatValue()
+        );
+        nutritionStateDto.setMinerals(
+            this.calcium_mg,
+            this.chromium_mcg.floatValue(),
+            this.copper_mcg.floatValue(),
+            this.fluoride_mg.floatValue(),
+            this.iodine_mcg.floatValue(),
+            this.iron_mg.floatValue(),
+            this.magnesium_mg.floatValue(),
+            this.manganese_mg.floatValue(),
+            this.molybdenum_mcg.floatValue(),
+            this.phosphorus_mg,
+            this.selenium_mcg.floatValue(),
+            this.zinc_mg.floatValue(),
+            this.potassium_mg,
+            this.sodium_mg,
+            this.chloride_g.floatValue()
+        );
+
+        nutritionStateDto.setVitamins(
+                this.vitaminA_mcg.floatValue(),
+                this.vitaminC_mg.floatValue(),
+                this.vitaminD_mcg.floatValue(),
+                this.vitaminE_mg.floatValue(),
+                this.vitaminK_mcg.floatValue(),
+                this.thiaminB1_mg.floatValue(),
+                this.riboflavinB2_mg.floatValue(),
+                this.niacinB3_mg.floatValue(),
+                this.vitaminB6_mg.floatValue(),
+                this.folateB9_mcg.floatValue(),
+                this.vitaminB12_mcg.floatValue(),
+                this.pantothenicAcidB5_mg.floatValue(),
+                this.biotinB7_mcg.floatValue(),
+                this.choline_mg.floatValue()
+        );
+
+
+        return nutritionStateDto;
     }
 }

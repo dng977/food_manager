@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.SQLDataException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,7 +104,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Transactional
     @Override
-    public NutritionState eat(String userId, EatFoodStockDto eatFoodStockDto) throws NoSuchElementException{
+    public NutritionStateDto eat(String userId, EatFoodStockDto eatFoodStockDto) throws NoSuchElementException{
         //1) Remove eaten food
         FoodStock foodStockItem = foodStockRepository.findByUserIdAndFoodItemId(userId, eatFoodStockDto.getFoodItemId()).get();
 
@@ -131,15 +132,13 @@ public class FoodServiceImpl implements FoodService {
         NutritionState nutritionState;
         boolean update = false;
 
-        Optional<NutritionState> nutritionStateOptional = nutritionStateRepository.findByUserIdAndDate(userId, Calendar.getInstance().getTime()); //todays date - must be fixed to get users locale
+        Optional<NutritionState> nutritionStateOptional = nutritionStateRepository.findByUserIdAndDate(userId, LocalDate.now()); //todays date - must be fixed to get users locale
         //If there is already such state
         if (nutritionStateOptional.isPresent()) {
             update = true;
             nutritionState = nutritionStateOptional.get();
         } else {
-            nutritionState = new NutritionState();
-            nutritionState.setUserId(userId);
-            nutritionState.setDate(Calendar.getInstance().getTime());
+            nutritionState = new NutritionState(userId,LocalDate.now());
         }
 
         nutritionState.setNutrients(
@@ -193,7 +192,7 @@ public class FoodServiceImpl implements FoodService {
         nutritionStateRepository.save(nutritionState);
 
 
-        return nutritionState;
+        return nutritionState.convertToDto();
 
     }
 
