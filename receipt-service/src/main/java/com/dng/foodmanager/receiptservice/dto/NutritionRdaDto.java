@@ -60,7 +60,9 @@ public class NutritionRdaDto {
     
     private Integer carbULimit; // %
 
-    
+
+    private Integer satFatLLimit; // % (CLVC)
+
     private Integer satFatULimit; // % (CLVC)
 
     
@@ -187,7 +189,8 @@ public class NutritionRdaDto {
         this.userDetails = userDetails;
     }
 
-    public NutritionRdaDto(Float water_g, Integer carbohydrates_g, Integer fiber_g, Integer fat_g, Float omega6_g, Float omega3_g, Integer protein_g, Integer cholesterol_mg, Integer fatLLimit, Integer fatULimit, Integer monoFatLLimit, Integer monoFatULimit, Integer polyFatLLimit, Integer polyFatULimit, Float omega6LLimit, Float omega6ULimit, Float omega3LLimit, Float omega3ULimit, Integer carbLLimit, Integer carbULimit, Integer satFatULimit, Integer sugarULimit, Integer proteinLLimit, Integer proteinULimit, Integer vitaminAUpper_mcg, Integer vitaminCUpper_mg, Integer vitaminDUpper_mcg, Integer vitaminEUpper_mg, Integer niacinB3Upper_mg, Integer vitaminB6Upper_mg, Integer folateB9Upper_mcg, Integer cholineUpper_mg, Integer calciumUpper_mg, Integer copperUpper_mcg, Integer fluorideUpper_mg, Integer iodineUpper_mcg, Integer ironUpper_mg, Integer magnesiumUpper_mg, Integer manganeseUpper_mg, Integer molybdenumUpper_mcg, Integer phosphorusUpper_mg, Integer seleniumUpper_mcg, Integer zincUpper_mg, Float chlorideUpper_g, Integer vitaminA_mcg, Integer vitaminC_mg, Integer vitaminD_mcg, Integer vitaminE_mg, Integer vitaminK_mcg, Integer thiaminB1_mg, Integer riboflavinB2_mg, Integer niacinB3_mg, Integer vitaminB6_mg, Integer folateB9_mcg, Integer vitaminB12_mcg, Integer pantothenicAcidB5_mg, Integer biotinB7_mcg, Integer choline_mg, Integer calcium_mg, Integer chromium_mcg, Integer copper_mcg, Integer fluoride_mg, Integer iodine_mcg, Integer iron_mg, Integer magnesium_mg, Integer manganese_mg, Integer molybdenum_mcg, Integer phosphorus_mg, Integer selenium_mcg, Integer zinc_mg, Integer potassium_mg, Integer sodium_mg, Float chloride_g) {
+
+    public NutritionRdaDto(Float water_g, Integer carbohydrates_g, Integer fiber_g, Integer fat_g, Float omega6_g, Float omega3_g, Integer protein_g, Integer cholesterol_mg, Integer fatLLimit, Integer fatULimit, Integer monoFatLLimit, Integer monoFatULimit, Integer polyFatLLimit, Integer polyFatULimit, Float omega6LLimit, Float omega6ULimit, Float omega3LLimit, Float omega3ULimit, Integer carbLLimit, Integer carbULimit,Integer satFatLLimit, Integer satFatULimit, Integer sugarULimit, Integer proteinLLimit, Integer proteinULimit, Integer vitaminAUpper_mcg, Integer vitaminCUpper_mg, Integer vitaminDUpper_mcg, Integer vitaminEUpper_mg, Integer niacinB3Upper_mg, Integer vitaminB6Upper_mg, Integer folateB9Upper_mcg, Integer cholineUpper_mg, Integer calciumUpper_mg, Integer copperUpper_mcg, Integer fluorideUpper_mg, Integer iodineUpper_mcg, Integer ironUpper_mg, Integer magnesiumUpper_mg, Integer manganeseUpper_mg, Integer molybdenumUpper_mcg, Integer phosphorusUpper_mg, Integer seleniumUpper_mcg, Integer zincUpper_mg, Float chlorideUpper_g, Integer vitaminA_mcg, Integer vitaminC_mg, Integer vitaminD_mcg, Integer vitaminE_mg, Integer vitaminK_mcg, Integer thiaminB1_mg, Integer riboflavinB2_mg, Integer niacinB3_mg, Integer vitaminB6_mg, Integer folateB9_mcg, Integer vitaminB12_mcg, Integer pantothenicAcidB5_mg, Integer biotinB7_mcg, Integer choline_mg, Integer calcium_mg, Integer chromium_mcg, Integer copper_mcg, Integer fluoride_mg, Integer iodine_mcg, Integer iron_mg, Integer magnesium_mg, Integer manganese_mg, Integer molybdenum_mcg, Integer phosphorus_mg, Integer selenium_mcg, Integer zinc_mg, Integer potassium_mg, Integer sodium_mg, Float chloride_g) {
         this.water_g = water_g;
         this.carbohydrates_g = carbohydrates_g;
         this.fiber_g = fiber_g;
@@ -208,6 +211,7 @@ public class NutritionRdaDto {
         this.omega3ULimit = omega3ULimit;
         this.carbLLimit = carbLLimit;
         this.carbULimit = carbULimit;
+        this.satFatLLimit = satFatLLimit;
         this.satFatULimit = satFatULimit;
         this.sugarULimit = sugarULimit;
         this.proteinLLimit = proteinLLimit;

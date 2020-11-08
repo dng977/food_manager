@@ -67,3 +67,9 @@ INSERT INTO food_items (name,serving_size, serving_desc, countable, fk_nutrition
 VALUES 
   ('chicken breast', 100,'Roasted',1, 5064,null)
 , ('chicken thigh', 100,'Roasted',1, 5098,null)
+
+
+--OIL
+INSERT INTO food_items (name,serving_size, serving_desc, countable, fk_nutrition_cooked, fk_nutrition_raw) 
+VALUES
+	('sunflower oil', 1,'tbsp',0, 04060,04060)

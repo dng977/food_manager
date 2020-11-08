@@ -1,21 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
-import MacroPieChart from './components';
-import {Grid, Typography} from '@material-ui/core';
+import NutritionPieChart from './components';
+import { Grid, Typography } from '@material-ui/core';
 
 
 const NutritionState = (props) => {
   const history = useHistory();
-  if(!props.hasUserDetails){
+  if (!props.hasUserDetails) {
     history.push('/bodydetails');
   }
   return (
-    <Grid container alignContent="center" justify="center">
+    <Grid container direction="column" xl alignItems="center" spacing={2}>
       <Grid item>
-      <Typography variant="h5" align="center" >Macro Nutrients</Typography>
-      <br/>
-      <MacroPieChart nutritionRda={props.nutritionRda} macroState={props.nutritionState.macroNutrients}/>
+        <Typography variant="h5">Macro nutrients</Typography>
+
+      </Grid>
+      <Grid container item direction="row" alignItems="center" justify="space-evenly" >
+        <NutritionPieChart energy={props.nutritionState.energy} nutritionRda={props.nutritionRda} macroState={props.nutritionState.macroNutrients} />
 
       </Grid>
     </Grid>
@@ -30,4 +32,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {} )(NutritionState);
+export default connect(mapStateToProps, {})(NutritionState);

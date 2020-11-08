@@ -1,202 +1,357 @@
 import React, { PureComponent } from 'react';
 import {
-  PieChart, Pie, Sector, Cell, Label, LabelList,
+  PieChart, Pie, Sector, Cell, Label, LabelList, Legend,
 } from 'recharts';
 import { macronutrient, MacroNutrient } from './objects';
 import _ from 'lodash';
+import { Box, Divider, Grid, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, ListSubheader, makeStyles, Paper, Typography, withStyles } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { getFormInitialValues } from 'redux-form';
+import clsx from 'clsx';
+import StopRoundedIcon from '@material-ui/icons/StopRounded';
+import PieChartRoundedIcon from '@material-ui/icons/PieChartRounded';
 
-
-const COLORS = [ '#ffecb3', '#ffb300', '#c8e6c9', '#689f38', '#b3e5fc', '#0288d1', '#9e9e9e' ];
-const RADIAN = Math.PI / 180;
-// const renderCustomizedLabel = ({ startIndex, endIndex,
-//   cx, cy, midAngle, innerRadius, outerRadius, percent, index,
-// }) => {
-//   console.log(data.slice(startIndex, endIndex));
-//   console.log("inde", index);
-
-//   const radius = outerRadius;
-//   const x = cx + radius * Math.cos(-midAngle * RADIAN);
-//   const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-//   return (<>
-//     <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-//       {data.slice(startIndex, endIndex)[ index ].name}
-//     </text>
-//   </>
-//   );
-// };
-
-export default class MacroPieChart extends React.Component {
+export default class NutritionPieChart extends React.Component {
 
   constructor(props) {
     super(props);
     console.log("PROPS: ", props);
+    this.pieRadius = 160;
+    this.pieChartHeight = this.pieRadius * 2 + 30;
+    this.pieChartWidth = this.pieRadius * 2 + 50;
   }
+
   getData = () => {
     let data = [];
     if (!_.isEmpty(this.props.nutritionRda) && !_.isEmpty(this.props.macroState)) {
       console.log("not empty");
       data = [
-        new MacroNutrient(macronutrient.carb,
-          this.props.nutritionRda.carbLLimit, this.props.nutritionRda.carbULimit,
-          this.props.nutritionRda.carbohydrates_g, this.props.macroState.carbohydrates_g,
-          this.props.nutritionRda.energy_kcal,
-          { colorEaten: '#00695c', colorRemaining: '#e0f2f1' }, []
-        ),
-        new MacroNutrient(macronutrient.protein,
-          this.props.nutritionRda.proteinLLimit, this.props.nutritionRda.proteinULimit,
-          this.props.nutritionRda.protein_g, this.props.macroState.protein_g,
-          this.props.nutritionRda.energy_kcal,
-          { colorEaten: '#1565c0', colorRemaining: '#e3f2fd' }, []
-        ),
-        new MacroNutrient(macronutrient.fat,
-          this.props.nutritionRda.fatLLimit, this.props.nutritionRda.fatULimit,
-          this.props.nutritionRda.fat_g, this.props.macroState.fat_g,
-          this.props.nutritionRda.energy_kcal,
-          { colorEaten: '#0288d1', colorRemaining: '#b3e5fc' }, [
-          new MacroNutrient(macronutrient.monoFat,
-            this.props.nutritionRda.monoFatLLimit, this.props.nutritionRda.monoFatULimit,
-            this.props.nutritionRda.monoFat_g, this.props.macroState.monoFat_g,
-            this.props.nutritionRda.energy_kcal,
-            { colorEaten: '#6a1b9a', colorRemaining: '#f3e5f5' }, []
-          ),
-          new MacroNutrient(macronutrient.polyFat,
-            this.props.nutritionRda.polyFatLLimit, this.props.nutritionRda.polyFatULimit,
-            this.props.nutritionRda.polyFat_g, this.props.macroState.polyFat_g,
-            this.props.nutritionRda.energy_kcal,
-            { colorEaten: '#4527a0', colorRemaining: '#ede7f6' }, []
-          ),
-          new MacroNutrient(macronutrient.satFat,
-            this.props.nutritionRda.satFatLLimit, this.props.nutritionRda.satFatULimit,
-            this.props.nutritionRda.satFat_g, this.props.macroState.satFat_g,
-            this.props.nutritionRda.energy_kcal,
-            { colorEaten: '#283593', colorRemaining: '#e8eaf6' }, []
-          )
-        ],
-
-        ),
+        new MacroNutrient({
+          label: macronutrient.carb,
+          lowerLimit: this.props.nutritionRda.carbLLimit,
+          upperLimit: this.props.nutritionRda.carbULimit,
+          // gramsRDA: this.props.nutritionRda.carbohydrates_g,
+          gramsEaten: this.props.macroState.carbohydrates_g,
+          maxEnergy: this.props.nutritionRda.energy_kcal,
+          color: { colorEaten: '#00695c', colorRemaining: '#e0f2f1' },
+        }),
+        new MacroNutrient({
+          label: macronutrient.protein,
+          lowerLimit: this.props.nutritionRda.proteinLLimit,
+          upperLimit: this.props.nutritionRda.proteinULimit,
+          // gramsRDA: this.props.nutritionRda.protein_g,
+          gramsEaten: this.props.macroState.protein_g,
+          maxEnergy: this.props.nutritionRda.energy_kcal,
+          color: { colorEaten: '#1565c0', colorRemaining: '#e3f2fd' },
+        }),
+        new MacroNutrient({
+          render: false,
+          label: macronutrient.fat,
+          lowerLimit: this.props.nutritionRda.fatLLimit,
+          upperLimit: this.props.nutritionRda.fatULimit,
+          gramsEaten: this.props.macroState.fat_g,
+          maxEnergy: this.props.nutritionRda.energy_kcal,
+          subNutrients: [
+            new MacroNutrient({
+              label: macronutrient.monoFat,
+              lowerLimit: this.props.nutritionRda.monoFatLLimit,
+              upperLimit: this.props.nutritionRda.monoFatULimit,
+              gramsEaten: this.props.macroState.monoFat_g,
+              maxEnergy: this.props.nutritionRda.energy_kcal,
+              color: { colorEaten: '#6a1b9a', colorRemaining: '#f3e5f5' },
+            }),
+            new MacroNutrient({
+              label: macronutrient.polyFat,
+              lowerLimit: this.props.nutritionRda.polyFatLLimit,
+              upperLimit: this.props.nutritionRda.polyFatULimit,
+              gramsEaten: this.props.macroState.polyFat_g,
+              maxEnergy: this.props.nutritionRda.energy_kcal,
+              color: { colorEaten: '#4527a0', colorRemaining: '#ede7f6' },
+              subNutrients: [
+                new MacroNutrient({
+                  render: false,
+                  label: macronutrient.omega3,
+                  lowerLimit: this.props.nutritionRda.omega3LLimit,
+                  upperLimit: this.props.nutritionRda.omega3ULimit,
+                  gramsRDA: this.props.nutritionRda.omega3_g,
+                  gramsEaten: this.props.macroState.omega3_g,
+                  maxEnergy: this.props.nutritionRda.energy_kcal,
+                }),
+                new MacroNutrient({
+                  render: false,
+                  label: macronutrient.omega6,
+                  lowerLimit: this.props.nutritionRda.omega6LLimit,
+                  upperLimit: this.props.nutritionRda.omega6ULimit,
+                  gramsRDA: this.props.nutritionRda.omega6_g,
+                  gramsEaten: this.props.macroState.omega6_g,
+                  maxEnergy: this.props.nutritionRda.energy_kcal,
+                }),
+              ]
+            }),
+            new MacroNutrient({
+              label: macronutrient.satFat,
+              lowerLimit: this.props.nutritionRda.satFatLLimit,
+              upperLimit: this.props.nutritionRda.satFatULimit,
+              gramsEaten: this.props.macroState.satFat_g,
+              maxEnergy: this.props.nutritionRda.energy_kcal,
+              color: { colorEaten: '#283593', colorRemaining: '#e8eaf6' },
+            }),
+          ],
+        }),
+        new MacroNutrient({
+          render: false,
+          label: macronutrient.water,
+          gramsRDA: this.props.nutritionRda.water_g,
+          gramsEaten: this.props.macroState.water_g,
+        }),
+        new MacroNutrient({
+          render: false,
+          label: macronutrient.fiber,
+          gramsRDA: this.props.nutritionRda.fiber_g,
+          gramsEaten: this.props.macroState.fiber_g,
+        }),
       ];
-
-      this.calculateAngles(data, 0, 0);
     }
     return data;
   }
 
+  flatMapRenderData = data => {
+    return data.flatMap((nutrient) => {
+      let list = [];
+      if (nutrient.render) {
+        list.push(nutrient);
+      }
+      if (nutrient.subNutrients.length) {
+        let subnuts = (this.flatMapRenderData(nutrient.subNutrients));
+        console.log(subnuts);
+        list = list.concat(subnuts);
+      }
+      console.log("list: ", list)
+      return list;
+    })
+  }
+  getDataToRender = (data) => {
+    let dataToRender = this.flatMapRenderData(data);
+    console.log("datatoRender: ", dataToRender);
+    this.calculateAngles(dataToRender, 0, -3);
+    return dataToRender;
+  }
 
+
+  calculateSecondSectorCals = (data) => {
+    let percentageMinAmountSectors = 0;
+    let secondSectorCalsEaten = 0;
+    data.forEach(nutrient => {
+      percentageMinAmountSectors += nutrient.minAmountPercentage;
+      secondSectorCalsEaten += nutrient.calsEatenBySector[ 1 ];
+    });
+    let secondSectorTotalCals = (1 - percentageMinAmountSectors) * this.props.nutritionRda.energy_kcal;
+    console.log("SS cals eaten vs total cals: ", secondSectorCalsEaten, secondSectorTotalCals)
+    return [ secondSectorCalsEaten, secondSectorTotalCals ];
+  }
+
+
+  calculateAngles = (data, start, start2, energyConsumed) => {
+    const [ secondSectorCalsEaten, secondSectorTotalCals ] = this.calculateSecondSectorCals(data);
+    //CHECK IF SECOND SECTOR IS FULL
+    if (secondSectorCalsEaten > secondSectorTotalCals) {
+      data.forEach((nutrient) => {
+        if (nutrient.calsEatenBySector[ 1 ] > 0) {
+          console.log("oldPercentage:", nutrient.freeSectorPercentage);
+          nutrient.freeSectorPercentage = ((nutrient.calsEatenBySector[ 1 ] / secondSectorCalsEaten) * secondSectorTotalCals) / this.props.nutritionRda.energy_kcal;
+          console.log("new Percentage:", nutrient.freeSectorPercentage);
+
+        }
+      })
+
+    }
+
+    const angleReducer = (acc, cur, idx) => {
+
+      let paddingAngle = idx === data.length - 1 ? 3 : 2;
+      console.log(idx, paddingAngle);
+      //CALCULATE ANGLES
+      cur.startAngle[ 0 ] = acc[ 0 ];
+      cur.setEndAngle(0, paddingAngle);
+      console.log("acc0: ", acc[ 0 ])
+
+      if (cur.calsEatenBySector[ 1 ] > 0) {
+        console.log("acc1: ", acc[ 1 ])
+        cur.startAngle[ 1 ] = acc[ 1 ];
+        cur.setEndAngle(1, paddingAngle);
+
+      }
+
+      return [ cur.minAmountPercentage * 360 + acc[ 0 ], acc[ 1 ] - cur.freeSectorPercentage * 360 ];
+    };
+
+    data.reduce(angleReducer, [ start, start2 ]);
+
+  }
 
   renderCells = (data) => {
     return data.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)
   }
 
   renderPie = (object) => {
-    let pies = [
+    let minimumCalsExceeded = object.calsEatenBySector[ 1 ] > 0;
+    let pie1 =
       <Pie
         key={`pie-${object.label}`}
-        data={[ { name: object.label, value: object.calsRemaining[ 0 ] }, { name: object.label, value: object.calsEaten[ 0 ] } ]}
+        data={[ { name: `${object.label}-rem`, value: object.calsRemainingBySector[ 0 ] }, { name: object.label, value: object.calsEatenBySector[ 0 ] } ]}
         cx='50%'
         cy='50%'
         labelLine={false}
-        // label="name"
-        // label={<renderCustomizedLabel startIndex={0} endIndex={2}/>}
-        outerRadius={200}
+        stroke={5}
+        // label={({index, value}) => {
+        //   if(index===0 && value > 0 ) return `daily goal`;
+        // }}
+        // outerRadius={this.pieRadius}
         dataKey="value"
         animationBegin={300}
         animationDuration={1000}
         startAngle={object.startAngle[ 0 ]}
-        endAngle={object.getEndAngle1()}
+        endAngle={object.endAngle[ 0 ]}
       >
-        <Label position="outside" key='label'>{object.label}</Label>
+        {/* style={{textDecoration: minimumCalsExceeded ? 'line-through': 'none'}} */}
+        <Label offset={10} position="outside" key='label' fill={object.colorEaten}>
+          {!minimumCalsExceeded ?
+            `${parseInt(object.gramsEaten, 10)} / ${parseInt(object.minGrams)} g`
+            :
+            `${parseInt(object.minGrams, 10)}g  ✓`
+          }
+        </Label>
+
         <Cell key={`cell-${object.label}`} fill={object.colorRemaining} />
-        <Cell key={`cell-${object.label + 1}`} fill={object.colorEaten} />
+        <Cell key={`cell-${object.label}2`} fill={object.colorEaten} stroke="grey" strokeWidth="1" />
       </Pie>
-    ];
-    if (object.calsEaten[ 1 ] > 0) {
-      pies[ 1 ] = (
+      ;
+    if (minimumCalsExceeded) {
+      let pie2 = (
         <Pie
-          key={`pie-${object.label}`}
-          data={[ { name: object.label, value: object.calsRemaining[ 1 ] }, { name: object.label, value: object.calsEaten[ 1 ] } ]}
+          key={`pie-${object.label}-2`}
+          data={[ { name: object.label, value: object.calsEatenBySector[ 1 ] } ]}
           cx='50%'
           cy='50%'
           labelLine={false}
           // label="name"
           // label={<renderCustomizedLabel startIndex={0} endIndex={2}/>}
-          outerRadius={200}
+          // outerRadius={this.pieRadius}
           dataKey="value"
           animationBegin={300}
           animationDuration={1000}
           startAngle={object.startAngle[ 1 ]}
-          endAngle={object.getEndAngle2()}
+          endAngle={object.endAngle[ 1 ]}
         >
-          <Label position="outside" key='label'>{object.label}</Label>
-          <Cell key={`cell-${object.label}`} fill={object.colorRemaining} />
-          <Cell key={`cell-${object.label + 1}`} fill={object.colorEaten} />
+          {/* <Label position="outside" key='label' fill={object.colorEaten}>{object.label} 2</Label> */}
+          {/* <Cell key={`cell-${object.label}-2`} fill={object.colorRemaining} /> */}
+          <Cell key={`cell-${object.label}2-2`} fill={object.colorEaten} stroke="grey" strokeWidth="1" />
         </Pie>
       );
+      return [ pie1, pie2 ];
     }
 
-    return pies;
+    return pie1;
   }
 
-  calculateAngles = (data, start, start2) => {
-
-    const angleReducer = (acc, cur, idx) => {
-
-      //CALCULATE ANGLES
-      data[ idx ].startAngle[ 0 ] = acc[ 0 ];
-      if (data[ idx ].calsRemaining[0] < 0) {
-        data[ idx ].startAngle[ 1 ] = acc[ 1 ];
-      }
-      //CHECK FOR SUBNUTRIENTS
-      if (data[ idx ].subNutrients.length) {
-        this.calculateAngles(data[ idx ].subNutrients, acc[ 0 ], acc[ 1 ]);
-      }
-
-      return [ data[ idx ].minAmountPercentage[0] * 360 + acc[ 0 ], - data[ idx ].minAmountPercentage[1] * 360 + acc[ 1 ] ];
-    };
-
-    data.reduce(angleReducer, [ start, start2 ]);
-  }
-
-  renderPies = () => {
-    let data = this.getData();
-    console.log("RENDER PIES", data);
-
+  renderPies = (data) => {
     if (data)
-      return data.flatMap((object, index) => {
-
-        //subnutrients
-        if (object.subNutrients.length) {
-          return object.subNutrients.map((subObject, subIndex) => {
-            return this.renderPie(subObject);
-          });
-        } else {
-          return this.renderPie(object);
-        }
-
-      });
+      return data.map(object => this.renderPie(object));
   }
-  // const data = [
-  //   { name: 'Carbohydrates', value: 30, color: '#ffecb3' },
-  //   { name: 'Carbohydrates', value: 5, color: '#ffb300' },
 
-  //   { name: 'Protein', value: 10, color: '#c8e6c9' },
-  //   { name: 'Protein', value: 5, color: '#689f38' },
+  renderLegendItem = (object) => {
+    return (
+      <>
+        <ListItem key={object.label}>
+          {object.render ?
+            <PieChartRoundedIcon style={{ color: object.colorEaten }} />
+            : null}
+          <ListItemText>
+            <Typography style={{ color: object.colorEaten, fontWeight: "bold" }} variant="caption">{`${object.subNutrients.length ? "Total" : ""} ${object.label} : `}</Typography>
 
-  //   { name: 'Fat', value: 20, color: '#b3e5fc' },
-  //   { name: 'Fat', value: 5, color: '#0288d1' },
+            <Typography style={{ color: object.maxGrams && object.gramsEaten > object.maxGrams ? "red" : "none", fontWeight: "bold" }} variant="caption">
+              {`${Number(object.gramsEaten).toFixed(2)}g  `}</Typography>
+            {/* {object.maxGrams ?  */}
+            <Typography style={{ color: object.maxGrams && object.gramsEaten > object.maxGrams ? "red" : "none" }} variant="caption">
+              {!object.maxGrams || object.gramsEaten < object.minGrams ?
+                ` / ${Number(object.minGrams).toFixed(2)} g (min)`
+                : object.gramsEaten < object.maxGrams ?
+                  ` < ${Number(object.maxGrams).toFixed(2)} g (max) `
+                  : "! "
 
-  //   { name: 'To be filled', value: 25, color: '#9e9e9e' },
+              }
+            </Typography>
+            {/* :
+            <Typography variant="caption">
+              {` / ${Number(object.minGrams).toFixed(2)} g (average)`}
+          </Typography>
+            } */}
+          </ListItemText>
+        </ListItem>
+        {
+          object.subNutrients.length ?
+            <>
+              <Divider />
+              <ListItem key={object.label + "2"}>
+                {this.renderLegend(object.subNutrients)}</ListItem>
+            </> : null
+        }
+      </>
+    );
 
-  // ];
+  }
+
+  renderLegend = (data) => {
+    return (
+      <List dense >
+        {/* {init ? <ListSubheader>
+            {"Details"}
+          </ListSubheader> : null} */}
+        {data.map(object => {
+          return (
+            object.subNutrients.length ?
+              <Paper children={this.renderLegendItem(object)} style={{ background: "white", borderStyle: "ridge" }} />
+              :
+              this.renderLegendItem(object)
+          );
+        })}
+      </List>
+    );
+  }
+
 
   render() {
-    let rp = this.renderPies();
-    console.log(rp);
-    return (
-      <PieChart width={400} height={400}>
-        {this.renderPies()}
+    let data = this.getData();
+    console.log("DATA: ", data);
+    let dataToRener = this.getDataToRender(data);
+    console.log("DATA to RENDER: ", dataToRener);
 
-      </PieChart>
+    let rp = this.renderPies(dataToRener);
+    console.log(rp);
+    return (<>
+         {/* <Grid container direction="row" alignItems="flex-start" justify="space-between" > */}
+          <Grid item>
+            <PieChart outerRadius={this.pieRadius} width={this.pieChartWidth} height={this.pieChartHeight} >
+              {rp}
+            </PieChart>
+            <Typography variant="subtitle1" align="center">{`Energy consumed: ${this.props.energy} / ${this.props.nutritionRda.energy_kcal} kcal (maximum) `}</Typography>
+          </Grid>
+          <Grid item>
+            <Paper style={{ background: "white", borderStyle: "solid" }}>{this.renderLegend(data)}</Paper>
+
+          </Grid>
+         {/* </Grid> */}
+        </>
     );
+  }
+}
+
+export class NutritionBarChart extends React.PureComponent {
+  constructor(){
+
+  }
+
+  render(){
+    return null;
   }
 }

@@ -27,7 +27,7 @@ public class NutritionRDA {
     //--MacroNutrients--
 
     @Column(name = "[water_(l)]")
-    private Float water_g;// L/d
+    private Float water_kg;// L/d
     @Column(name = "[carb_(g)]")
     private Integer carbohydrates_g; // g/d
     @Column(name = "[fiber_(g)]")
@@ -74,8 +74,11 @@ public class NutritionRDA {
     @Column(name = "[carb_u_limit_(%)]")
     private Integer carbULimit; // %
 
+    @Column(name = "[sat_fat_l_limit_(%)]")
+    private Integer satFatLLimit; // % (CLVC)
     @Column(name = "[sat_fat_u_limit_(%)]")
     private Integer satFatULimit; // % (CLVC)
+
 
     @Column(name = "[sugar_u_limit_(%)]")
     private Integer sugarULimit; // % (British Nutrition Foundation)
@@ -198,7 +201,7 @@ public class NutritionRDA {
 
     public NutritionRdaDto convertToDto() {
         return new NutritionRdaDto(
-                this.water_g,
+                this.water_kg * 1000,
                 this.carbohydrates_g,
                 this.fiber_g,
                 this.fat_g,
@@ -218,6 +221,7 @@ public class NutritionRDA {
                 this.omega3ULimit,
                 this.carbLLimit,
                 this.carbULimit,
+                this.satFatLLimit,
                 this.satFatULimit,
                 this.sugarULimit,
                 this.proteinLLimit,

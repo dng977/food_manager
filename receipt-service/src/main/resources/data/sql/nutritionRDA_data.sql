@@ -14,7 +14,7 @@ INSERT INTO
         --Acceptable MacroNutrient Distribution Ranges:
         [fat_l_limit_(%)], [fat_u_limit_(%)], [omega6_l_limit_(%)], [omega6_limit_(%)], [omega_3_l_limit_(%)], [omega3_u_limit_(%)],
         [carb_l_limit_(%)], [carb_u_limit_(%)], [protein_l_limit_(%)], [protein_u_limit_(%)],
-        [mono_fat_l_limit_(%)], [mono_fat_u_limit_(%)], [poly_fat_l_limit_(%)], [poly_fat_u_limit_(%)], [sat_fat_u_limit_(%)], [sugar_u_limit_(%)],
+        [mono_fat_l_limit_(%)], [mono_fat_u_limit_(%)], [poly_fat_l_limit_(%)], [poly_fat_u_limit_(%)],[sat_fat_l_limit_(%)], [sat_fat_u_limit_(%)], [sugar_u_limit_(%)],
 
         --Tolerable Upper Intakes Levels--
         ----Vitamins----
@@ -49,7 +49,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         30, 40, 5, 10, 0.6, 1.2, 45, 65, 5, 20,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
 
         --Tolerable Upper Intakes Levels--
         ----Vitamins----
@@ -72,7 +72,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         25, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         900, 650, 75, 300, 15, 40, 400, 1.0,
@@ -94,7 +94,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         25, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         1700, 1200, 100, 600, 20, 60, 600, 2.0,
@@ -116,7 +116,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         25, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         2800, 1800, 100, 800, 30, 80, 800, 3.0,
@@ -138,7 +138,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -160,7 +160,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -182,7 +182,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -204,7 +204,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -226,7 +226,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         25, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         1700, 1200, 100, 600, 20, 60, 600, 2.0,
@@ -248,7 +248,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         25, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         2800, 1800, 100, 800, 30, 80, 800, 3.0,
@@ -270,7 +270,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -292,7 +292,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -314,7 +314,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -336,7 +336,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -358,7 +358,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         25, 35, 5, 10, 0.6, 1.2,35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         2800, 1800, 100, 800, 30, 80, 800, 3.0,
@@ -380,7 +380,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2,35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
@@ -402,7 +402,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         25, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         2800, 1800, 100, 800, 30, 80, 800, 3.0,
@@ -424,7 +424,7 @@ VALUES
 
         --Acceptable MacroNutrient Distribution Ranges:
         20, 35, 5, 10, 0.6, 1.2, 35, 60, 15, 40,
-        15, 20, 5, 10, 10, 5,
+        15, 20, 5, 10, 3, 10, 5,
         --Tolerable Upper Intakes Levels--
         ----Vitamins---- 8
         3000, 2000, 100, 1000, 35, 100, 1000, 3.5,
