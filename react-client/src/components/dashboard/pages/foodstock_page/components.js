@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, createMuiTheme, ThemeProvider, RadioGroup, FormControlLabel, Radio, } from '@material-ui/core';
+import { IconButton, Tooltip, Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, createMuiTheme, ThemeProvider, RadioGroup, FormControlLabel, Radio, Box, } from '@material-ui/core';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
@@ -139,6 +139,8 @@ export class FoodTable extends React.Component {
   }
 
   options = {
+    rowHover: true,
+    elevation: this.props.paperElevation,
     rowsPerPage: 20,
     rowsPerPageOptions: [],
     filterType: "dropdown",
@@ -270,7 +272,7 @@ export const EatCell = ({ value, onEat }) => {
   }
 
   return (
-    <Grid container alignItems="center" justify="flex-start" spacing={2}>
+    <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
       <Grid item>
         <FoodPortionControl countable={value.countable} basePortion={value.servingSize} portionUnits={servingUnits} portionInGrams={servingInGrams} onPortionChange={onPortionChange} />
       </Grid>
@@ -283,9 +285,11 @@ export const EatCell = ({ value, onEat }) => {
       <Grid item>{
         value.quantity === 0 ?
           <Tooltip title="No more quantiy left of this item.">
+            <div>
             <Button variant="contained" disabled color="primary" onClick={handleOnEatClick}>
               Eat
             </Button>
+            </div>
           </Tooltip>
         :
         <Button variant="contained" color="primary" onClick={handleOnEatClick}>
@@ -335,7 +339,7 @@ export const QuantityCell = React.memo(({ submitEdit, value }) => {
   }
 
   return (
-    <Grid container alignItems="center" justify="flex-start" spacing={2}>
+    <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
       {editMode ?
         <Grid item>
           <Grid container direction="column" alignItems="center" justify="center" spacing={0}>
@@ -362,7 +366,7 @@ export const QuantityCell = React.memo(({ submitEdit, value }) => {
           <Grid item>
             {currentQuantity.grams === null ?
               <Tooltip title="Not specified"><div>-</div></Tooltip> :
-              <Typography >{
+              <Typography noWrap>{
                 `${currentQuantity.units} ${value.countable ? '' : 'cup'} (${currentQuantity.grams} g)`}
               </Typography>}
           </Grid>
@@ -404,14 +408,14 @@ const FoodPortionControl = ({ countable, basePortion, portionUnits, portionInGra
     }
   }
   return (
-    <Grid container alignItems="center" justify="flex-start" spacing={1}>
+    <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={1}>
       <Grid item>
         <IconButton size="small" color="primary" onClick={() => changeServing(false)}>
           <RemoveRoundedIcon />
         </IconButton>
       </Grid>
       <Grid item>
-        <Typography >{
+        <Typography noWrap >{
           `${portionUnits} ${countable ? '' : 'cup'} (${portionInGrams} g)`}
         </Typography>
       </Grid>

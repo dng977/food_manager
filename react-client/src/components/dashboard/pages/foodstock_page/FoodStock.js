@@ -32,6 +32,7 @@ class FoodStock extends React.Component {
     this.onDeleteDialogNo = this.onDeleteDialogNo.bind(this);
     this.onDeleteDialogYes = this.onDeleteDialogYes.bind(this);
     this.handleChangeTable = this.handleChangeTable.bind(this);
+    this.paperElevation = 4;
 
 
   }
@@ -125,7 +126,7 @@ class FoodStock extends React.Component {
               </Grid>
             </Grid>
             <Grid item>
-              <Paper square elevation={4}>
+              <Paper square elevation={this.paperElevation}>
                 <Tabs
                   value={this.state.tableNumber}
                   indicatorColor="primary"
@@ -141,7 +142,7 @@ class FoodStock extends React.Component {
             </Grid>
               {this.state.tableNumber === 0 ? 
               <Grid item>
-              <FoodTable eatFoodStockItem={this.props.eatFoodStockItem} editFoodStockItem={this.props.editFoodStockItem} foodStockItems={this.props.foodStockItems} indexToKey={this.props.indexToKey} setRowsSelected={(rowsSelected) => {this.setState({rowsSelected})}}/>
+              <FoodTable paperElevation={this.paperElevation} eatFoodStockItem={this.props.eatFoodStockItem} editFoodStockItem={this.props.editFoodStockItem} foodStockItems={this.props.foodStockItems} indexToKey={this.props.indexToKey} setRowsSelected={(rowsSelected) => {this.setState({rowsSelected})}}/>
               </Grid>
               :
               <Grid item>
