@@ -5,7 +5,7 @@ const initState = {
   userDetails: true,
   nutritionRDA: {},
   nutritionState: {},
-  activityFactors: []
+  activityFactors: [],
 }
 export default (state = initState, action) => {
   console.log("DISPATCH: ", action.type);

@@ -92,3 +92,29 @@ export class MacroNutrient {
   }
 
 } 
+
+export class MicroNutrient {
+  constructor({name, lowerLimit, upperLimit, amountEaten, unit}){
+    this.name = name;
+    this.unit = unit;
+    this.lowerLimit = lowerLimit;
+    this.upperLimit = upperLimit;
+    this.amountEaten = amountEaten;
+    this.checked = false;
+
+    if(this.amountEaten < this.lowerLimit){
+      this.percentageEaten = parseInt((this.amountEaten / this.lowerLimit) * 100, 10);
+      this.percentageRemaining = 98 - this.percentageEaten;
+    }else{
+      this.checked = true;
+      this.name = "✓ " + this.name;
+      if(this.upperLimit){
+        this.percentageEaten = parseInt(100 + (this.amountEaten - this.lowerLimit) / this.upperLimit * 100, 10);
+      }else{
+        this.percentageEaten = 100;
+      }
+      this.percentageRemaining = 0;
+    }
+
+  }
+}

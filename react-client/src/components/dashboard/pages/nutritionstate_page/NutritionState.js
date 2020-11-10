@@ -1,27 +1,71 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, useHistory } from 'react-router-dom';
-import NutritionPieChart from './components';
-import { Grid, Typography } from '@material-ui/core';
+import { Redirect, useHistory, withRouter } from 'react-router-dom';
+import NutritionPieChart, { NutritionBarChart } from './components';
+import { Grid, Paper, Tab, Tabs, Typography } from '@material-ui/core';
+import { compose } from 'redux';
 
 
-const NutritionState = (props) => {
-  const history = useHistory();
-  if (!props.hasUserDetails) {
-    history.push('/bodydetails');
+class NutritionState extends PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      tableNumber: 1
+    }
   }
-  return (
-    <Grid container direction="column" xl alignItems="center" spacing={2}>
-      <Grid item>
-        <Typography variant="h5">Macro nutrients</Typography>
+
+  componentDidMount() {
+    if (!this.props.hasUserDetails) {
+      this.props.history.push('/bodydetails');
+    }
+  }
+
+  handleChangeTable = (event, newValue) => {
+    this.setState({ tableNumber: newValue });
+  };
+
+  render() {
+    return (
+      <Grid container direction="column" alignItems="stretch" justify="space-between" spacing={2}>
+        <Grid item >
+          <Paper square elevation={4}>
+            <Tabs
+              value={this.state.tableNumber}
+              indicatorColor="primary"
+              textColor="primary"
+              onChange={this.handleChangeTable}
+              aria-label="disabled tabs example"
+              variant="fullWidth"
+            >
+              <Tab label="Macro nutrients" />
+              <Tab label="Vitamins" />
+              <Tab label="Minerals" />
+
+            </Tabs>
+          </Paper>
+        </Grid>
+        {this.state.tableNumber === 0 ?
+          <>
+            <Grid container item direction="row" alignItems="center" justify="space-evenly" >
+              <NutritionPieChart energy={this.props.nutritionState.energy} nutritionRda={this.props.nutritionRda} macroState={this.props.nutritionState.macroNutrients} />
+            </Grid>
+          </>
+          : this.state.tableNumber === 1 ?
+            <Grid container item alignItems="center" justify="space-evenly" >
+              <NutritionBarChart nutritionRda={this.props.nutritionRda} microNutrients={this.props.nutritionState.vitamins} />
+            </Grid>
+
+            :
+            <Grid container item alignItems="center" justify="space-evenly" >
+              <NutritionBarChart nutritionRda={this.props.nutritionRda} microNutrients={this.props.nutritionState.minerals} />
+            </Grid>
+
+        }
 
       </Grid>
-      <Grid container item direction="row" alignItems="center" justify="space-evenly" >
-        <NutritionPieChart energy={props.nutritionState.energy} nutritionRda={props.nutritionRda} macroState={props.nutritionState.macroNutrients} />
-
-      </Grid>
-    </Grid>
-  );
+    );
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -32,4 +76,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {})(NutritionState);
+export default compose(
+  connect(mapStateToProps, {}),
+  withRouter
+)(NutritionState);

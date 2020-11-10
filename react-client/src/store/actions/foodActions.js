@@ -1,137 +1,103 @@
-import api from '../../apis/v1';
+import apiRequest, { api } from '../../apis/v1';
 import { MESSAGE, FETCH_FOOD_ITEMS, FETCH_FOODSTOCK, UPDATE_FOODSTOCK, DELETE_FOODSTOCK, LOADING, FOOD_LOADING, ADD_ITEM_FOODSTOCK, DIALOG_LOADING, EAT_ITEM_FOODSTOCK, FETCH_NUTRITION_STATE } from './types';
 
-export const fetchFoodItems = (foodName, rowIndex) => async (dispatch , getState, {getFirebase}) => {
-  console.log("Fetch food items: ", foodName)
-  dispatch({type: FOOD_LOADING});
-  const firebase = getFirebase();
-  firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
-    const response = await api.request({
+export const fetchFoodItems = (foodName, rowIndex) => async (dispatch, getState, { getFirebase }) => {
+  dispatch({ type: FOOD_LOADING });
+  apiRequest({
+    dispatch,
+    getFirebase,
+    request: {
       method: 'get',
       url: `fooditems/${foodName}`,
-      headers:{
-        'Authorization' : 'Bearer ' + idToken 
-      }
-    }).catch(error => {dispatch({type: MESSAGE, payload: "ERROR: " + error.message})});
-    dispatch({type: FETCH_FOOD_ITEMS, payload: {[rowIndex]: response.data }})
-  }).catch((error) => {
-    console.log(error);
-    dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
-
-  })
-
+    },
+    onSuccess: response => dispatch({ type: FETCH_FOOD_ITEMS, payload: { [ rowIndex ]: response.data } }),
+  });
 };
 
-export const fetchFoodStock = ({actionsOnSuccess = []}) => async (dispatch , getState, {getFirebase}) => {
-  console.log("Fetch food Stock: ")
-  dispatch({type: LOADING});
-  const firebase = getFirebase();
-  firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
-    api.request({
+export const fetchFoodStock = (actionsOnSuccess = []) => async (dispatch, getState, { getFirebase }) => {
+  apiRequest({
+    loading: true,
+    dispatch,
+    getFirebase,
+    request: {
       method: 'get',
-      url: `foodstock`,
-      headers:{
-        'Authorization' : 'Bearer ' + idToken 
-      }
-    }).then(response => {
-      dispatch({type: FETCH_FOODSTOCK, payload: response.data})
-      console.log("actionsonsuccess: ", actionsOnSuccess)
-      actionsOnSuccess.forEach(action => {
-        dispatch(action);
-      })
-    })
-    .catch(error => {dispatch({type: MESSAGE, payload: "ERROR: " + error.message})});
-    
-  }).catch((error) => {
-    console.log(error);
-    dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
-
-  })
+      url: 'foodstock',
+    },
+    onSuccess: response => {
+      dispatch({ type: FETCH_FOODSTOCK, payload: response.data })
+      console.log(getState().nutrition);
+      if(actionsOnSuccess.length)
+        actionsOnSuccess.forEach(action => {
+          dispatch(action);
+        })
+    }
+  });
 
 };
 
-export const editFoodStockItem = (id, newValues) => async (dispatch , getState, {getFirebase}) => {
+export const editFoodStockItem = (id, newValues) => async (dispatch, getState, { getFirebase }) => {
   // dispatch({type: LOADING});
-  const oldFoodStockItem = getState().food.foodStock[id];
-  const newFoodStockItem = {...oldFoodStockItem, ...newValues}
-  const firebase = getFirebase();
-  firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
-    api.put('foodstock/item',newFoodStockItem,{
-      headers:{
-        'Authorization' : 'Bearer ' + idToken 
-      }
-    }).then(response => dispatch({type: UPDATE_FOODSTOCK, payload: newFoodStockItem}))
-    .catch(error => {dispatch({type: MESSAGE, payload: "ERROR: " + error.message})});
-
-  }).catch((error) => {
-    console.log(error);
-    dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
-
-  })
+  const oldFoodStockItem = getState().food.foodStock[ id ];
+  const newFoodStockItem = { ...oldFoodStockItem, ...newValues }
+  apiRequest({
+    dispatch,
+    getFirebase,
+    request: {
+      method: 'put',
+      url: 'foodstock/item',
+      payload: newFoodStockItem
+    },
+    onSuccess: response => dispatch({ type: UPDATE_FOODSTOCK, payload: newFoodStockItem }),
+  });
 };
 
-export const deleteFoodStockItems = (idArray) => async (dispatch , getState, {getFirebase}) => {
-  dispatch({type: DIALOG_LOADING});
-  const firebase = getFirebase();
-  firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
-    api.delete('foodstock',{
-      data: idArray,
-      headers:{
-        'Authorization' : 'Bearer ' + idToken 
-      }
-    }).then(response => dispatch({type: DELETE_FOODSTOCK, payload: idArray}))
-    .catch(error => {dispatch({type: MESSAGE, payload: "ERROR: " + error.message})});
-
-  }).catch((error) => {
-    console.log(error);
-    dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
-
-  })
+export const deleteFoodStockItems = (idArray) => async (dispatch, getState, { getFirebase }) => {
+  dispatch({ type: DIALOG_LOADING });
+  apiRequest({
+    dispatch,
+    getFirebase,
+    request: {
+      method: 'delete',
+      url: 'foodstock',
+      payload: idArray
+    },
+    onSuccess: response => dispatch({ type: DELETE_FOODSTOCK, payload: idArray }),
+  });
 };
 
-export const addFoodItem = (foodItemId, quantity, callBackOnSuccess) => async (dispatch , getState, {getFirebase}) => {
-  dispatch({type: DIALOG_LOADING});
-  const itemDto = {foodItemId, quantity}
-  const firebase = getFirebase();
-  firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
-    api.post('foodstock/item/add',itemDto,{
-      headers:{
-        'Authorization' : 'Bearer ' + idToken 
-      }
-    }).then(response => {
-      dispatch({type: ADD_ITEM_FOODSTOCK, payload: response.data});
+export const addFoodItem = (foodItemId, quantity, callBackOnSuccess) => async (dispatch, getState, { getFirebase }) => {
+  dispatch({ type: DIALOG_LOADING });
+  const itemDto = { foodItemId, quantity }
+  apiRequest({
+    dispatch,
+    getFirebase,
+    request: {
+      method: 'post',
+      url: 'foodstock/item/add',
+      payload: itemDto
+    },
+    onSuccess: response => {
+      dispatch({ type: ADD_ITEM_FOODSTOCK, payload: response.data });
       callBackOnSuccess();
-    })
-    .catch(error => {dispatch({type: MESSAGE, payload: "ERROR: " + error.message})});
-
-  }).catch((error) => {
-    console.log(error);
-    dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
-
-  })
+    }
+  });
 };
 
-export const eatFoodStockItem = (eatFoodStockDto={foodItemId: null, quantity: null, cooked: false}) => async (dispatch , getState, {getFirebase}) => {
-  dispatch({type: LOADING});
-  //const eatFoodStockDto = {foodItemId: }
-  const firebase = getFirebase();
-  firebase.auth().currentUser.getIdToken(true).then( async (idToken) => {
-    api.post('foodstock/item/eat',eatFoodStockDto,{
-      headers:{
-        'Authorization' : 'Bearer ' + idToken 
-      }
-    }).then(response => {
-      dispatch({type: FETCH_NUTRITION_STATE, payload: response.data});
+export const eatFoodStockItem = (eatFoodStockDto = { foodItemId: null, quantity: null, cooked: false }) => async (dispatch, getState, { getFirebase }) => {
+  apiRequest({
+    dispatch,
+    getFirebase,
+    request: {
+      method: 'post',
+      url: 'foodstock/item/eat',
+      payload: eatFoodStockDto
+    },
+    onSuccess: response => {
+      dispatch({ type: FETCH_NUTRITION_STATE, payload: response.data });
 
-      const oldFoodStockItem = getState().food.foodStock[eatFoodStockDto.foodItemId];
-      const newFoodStockItem = {...oldFoodStockItem, quantity:  oldFoodStockItem.quantity ? oldFoodStockItem.quantity - eatFoodStockDto.quantity : oldFoodStockItem.quantity};
-      dispatch({type: UPDATE_FOODSTOCK, payload: newFoodStockItem});
-    })
-    .catch(error => {dispatch({type: MESSAGE, payload: "ERROR: " + error.message})});
-
-  }).catch((error) => {
-    console.log(error);
-    dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
-
-  })
+      const oldFoodStockItem = getState().food.foodStock[ eatFoodStockDto.foodItemId ];
+      const newFoodStockItem = { ...oldFoodStockItem, quantity: oldFoodStockItem.quantity ? oldFoodStockItem.quantity - eatFoodStockDto.quantity : oldFoodStockItem.quantity };
+      dispatch({ type: UPDATE_FOODSTOCK, payload: newFoodStockItem });
+    }
+  });
 };

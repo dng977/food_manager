@@ -1,14 +1,15 @@
-import { CLEAR_MESSAGE, DIALOG_LOADING, LOADING, MESSAGE, START_BATCH_LOADING, STOP_BATCH_LOADING } from "../actions/types";
+import { CLEAR_MESSAGE, DIALOG_LOADING, LOADING, MESSAGE, PUSH_LOADING, POP_LOADING } from "../actions/types";
 
 const initState = { 
   loading: true, 
   message: '',
-  batchLoading: true,
+  numberLoading: 0,
   dialogLoading: false,
 }
 
 export default (state = initState, action) => {
   console.log("DISPATCH: ", action.type);
+  let newNumberLoading = 0;
   switch (action.type) {
     case LOADING:
       return { ...state, loading: true }
@@ -16,13 +17,15 @@ export default (state = initState, action) => {
       return { ...state, message: action.payload, loading: false }
     case CLEAR_MESSAGE:
       return { ...state, message: '', loading: false}
-    case START_BATCH_LOADING:
-      return{...state, batchLoading: true}
-    case STOP_BATCH_LOADING:
-      return{...state, batchLoading: false}
+    case PUSH_LOADING:
+      newNumberLoading = state.numberLoading + 1;
+      return{...state, numberLoading: newNumberLoading, loading: true}
+    case POP_LOADING:
+      newNumberLoading = state.numberLoading > 0 ? state.numberLoading - 1 : 0;
+      return{...state, numberLoading: newNumberLoading, loading: newNumberLoading > 0}
     case DIALOG_LOADING:
       return {...state, dialogLoading: true}
     default:
-      return {...state, loading: false, dialogLoading: false, message: ''};
+      return {...state, dialogLoading: false, message: ''};
   }
 }

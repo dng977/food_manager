@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import {
-  PieChart, Pie, Sector, Cell, Label, LabelList, Legend,
+  PieChart, Pie, Sector, Cell, Label, LabelList, Legend, Tooltip, BarChart, CartesianGrid, YAxis, Bar, XAxis, ReferenceLine, CartesianAxis,
 } from 'recharts';
-import { macronutrient, MacroNutrient } from './objects';
+import { macronutrient, MacroNutrient, MicroNutrient } from './objects';
 import _ from 'lodash';
 import { Box, Divider, Grid, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, ListSubheader, makeStyles, Paper, Typography, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -203,20 +203,16 @@ export default class NutritionPieChart extends React.Component {
         cy='50%'
         labelLine={false}
         stroke={5}
-        // label={({index, value}) => {
-        //   if(index===0 && value > 0 ) return `daily goal`;
-        // }}
-        // outerRadius={this.pieRadius}
         dataKey="value"
-        animationBegin={300}
-        animationDuration={1000}
+        animationDuration={800}
         startAngle={object.startAngle[ 0 ]}
         endAngle={object.endAngle[ 0 ]}
       >
         {/* style={{textDecoration: minimumCalsExceeded ? 'line-through': 'none'}} */}
         <Label offset={10} position="outside" key='label' fill={object.colorEaten}>
           {!minimumCalsExceeded ?
-            `${parseInt(object.gramsEaten, 10)} / ${parseInt(object.minGrams)} g`
+            // `${parseInt(object.gramsEaten, 10)} / ${parseInt(object.minGrams)} g`
+            `${parseInt(object.gramsEaten / object.minGrams * 100, 10)} %`
             :
             `${parseInt(object.minGrams, 10)}g  ✓`
           }
@@ -234,12 +230,8 @@ export default class NutritionPieChart extends React.Component {
           cx='50%'
           cy='50%'
           labelLine={false}
-          // label="name"
-          // label={<renderCustomizedLabel startIndex={0} endIndex={2}/>}
-          // outerRadius={this.pieRadius}
           dataKey="value"
-          animationBegin={300}
-          animationDuration={1000}
+          animationDuration={800}
           startAngle={object.startAngle[ 1 ]}
           endAngle={object.endAngle[ 1 ]}
         >
@@ -301,6 +293,24 @@ export default class NutritionPieChart extends React.Component {
 
   }
 
+  renderToolTip = ({ active, payload, label }) => {
+    console.log(payload);
+    if (payload.length) {
+      let nutrient = payload[ 0 ].payload;
+      if (active) {
+        return (
+          <Paper style={{marginLeft: 10,marginRight: 10}} elevation={4}>
+            <Typography style={{marginTop: 10, margin: "inherit"}} variant="subtitle1">{`${nutrient.name}`}</Typography>
+            <Typography style={{marginBottom: 10, margin: "inherit"}} variant="subtitle1">
+              {
+              `${nutrient.amountEaten} / ${(nutrient.percentageEaten > 100 && nutrient.upperLimit ? nutrient.upperLimit + " " + nutrient.unit + "(max)": nutrient.lowerLimit + " " + nutrient.unit)}`}</Typography>
+          </Paper>
+        );
+      }
+    }
+    return null;
+  };
+
   renderLegend = (data) => {
     return (
       <List dense >
@@ -329,29 +339,139 @@ export default class NutritionPieChart extends React.Component {
     let rp = this.renderPies(dataToRener);
     console.log(rp);
     return (<>
-         {/* <Grid container direction="row" alignItems="flex-start" justify="space-between" > */}
-          <Grid item>
-            <PieChart outerRadius={this.pieRadius} width={this.pieChartWidth} height={this.pieChartHeight} >
-              {rp}
-            </PieChart>
-            <Typography variant="subtitle1" align="center">{`Energy consumed: ${this.props.energy} / ${this.props.nutritionRda.energy_kcal} kcal (maximum) `}</Typography>
-          </Grid>
-          <Grid item>
-            <Paper style={{ background: "white", borderStyle: "solid" }}>{this.renderLegend(data)}</Paper>
+      {/* <Grid container direction="row" alignItems="flex-start" justify="space-between" > */}
+      <Grid item>
+        <Typography variant="subtitle1" align="center">{`Energy consumed: ${this.props.energy} / ${this.props.nutritionRda.energy_kcal} kcal (maximum) `}</Typography>
 
-          </Grid>
-         {/* </Grid> */}
-        </>
+        <PieChart outerRadius={this.pieRadius} width={this.pieChartWidth} height={this.pieChartHeight} >
+          {rp}
+          <Pie
+            key={`pie-border`}
+            data={[ { name: "border", value: 1 } ]}
+            cx='50%'
+            cy='50%'
+            labelLine={false}
+            innerRadius={this.pieRadius - 24}
+            dataKey="value"
+            // animationBegin={300}
+            animationDuration={800}
+            children={<Cell key={`cell-border`} fill={"black"} stroke="grey" strokeWidth="1" />}
+
+
+          />
+          <Tooltip/>
+        </PieChart>
+      </Grid>
+      <Grid item>
+        <Paper style={{ background: "white", borderStyle: "solid" }}>{this.renderLegend(data)}</Paper>
+
+      </Grid>
+      {/* </Grid> */}
+    </>
     );
   }
 }
 
+
+
+
 export class NutritionBarChart extends React.PureComponent {
-  constructor(){
+  constructor(props) {
+    super(props);
+    console.log(props);
 
   }
 
-  render(){
+  getData = () => {
+    let data = [];
+    if (!_.isEmpty(this.props.nutritionRda) && !_.isEmpty(this.props.microNutrients)) {
+      data = Object.entries(this.props.microNutrients).map(([ key, value ]) => {
+        console.log(key, value)
+        let splitKey = String(key).split('_');
+        let name = splitKey[ 0 ];
+        let unit = splitKey[ 1 ];
+        return new MicroNutrient({
+          name: name,
+          unit: unit,
+          lowerLimit: this.props.nutritionRda[ key ],
+          upperLimit: this.props.nutritionRda[ name + "Upper_" + unit ],
+          amountEaten: value
+        })
+      });
+      data.sort((a, b) => a.checked > b.checked ? 1 : a.checked < b.checked ? -1 : 0);
+    }
+    return data;
+  }
+  renderRefLineLabel = (labelName) => (props) => {
+    return <text textAnchor="middle" x={props.viewBox.x} y={props.viewBox.y - 10}>{labelName}</text>;
+  }
+
+  renderToolTip = ({ active, payload, label }) => {
+    console.log(payload);
+    if (payload.length) {
+      let nutrient = payload[ 0 ].payload;
+      if (active) {
+        return (
+          <Paper style={{marginLeft: 10,marginRight: 10}} elevation={4}>
+            <Typography style={{marginTop: 10, margin: "inherit"}} variant="subtitle1">{`${nutrient.name}`}</Typography>
+            <Typography style={{marginBottom: 10, margin: "inherit"}} variant="subtitle1">
+              {
+              `${nutrient.amountEaten} / ${(nutrient.percentageEaten > 100 && nutrient.upperLimit ? nutrient.upperLimit + " " + nutrient.unit + "(max)": nutrient.lowerLimit + " " + nutrient.unit)}`}</Typography>
+          </Paper>
+        );
+      }
+    }
     return null;
+  };
+  renderBarLabel = props => {
+    console.log(props);
+    return <text opacity={(props.value / 1.5 + 30) + "%"} textAnchor="middle" fill="white" x={props.x + props.width / 2} y={props.y + props.height / 2} dy="0.355rem">{props.value + "%"}</text>;
   }
+
+  render() {
+    let data = this.getData();
+    console.log("DATA: ", data)
+    return (
+      <Grid item>
+        <BarChart layout="vertical" width={600} height={500} data={data}>
+          <CartesianAxis />
+          <XAxis
+            unit="%"
+            orientation="top"
+            type="number"
+            domain={[ 0, 250 ]}
+            tick={false}
+          // label={{value: "Lower Limit", position: "centerTop"}}
+          // axisLine={false}
+          />
+          <YAxis width={140} type="category" dataKey="name" tickSize={5} />
+          <ReferenceLine isFront={true} x={100} label={this.renderRefLineLabel("Minimum")} stroke="green" strokeWidth={2} strokeDasharray="5" />
+          <ReferenceLine x={200} label={this.renderRefLineLabel("Maximum")} stroke="red" strokeWidth={2} isFront strokeDasharray="5" />
+
+          <Tooltip
+            isAnimationActive={false}
+            content={this.renderToolTip}
+          // formatter={(value,name, entry, index) => {
+          //   console.log(value,name, entry, index)
+          //   if(index === 0){
+          //     return [value]
+          //   }else return []
+          // }}
+          />
+          <Bar unit="%"
+            animationDuration={300} maxBarSize={30} dataKey="percentageEaten" fill={"#388e3c"} stackId="limit" >
+            <LabelList position="inside"
+              content={this.renderBarLabel}
+            />
+          </Bar>
+          <Bar animationDuration={300} maxBarSize={30} dataKey="percentageRemaining" fill="#e8f5e9" stackId="limit" />
+        </BarChart>
+      </Grid>
+    );
+  }
+}
+
+NutritionBarChart.propTypes = {
+  microNutrients: PropTypes.object.isRequired,
+  nutritionRda: PropTypes.object.isRequired
 }

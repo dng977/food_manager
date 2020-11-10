@@ -4,7 +4,7 @@ import _ from 'lodash';
 const initState = {
   foodStock: {},
   searchedItems: {},
-  food_loading: false
+  food_loading: false,
 }
 export default (state = initState, action) => {
   console.log("DISPATCH: ", action.type);

@@ -45,12 +45,11 @@ class Dashboard extends React.Component {
     this.state = { anchorEl: null, open: true };
   }
   componentDidMount() {
-    this.props.startBatchLoading();
     if (Object.keys(this.props.receipts).length === 0 || !this.props.location.pathname.match(/receipts\/\d/))
       this.props.fetchReceipts();
       this.props.fetchNutritionRda();
       this.props.fetchNutritionState();
-      this.props.fetchFoodStock({actionsOnSuccess: [stopBatchLoading()]});
+      this.props.fetchFoodStock();
     
   }
 
@@ -224,7 +223,7 @@ class Dashboard extends React.Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-            {this.props.batchLoading ?
+            {this.props.loading ? 
               <div>Loading...</div>
               :
               <Switch>
@@ -258,7 +257,7 @@ const mapStateToProps = (state) => {
   return {
     receipts: state.receipts.receipts,
     message: state.feedback.message,
-    batchLoading: state.feedback.batchLoading
+    loading: state.feedback.loading
 
     // firebase: state.firebase
 
