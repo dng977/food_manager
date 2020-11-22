@@ -1,7 +1,7 @@
 package com.dng.foodmanager.receiptservice.util;
 
+import com.dng.foodmanager.receiptservice.domain.ActivityFactor;
 import com.dng.foodmanager.receiptservice.dto.ActivityDto;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

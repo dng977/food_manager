@@ -3,7 +3,7 @@ import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { signUp } from '../../store/actions/authActions';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect, useHistory, useLocation } from 'react-router-dom';
 import styles from './Signup.styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -25,12 +25,15 @@ const useStyles = makeStyles(styles);
 
 const Signup = (props) => {
   const history = useHistory();
-  const { handleSubmit,auth,  error, submitFailed, submitSucceeded, clearAsyncError } = props;
-  useEffect(()=>{
-   console.log(error);
-    if(!error && !auth.isEmpty)
-      history.push('/bodydetails');
-  }, [error, submitSucceeded])
+  const location = useLocation();
+  const { handleSubmit, auth, error, submitFailed, submitSucceeded, clearAsyncError } = props;
+  useEffect(() => {
+    console.log(error);
+    if (!error && !auth.isEmpty) {
+      console.log("PUSH TO BODYDETAILS");
+      history.push('/bodydetails', {from: location.pathname});
+    }
+  }, [ error, submitSucceeded ])
   const classes = useStyles();
   console.log(error);
   // if (!submitFailed && !error && !auth.isEmpty) return <Redirect to='/bodydetails' />

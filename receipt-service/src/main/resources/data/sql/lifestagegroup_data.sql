@@ -1,7 +1,3 @@
-
-USE [fm_dev]
-GO
-
 DELETE FROM life_stage_groups
 
 --children

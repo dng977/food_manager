@@ -53,7 +53,7 @@ const Receipts = (props) => {
     console.log(event.target.files[ 0 ]);
     
     loadImage(event.target.files[0],{
-      maxWidth: 500,
+      maxWidth: 900,
       canvas: true,
       orientation: true
     }).then((data) => {

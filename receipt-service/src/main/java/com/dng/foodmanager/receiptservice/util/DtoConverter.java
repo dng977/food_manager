@@ -34,18 +34,26 @@ public class DtoConverter {
                 foodItem.getName(),
                 foodStock.getQuantity(),
                 foodItem.getServingSize(),
-                foodItem.isCountable(),
+                foodItem.getServingDesc(),
+                foodItem.getServingUnit().isPresent() ? foodItem.getServingUnit().get() : ServingUnit.PIECE,
                 foodItem.getNutritionRaw().isPresent(),
                 foodItem.getNutritionCooked().isPresent()
         );
     }
     public FoodItemDto convertToDto(FoodItem foodItem) {
-        return new FoodItemDto(foodItem.getId(),foodItem.getName(),foodItem.getServingSize(), foodItem.isCountable(),null);
+        return new FoodItemDto(
+                foodItem.getId(),
+                foodItem.getName(),
+                foodItem.getDefaultQuantity(),
+                foodItem.getServingSize(),
+                foodItem.getServingDesc(),
+                foodItem.getServingUnit().isPresent() ? foodItem.getServingUnit().get() : ServingUnit.PIECE,
+                null);
         //TODO get nutrition as well
     }
 
-    public PlainFoodItemDto convertToPlainDto(FoodItem foodItem) {
-        return new PlainFoodItemDto(foodItem.getId(), foodItem.getName());
+    public FoodItemReceiptDto convertToPlainDto(FoodItem foodItem) {
+        return new FoodItemReceiptDto(foodItem.getId(), foodItem.getName());
     }
 
 }

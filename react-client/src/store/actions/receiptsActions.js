@@ -17,7 +17,7 @@ export const fetchReceipts = () => async (dispatch , getState, {getFirebase}) =>
   });
 };
 
-export const fetchReceiptItems = (id) => async (dispatch , getState, {getFirebase}) => {
+export const fetchReceiptItems = (id, onError) => async (dispatch , getState, {getFirebase}) => {
   if(getState().receipts.currentReceipt.id === id)
     return
   apiRequest({
@@ -28,7 +28,8 @@ export const fetchReceiptItems = (id) => async (dispatch , getState, {getFirebas
       method: 'get',
       url: 'receipts/' + id + '/items',
     },
-    onSuccess: response => dispatch({type: FETCH_RECEIPT_ITEMS, payload: {id: id, receiptItems: response.data}})
+    onSuccess: response => dispatch({type: FETCH_RECEIPT_ITEMS, payload: {id: id, receiptItems: response.data}}),
+    onError: error => onError()
   });
 };
 
@@ -54,7 +55,7 @@ export const fetchReceiptImage = (id) => async (dispatch , getState, {getFirebas
     return;
 
   apiRequest({
-    loading: true,
+    loading: false,
     dispatch,
     getFirebase,
     request: {
@@ -79,11 +80,11 @@ export const deleteReceipt = (id, callback) => async (dispatch , getState, {getF
   });  
 
 };
-export const editReceiptItem = (rowIndex,newFoodItemDto) => async (dispatch , getState, {getFirebase}) => {
+export const editReceiptItem = (oldItemId,newFoodItemDto) => async (dispatch , getState, {getFirebase}) => {
   //dispatch({type: LOADING});
   const id = getState().receipts.currentReceipt.id
-  const oldReceiptItem = getState().receipts.currentReceipt.receiptItems[rowIndex]
-  const newReceiptItem = {...oldReceiptItem, plainFoodItemDto: [newFoodItemDto], status: itemStatus.RECOGNIZED}
+  const oldReceiptItem = getState().receipts.currentReceipt.receiptItems[oldItemId - 1]
+  const newReceiptItem = {...oldReceiptItem, foodItemReceiptDto: [newFoodItemDto], status: itemStatus.RECOGNIZED}
   
   apiRequest({
     dispatch,
@@ -93,7 +94,7 @@ export const editReceiptItem = (rowIndex,newFoodItemDto) => async (dispatch , ge
       url: `receipts/${id}/items/${newReceiptItem.id}`,
       payload: newReceiptItem
     },
-    onSuccess: dispatch({type: EDIT_RECEIPT_ITEM, payload: {newReceiptItem, rowIndex}})
+    onSuccess: () => dispatch({type: EDIT_RECEIPT_ITEM, payload: {newReceiptItem}})
   });  
 };
 

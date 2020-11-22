@@ -1,7 +1,7 @@
 package com.dng.foodmanager.receiptservice.repositories;
 
 import com.dng.foodmanager.receiptservice.domain.NutritionState;
-import com.dng.foodmanager.receiptservice.domain.NutritionStateId;
+import com.dng.foodmanager.receiptservice.domain.id_classes.NutritionStateId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

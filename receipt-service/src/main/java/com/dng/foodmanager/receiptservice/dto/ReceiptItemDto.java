@@ -14,7 +14,7 @@ import java.util.List;
 public class ReceiptItemDto {
     private final long id;
     private final String referenceName;
-    private final List<PlainFoodItemDto> plainFoodItemDto;
+    private final List<FoodItemReceiptDto> foodItemReceiptDto;
     private final String status;
 }
 

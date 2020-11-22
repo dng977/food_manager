@@ -18,8 +18,8 @@ export const getReceipts = createSelector(
 
 export const getReceiptItems = createSelector(getReceiptItemsData,(itemsData) => {
   const receiptData = Object.values(itemsData).map((values) => {
-    let foodItem = values.plainFoodItemDto;
-    return [ values.referenceName, foodItem==null ? '?' : foodItem , values.status];
+    let foodItem = values.foodItemReceiptDto;
+    return [ values.referenceName, {id: values.id, foodList: foodItem==null ? '?' : foodItem } , values.status];
   })
   return receiptData;
   }
@@ -30,7 +30,7 @@ export const getFoodStock = createSelector(
     const indexToKey = [];
     const foodStockData = Object.values(data).map((values, index) => {
       indexToKey[index] = parseInt(values.foodItemId, 10);
-      return [ values.foodName, {countable: values.countable, quantity: values.quantity, servingSize: values.servingSize}, {...values} ];
+      return [ values.foodName, {...values}, {...values} ];
     })
     return [foodStockData, indexToKey];
   }

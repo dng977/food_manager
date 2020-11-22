@@ -33,24 +33,36 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { fetchReceipts } from '../../store/actions/receiptsActions';
 import { fetchFoodStock } from '../../store/actions/foodActions';
-import { getPathRegex } from '../../routes';
+import { getPathRegex, dashboardRoutes } from '../../routes';
 import { CLEAR_MESSAGE, START_BATCH_LOADING, STOP_BATCH_LOADING } from '../../store/actions/types';
-import {startBatchLoading, stopBatchLoading} from '../../store/actions/feedbackActions';
-import {fetchNutritionRda,fetchNutritionState} from '../../store/actions/nutritionActions';
+import { startBatchLoading, stopBatchLoading } from '../../store/actions/feedbackActions';
+import { fetchNutritionRda, fetchNutritionState } from '../../store/actions/nutritionActions';
+import { getReceipts } from './pages/selectors';
 
-class Dashboard extends React.Component {
+class Dashboard extends React.PureComponent {
 
   constructor(props) {
     super();
-    this.state = { anchorEl: null, open: true };
+    this.state = { anchorEl: null, open: true, init: true };
+    this.dashboardRoutes = dashboardRoutes.slice(0, 4);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log("GET DERIVED STATE - init: ", props, state);
+    if(state.init){
+      if (Object.keys(props.receipts).length === 0 || !props.location.pathname.match(/receipts\/\d/))
+      props.fetchReceipts();
+    props.fetchNutritionRda();
+    props.fetchNutritionState();
+    props.fetchFoodStock();
+    }
+
+    return {init: false};
   }
   componentDidMount() {
-    if (Object.keys(this.props.receipts).length === 0 || !this.props.location.pathname.match(/receipts\/\d/))
-      this.props.fetchReceipts();
-      this.props.fetchNutritionRda();
-      this.props.fetchNutritionState();
-      this.props.fetchFoodStock();
-    
+    console.log("COMPONENT DID MOUNT DASHBOARD");
+
+
   }
 
 
@@ -118,6 +130,8 @@ class Dashboard extends React.Component {
   render() {
     const { classes } = this.props;
     console.log('Rendering dashboard...');
+    console.log("loading: ", this.props.loading);
+
     console.log("message:", this.props.message)
     return (
       <div className={classes.root}>
@@ -196,37 +210,40 @@ class Dashboard extends React.Component {
           </div>
           <Divider />
           <List>
-            <ListItemLink icon={<FastfoodIcon />} primary="Food Stock" to={`${this.props.match.url}/foodstock`} />
-            <ListItemLink
-              icon={this.receiptsWarning() ?
-                <Tooltip title="Unrecognized food items.">
-                  <Badge
-                    badgeContent="!" color="error"
-                  // variant="dot"
-                  >
-                    <ReceiptIcon />
-                  </Badge>
-                </Tooltip>
-                :
-                <ReceiptIcon />
-              }
-              primary="Receipts"
-              to={`${this.props.match.url}/receipts`}
-            />
-            <ListItemLink icon={<AssessmentIcon />} primary="Nutrition State" to={`${this.props.match.url}/nutrition`} />
+            {this.dashboardRoutes.map(({ path, Icon, title }) => {
+              return (
+                <div key={title}>
+                  {title === 'Settings' ? <Divider key="divider" light/>: null}
+                  <ListItemLink selected={this.props.location.pathname === path} icon={
+                    title === 'Receipts' && this.receiptsWarning() ?
+                      <Tooltip title="Unrecognized food items.">
+                        <Badge
+                          badgeContent="!" color="error"
+                        // variant="dot"
+                        >
+                          <Icon/>
+                        </Badge>
+                      </Tooltip>
+                      :
+                      <Icon/> }
+                    primary={title} to={path} />
+                </div>
+              );
+            })}
           </List>
-          <Divider />
-          <List>
+          {/* <List >
             <ListItemLink icon={<SettingsIcon />} primary="Settings" to={`${this.props.match.url}/settings`} />
-          </List>
+          </List> */}
+          <Divider light={false} />
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-            {this.props.loading ? 
+            {this.props.loading ?
               <div>Loading...</div>
               :
               <Switch>
+                {!this.props.hasUserDetails ? <Redirect from="/dashboard/nutrition" to={{pathname: "/bodydetails", state: {from: "/dashboard/nutrition"}}} /> : null}
                 <Redirect exact from={'/dashboard'} to={'/dashboard/foodstock'} />
 
                 {this.props.routes.map((route, key) => {
@@ -253,9 +270,11 @@ class Dashboard extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  const [ receipts ] = getReceipts(state);
 
   return {
-    receipts: state.receipts.receipts,
+    hasUserDetails: state.nutrition.userDetails,
+    receipts: receipts,
     message: state.feedback.message,
     loading: state.feedback.loading
 
@@ -266,7 +285,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return {
     clearError: () => dispatch({ type: CLEAR_MESSAGE }),
-    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, startBatchLoading, fetchNutritionRda, fetchNutritionState}, dispatch)
+    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, startBatchLoading, fetchNutritionRda, fetchNutritionState }, dispatch)
   }
 }
 

@@ -16,7 +16,7 @@ public class FoodNutrition {
 
     @Id
     @Column(name = "[NDB_No]")
-    private String ndbNo;
+    private Long ndbNo;
 
     @Column(name = "[Shrt_Desc]")
     private String shrtDesc;
@@ -44,6 +44,9 @@ public class FoodNutrition {
 
     @Column(name = "[Sugar_Tot_(g)]")
     private Double sugar_g; // included (British Nutrition found)
+
+    @Column(name = "[Sucrose_(g)]")
+    private Double sucrose_g;
 
     @Column(name = "[Calcium_(mg)]")
     private Integer calcium_mg;
@@ -129,7 +132,7 @@ public class FoodNutrition {
     @Column(name = "[Lycopene_(μg)]")
     private Double lycopene_mcg; // NOT INCLUDED IN RDA
 
-    @Column(name = "[Lut+Zea_ (μg)]")
+    @Column(name = "[Lut+Zea_(μg)]")
     private Double lutZea_mcg; // NOT INCLUDED IN RDA
 
     @Column(name = "[Vit_E_(mg)]")
@@ -210,6 +213,9 @@ public class FoodNutrition {
         return Optional.ofNullable(fiber_g);
     }
 
+    public Optional<Double> getSucrose_g() {
+        return Optional.ofNullable(sucrose_g);
+    }
     public Optional<Double> getSugar_g() {
         return Optional.ofNullable(sugar_g);
     }

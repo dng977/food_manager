@@ -36,8 +36,8 @@ public class NutritionStateDto {
         this.minerals = new Minerals();
     }
 
-    public void setMacroNutrients(float water_g, float carbohydrates_g, float fiber_g, float fat_g, float satFat_g, float monoFat_g, float polyFat_g, float omega6_g, float omega3_g, float protein_g, int cholesterol_mg, float sugar_g) {
-        this.macroNutrients = new MacroNutrients(water_g, carbohydrates_g, fiber_g, fat_g, satFat_g, monoFat_g, polyFat_g, omega6_g, omega3_g, protein_g, cholesterol_mg, sugar_g);
+    public void setMacroNutrients(float water_g, float carbohydrates_g, float fiber_g, float fat_g, float satFat_g, float monoFat_g, float polyFat_g, float omega6_g, float omega3_g, float protein_g, int cholesterol_mg, float sugar_g, float sucrose_g) {
+        this.macroNutrients = new MacroNutrients(water_g, carbohydrates_g, fiber_g, fat_g, satFat_g, monoFat_g, polyFat_g, omega6_g, omega3_g, protein_g, cholesterol_mg, sugar_g, sucrose_g);
     }
 
     public void setVitamins(float vitaminA_mcg, float vitaminC_mg, float vitaminD_mcg, float vitaminE_mg, float vitaminK_mcg, float thiaminB1_mg, float riboflavinB2_mg, float niacinB3_mg, float vitaminB6_mg, float folateB9_mcg, float vitaminB12_mcg, float pantothenicAcidB5_mg, float biotinB7_mcg, float choline_mg) {
@@ -76,6 +76,8 @@ public class NutritionStateDto {
         private int cholesterol_mg; // mg/d
 
         private float sugar_g; // mg/d
+
+        private float sucrose_g;
     }
 
     @AllArgsConstructor

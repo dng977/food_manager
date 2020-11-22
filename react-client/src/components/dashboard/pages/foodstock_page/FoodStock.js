@@ -93,7 +93,7 @@ class FoodStock extends React.Component {
                   <Grid container spacing={2} alignItems="center" justify="flex-start">
                     <Grid item>
                       <Button variant="contained" color="primary" startIcon={<AddRoundedIcon />} onClick={() => {this.setState({openAddFoodDialog: true}) }}>
-                        Add
+                        {this.state.tableNumber === 0 ? "Add" : "Add a Meal"}
                       </Button>
                       <AddNewFoodDialog
                         openDialog={this.state.openAddFoodDialog}

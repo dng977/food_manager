@@ -39,7 +39,8 @@ const BodyDetails = (props) => {
   const { handleSubmit, userDetails, sendUserData } = props;
 
   if (props.userDetails) {
-    history.goBack(); //or redirect "/"  
+    let previousState = history.location.state ? history.location.state.from : '/dashboard';
+    return <Redirect to={previousState === '/signup' ? '/dashboard' : previousState}/>;
   };
   return (
     <Container component="main" maxWidth="xs" >

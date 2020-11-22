@@ -1,6 +1,6 @@
 package com.dng.foodmanager.receiptservice.dto;
 
-import com.dng.foodmanager.receiptservice.util.NutritionUtil.ActivityFactor;
+import com.dng.foodmanager.receiptservice.domain.ActivityFactor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

@@ -15,9 +15,10 @@ import java.util.Optional;
 public class FoodItem extends BaseEntity {
 
     private String name;
-    private int servingSize;
+    private Integer defaultQuantity;
+    private Integer servingSize;
     private String servingDesc;
-    private boolean countable;
+    private ServingUnit servingUnit;
 
     @Nullable
     @OneToOne(fetch = FetchType.LAZY)
@@ -44,5 +45,27 @@ public class FoodItem extends BaseEntity {
 
     public Optional<FoodNutrition> getNutritionCooked() {
         return Optional.ofNullable(nutritionCooked);
+    }
+
+    public String getServingDesc() {
+        return servingDesc == null ? "" : servingDesc;
+    }
+
+    public Integer getDefaultQuantity() {
+        if(defaultQuantity == null){
+            return getServingSize();
+        }
+        return defaultQuantity;
+    }
+
+    public Integer getServingSize() {
+        if(servingSize == null) {
+            return 100;
+        }
+            return servingSize;
+    }
+
+    public Optional<ServingUnit> getServingUnit() {
+        return Optional.ofNullable(servingUnit);
     }
 }

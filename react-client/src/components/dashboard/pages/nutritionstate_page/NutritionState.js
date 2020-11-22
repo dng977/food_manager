@@ -11,21 +11,19 @@ class NutritionState extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tableNumber: 1
+      tableNumber: 0
     }
-  }
+    console.log("USERDETAILS: ", this.props.hasUserDetails);
 
-  componentDidMount() {
-    if (!this.props.hasUserDetails) {
-      this.props.history.push('/bodydetails');
-    }
   }
+//asdsn
 
   handleChangeTable = (event, newValue) => {
     this.setState({ tableNumber: newValue });
   };
 
   render() {
+    console.log("nutrition state history: ", this.props.history);
     return (
       <Grid container direction="column" alignItems="stretch" justify="space-between" spacing={2}>
         <Grid item >
@@ -70,7 +68,6 @@ class NutritionState extends PureComponent {
 
 const mapStateToProps = (state) => {
   return {
-    hasUserDetails: state.nutrition.userDetails,
     nutritionRda: state.nutrition.nutritionRDA,
     nutritionState: state.nutrition.nutritionState,
   };

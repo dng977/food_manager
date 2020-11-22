@@ -16,39 +16,39 @@ import BodyDetails from './components/auth/BodyDetails';
 
 
 const dashboardPath = '/dashboard';
-const dashboardRoutes = [
+export const dashboardRoutes = [
   {
     path: dashboardPath + "/foodstock",
     component: FoodStock,
-    icon: FastfoodIcon,
+    Icon: FastfoodIcon,
     title: 'Food Stock'
   },
   {
     path: dashboardPath + "/receipts", 
     component: Receipts,
-    icon: ReceiptIcon,
+    Icon: ReceiptIcon,
     title: 'Receipts',
     exact: true
 
   },
   {
-    path: dashboardPath + "/receipts" + "/:id",
-    component: ReceiptPage,
-    icon: ReceiptIcon,
-    title: 'Receipts',
-    exact: true
-  },
-  {
     path: dashboardPath + "/nutrition",
     component: NutritionState,
-    icon: AssessmentIcon,
+    Icon: AssessmentIcon,
     title: 'Nutrition State'
   },
   {
     path: dashboardPath + "/settings",
     component: Settings,
-    icon: SettingsIcon,
+    Icon: SettingsIcon,
     title: 'Settings'
+  },
+  {
+    path: dashboardPath + "/receipts" + "/:id",
+    component: ReceiptPage,
+    Icon: ReceiptIcon,
+    title: 'Receipts',
+    exact: true
   },
 ]
 

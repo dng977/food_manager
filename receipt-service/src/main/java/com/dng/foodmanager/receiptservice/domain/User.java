@@ -1,10 +1,7 @@
 package com.dng.foodmanager.receiptservice.domain;
 
-import com.dng.foodmanager.receiptservice.util.NutritionUtil.ActivityFactor;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.*;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.*;
 import java.util.List;

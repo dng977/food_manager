@@ -1,6 +1,7 @@
 package com.dng.foodmanager.receiptservice.services;
 
 import com.dng.foodmanager.receiptservice.domain.*;
+import com.dng.foodmanager.receiptservice.domain.id_classes.FoodStockId;
 import com.dng.foodmanager.receiptservice.dto.*;
 import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;
 import com.dng.foodmanager.receiptservice.repositories.FoodStockRepository;
@@ -37,7 +38,7 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public List<PlainFoodItemDto> getPlainFoodItemsByName(String name) {
+    public List<FoodItemReceiptDto> getPlainFoodItemsByName(String name) {
         List<FoodItem> foodItems = foodItemRepository.findByNameLike("%" + name + "%");
         return foodItems.stream().map(dtoConverter::convertToPlainDto).collect(Collectors.toList());
     }
@@ -80,23 +81,23 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public List<FoodStockDto> addItemToFoodStock(String userId, PlainFoodStockDto plainFoodStockDto) {
-        Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(plainFoodStockDto.getFoodItemId());
+    public List<FoodStockDto> addItemToFoodStock(String userId, FoodStockAddDto foodStockAddDto) {
+        Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(foodStockAddDto.getFoodItemId());
         if(newFoodItemOpt.isPresent()){
             FoodItem newFoodItem = newFoodItemOpt.get();
             Optional<FoodStock> oldFoodStockItemOpt = foodStockRepository.findByUserIdAndFoodItemId(userId, newFoodItem.getId());
             if(oldFoodStockItemOpt.isPresent()){
                 FoodStock oldFoodStockItem = oldFoodStockItemOpt.get();
-                oldFoodStockItem.setQuantity(oldFoodStockItem.getQuantity() + plainFoodStockDto.getQuantity());
+                oldFoodStockItem.setQuantity(oldFoodStockItem.getQuantity() + foodStockAddDto.getQuantity());
                 foodStockRepository.save(oldFoodStockItem);
             }else{
-                FoodStock foodStockItem = new FoodStock(userId,newFoodItem, plainFoodStockDto.getQuantity());
+                FoodStock foodStockItem = new FoodStock(userId,newFoodItem, foodStockAddDto.getQuantity());
                 foodStockRepository.save(foodStockItem);
             }
 
         }
         else{
-            throw new NoSuchElementException("Food Item with id=" + plainFoodStockDto.getFoodItemId() + " is not present.");
+            throw new NoSuchElementException("Food Item with id=" + foodStockAddDto.getFoodItemId() + " is not present.");
         }
 
         return getFoodStock(userId);
@@ -157,6 +158,7 @@ public class FoodServiceImpl implements FoodService {
                 foodNutrition.getProtein_g().isPresent() ? foodNutrition.getProtein_g().get() : 0,
                 foodNutrition.getCholesterol_mg().isPresent() ? foodNutrition.getCholesterol_mg().get() : 0,
                 foodNutrition.getSugar_g().isPresent() ? foodNutrition.getSugar_g().get() : 0,
+                foodNutrition.getSucrose_g().isPresent() ? foodNutrition.getSucrose_g().get() : 0,
                 foodNutrition.getVitaminA_mcg().isPresent() ? foodNutrition.getVitaminA_mcg().get() : 0,
                 foodNutrition.getVitaminC_mg().isPresent() ? foodNutrition.getVitaminC_mg().get() : 0,
                 foodNutrition.getVitaminD_mcg().isPresent() ? foodNutrition.getVitaminD_mcg().get() : 0,

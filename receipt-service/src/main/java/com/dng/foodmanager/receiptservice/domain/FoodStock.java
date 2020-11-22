@@ -1,13 +1,10 @@
 package com.dng.foodmanager.receiptservice.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.dng.foodmanager.receiptservice.domain.id_classes.FoodStockId;
 import lombok.*;
-import org.hibernate.annotations.CollectionId;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Data

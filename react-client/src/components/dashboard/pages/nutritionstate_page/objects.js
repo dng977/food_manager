@@ -54,6 +54,7 @@ export class MacroNutrient {
       this.maxGrams = this.maxCals / calsInGram;
 
       this.totalCalsEaten = this.gramsEaten * calsInGram;
+      this.calsEatenBySector=[0,0]
 
       if (render) {
         //if total exceedes max
@@ -107,12 +108,13 @@ export class MicroNutrient {
       this.percentageRemaining = 98 - this.percentageEaten;
     }else{
       this.checked = true;
-      this.name = "✓ " + this.name;
       if(this.upperLimit){
-        this.percentageEaten = parseInt(100 + (this.amountEaten - this.lowerLimit) / this.upperLimit * 100, 10);
+        this.percentageEaten = parseInt(100 + ((this.amountEaten - this.lowerLimit) / (this.upperLimit - this.lowerLimit) * 100), 10);
+        
       }else{
         this.percentageEaten = 100;
       }
+      this.name = this.percentageEaten < 200 ? "✓ " + this.name : "! " + this.name;
       this.percentageRemaining = 0;
     }
 

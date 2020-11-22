@@ -15,16 +15,15 @@ export default class NutritionPieChart extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("PROPS: ", props);
     this.pieRadius = 160;
     this.pieChartHeight = this.pieRadius * 2 + 30;
     this.pieChartWidth = this.pieRadius * 2 + 50;
+    this.animationDuration = 500;
   }
 
   getData = () => {
     let data = [];
     if (!_.isEmpty(this.props.nutritionRda) && !_.isEmpty(this.props.macroState)) {
-      console.log("not empty");
       data = [
         new MacroNutrient({
           label: macronutrient.carb,
@@ -123,16 +122,14 @@ export default class NutritionPieChart extends React.Component {
       }
       if (nutrient.subNutrients.length) {
         let subnuts = (this.flatMapRenderData(nutrient.subNutrients));
-        console.log(subnuts);
         list = list.concat(subnuts);
       }
-      console.log("list: ", list)
       return list;
     })
   }
   getDataToRender = (data) => {
     let dataToRender = this.flatMapRenderData(data);
-    console.log("datatoRender: ", dataToRender);
+    console.log("dttorender", dataToRender)
     this.calculateAngles(dataToRender, 0, -3);
     return dataToRender;
   }
@@ -143,10 +140,10 @@ export default class NutritionPieChart extends React.Component {
     let secondSectorCalsEaten = 0;
     data.forEach(nutrient => {
       percentageMinAmountSectors += nutrient.minAmountPercentage;
+      console.log(nutrient.calsEatenBySector);
       secondSectorCalsEaten += nutrient.calsEatenBySector[ 1 ];
     });
     let secondSectorTotalCals = (1 - percentageMinAmountSectors) * this.props.nutritionRda.energy_kcal;
-    console.log("SS cals eaten vs total cals: ", secondSectorCalsEaten, secondSectorTotalCals)
     return [ secondSectorCalsEaten, secondSectorTotalCals ];
   }
 
@@ -157,9 +154,7 @@ export default class NutritionPieChart extends React.Component {
     if (secondSectorCalsEaten > secondSectorTotalCals) {
       data.forEach((nutrient) => {
         if (nutrient.calsEatenBySector[ 1 ] > 0) {
-          console.log("oldPercentage:", nutrient.freeSectorPercentage);
           nutrient.freeSectorPercentage = ((nutrient.calsEatenBySector[ 1 ] / secondSectorCalsEaten) * secondSectorTotalCals) / this.props.nutritionRda.energy_kcal;
-          console.log("new Percentage:", nutrient.freeSectorPercentage);
 
         }
       })
@@ -169,14 +164,11 @@ export default class NutritionPieChart extends React.Component {
     const angleReducer = (acc, cur, idx) => {
 
       let paddingAngle = idx === data.length - 1 ? 3 : 2;
-      console.log(idx, paddingAngle);
       //CALCULATE ANGLES
       cur.startAngle[ 0 ] = acc[ 0 ];
       cur.setEndAngle(0, paddingAngle);
-      console.log("acc0: ", acc[ 0 ])
 
       if (cur.calsEatenBySector[ 1 ] > 0) {
-        console.log("acc1: ", acc[ 1 ])
         cur.startAngle[ 1 ] = acc[ 1 ];
         cur.setEndAngle(1, paddingAngle);
 
@@ -204,7 +196,7 @@ export default class NutritionPieChart extends React.Component {
         labelLine={false}
         stroke={5}
         dataKey="value"
-        animationDuration={800}
+        animationDuration={this.animationDuration}
         startAngle={object.startAngle[ 0 ]}
         endAngle={object.endAngle[ 0 ]}
       >
@@ -231,7 +223,7 @@ export default class NutritionPieChart extends React.Component {
           cy='50%'
           labelLine={false}
           dataKey="value"
-          animationDuration={800}
+          animationDuration={this.animationDuration}
           startAngle={object.startAngle[ 1 ]}
           endAngle={object.endAngle[ 1 ]}
         >
@@ -252,9 +244,10 @@ export default class NutritionPieChart extends React.Component {
   }
 
   renderLegendItem = (object) => {
+    let minimumCalsExceeded = object.totalCalsEaten > object.minCals;
     return (
-      <>
-        <ListItem key={object.label}>
+      <div key={object.label}>
+        <ListItem >
           {object.render ?
             <PieChartRoundedIcon style={{ color: object.colorEaten }} />
             : null}
@@ -273,37 +266,35 @@ export default class NutritionPieChart extends React.Component {
 
               }
             </Typography>
-            {/* :
-            <Typography variant="caption">
-              {` / ${Number(object.minGrams).toFixed(2)} g (average)`}
-          </Typography>
-            } */}
+            <Typography style={{ color: object.colorEaten, fontWeight: "bold" }} variant="caption">
+              {minimumCalsExceeded ? "✓" : ""}
+            </Typography>
+
           </ListItemText>
         </ListItem>
         {
           object.subNutrients.length ?
-            <>
-              <Divider />
+            <div key={object.label}>
+              <Divider key={object.label + "divider"} />
               <ListItem key={object.label + "2"}>
                 {this.renderLegend(object.subNutrients)}</ListItem>
-            </> : null
+            </div> : null
         }
-      </>
+      </div>
     );
 
   }
 
   renderToolTip = ({ active, payload, label }) => {
-    console.log(payload);
     if (payload.length) {
       let nutrient = payload[ 0 ].payload;
       if (active) {
         return (
-          <Paper style={{marginLeft: 10,marginRight: 10}} elevation={4}>
-            <Typography style={{marginTop: 10, margin: "inherit"}} variant="subtitle1">{`${nutrient.name}`}</Typography>
-            <Typography style={{marginBottom: 10, margin: "inherit"}} variant="subtitle1">
+          <Paper style={{ marginLeft: 10, marginRight: 10 }} elevation={4}>
+            <Typography style={{ marginTop: 10, margin: "inherit" }} variant="subtitle1">{`${nutrient.name}`}</Typography>
+            <Typography style={{ marginBottom: 10, margin: "inherit" }} variant="subtitle1">
               {
-              `${nutrient.amountEaten} / ${(nutrient.percentageEaten > 100 && nutrient.upperLimit ? nutrient.upperLimit + " " + nutrient.unit + "(max)": nutrient.lowerLimit + " " + nutrient.unit)}`}</Typography>
+                `${nutrient.amountEaten} / ${(nutrient.percentageEaten > 100 && nutrient.upperLimit ? nutrient.upperLimit + " " + nutrient.unit + "(max)" : nutrient.lowerLimit + " " + nutrient.unit)}`}</Typography>
           </Paper>
         );
       }
@@ -320,7 +311,7 @@ export default class NutritionPieChart extends React.Component {
         {data.map(object => {
           return (
             object.subNutrients.length ?
-              <Paper children={this.renderLegendItem(object)} style={{ background: "white", borderStyle: "ridge" }} />
+              <Paper key={object.label} children={this.renderLegendItem(object)} style={{ background: "white", borderStyle: "ridge" }} />
               :
               this.renderLegendItem(object)
           );
@@ -332,12 +323,13 @@ export default class NutritionPieChart extends React.Component {
 
   render() {
     let data = this.getData();
+    if (data.length === 0) {
+      return <></>;
+    }
     console.log("DATA: ", data);
-    let dataToRener = this.getDataToRender(data);
-    console.log("DATA to RENDER: ", dataToRener);
+    let dataToRender = this.getDataToRender(data);
 
-    let rp = this.renderPies(dataToRener);
-    console.log(rp);
+    let rp = this.renderPies(dataToRender);
     return (<>
       {/* <Grid container direction="row" alignItems="flex-start" justify="space-between" > */}
       <Grid item>
@@ -354,12 +346,11 @@ export default class NutritionPieChart extends React.Component {
             innerRadius={this.pieRadius - 24}
             dataKey="value"
             // animationBegin={300}
-            animationDuration={800}
+            animationDuration={this.animationDuration}
             children={<Cell key={`cell-border`} fill={"black"} stroke="grey" strokeWidth="1" />}
 
 
           />
-          <Tooltip/>
         </PieChart>
       </Grid>
       <Grid item>
@@ -378,7 +369,6 @@ export default class NutritionPieChart extends React.Component {
 export class NutritionBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
-    console.log(props);
 
   }
 
@@ -386,7 +376,6 @@ export class NutritionBarChart extends React.PureComponent {
     let data = [];
     if (!_.isEmpty(this.props.nutritionRda) && !_.isEmpty(this.props.microNutrients)) {
       data = Object.entries(this.props.microNutrients).map(([ key, value ]) => {
-        console.log(key, value)
         let splitKey = String(key).split('_');
         let name = splitKey[ 0 ];
         let unit = splitKey[ 1 ];
@@ -407,16 +396,15 @@ export class NutritionBarChart extends React.PureComponent {
   }
 
   renderToolTip = ({ active, payload, label }) => {
-    console.log(payload);
     if (payload.length) {
       let nutrient = payload[ 0 ].payload;
       if (active) {
         return (
-          <Paper style={{marginLeft: 10,marginRight: 10}} elevation={4}>
-            <Typography style={{marginTop: 10, margin: "inherit"}} variant="subtitle1">{`${nutrient.name}`}</Typography>
-            <Typography style={{marginBottom: 10, margin: "inherit"}} variant="subtitle1">
+          <Paper style={{ marginLeft: 10, marginRight: 10 }} elevation={4}>
+            <Typography style={{ marginTop: 10, margin: "inherit" }} variant="subtitle1">{`${nutrient.name}`}</Typography>
+            <Typography style={{ marginBottom: 10, margin: "inherit" }} variant="subtitle1">
               {
-              `${nutrient.amountEaten} / ${(nutrient.percentageEaten > 100 && nutrient.upperLimit ? nutrient.upperLimit + " " + nutrient.unit + "(max)": nutrient.lowerLimit + " " + nutrient.unit)}`}</Typography>
+                `${nutrient.amountEaten} / ${(nutrient.percentageEaten > 100 && nutrient.upperLimit ? nutrient.upperLimit + " " + nutrient.unit + "(max)" : nutrient.lowerLimit + " " + nutrient.unit)}`}</Typography>
           </Paper>
         );
       }
@@ -424,13 +412,11 @@ export class NutritionBarChart extends React.PureComponent {
     return null;
   };
   renderBarLabel = props => {
-    console.log(props);
     return <text opacity={(props.value / 1.5 + 30) + "%"} textAnchor="middle" fill="white" x={props.x + props.width / 2} y={props.y + props.height / 2} dy="0.355rem">{props.value + "%"}</text>;
   }
 
   render() {
     let data = this.getData();
-    console.log("DATA: ", data)
     return (
       <Grid item>
         <BarChart layout="vertical" width={600} height={500} data={data}>
@@ -451,12 +437,7 @@ export class NutritionBarChart extends React.PureComponent {
           <Tooltip
             isAnimationActive={false}
             content={this.renderToolTip}
-          // formatter={(value,name, entry, index) => {
-          //   console.log(value,name, entry, index)
-          //   if(index === 0){
-          //     return [value]
-          //   }else return []
-          // }}
+
           />
           <Bar unit="%"
             animationDuration={300} maxBarSize={30} dataKey="percentageEaten" fill={"#388e3c"} stackId="limit" >

@@ -1,6 +1,3 @@
-USE [fm_dev]
-GO
-
 DELETE FROM nutrition_rda
 
 INSERT INTO

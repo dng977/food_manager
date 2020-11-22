@@ -1,42 +1,56 @@
 package com.dng.foodmanager.receiptservice.bootstrap;
 
-import com.dng.foodmanager.receiptservice.domain.Receipt;
-import com.dng.foodmanager.receiptservice.repositories.ReceiptRepository;
-import com.dng.foodmanager.receiptservice.services.ReceiptService;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.storage.Bucket;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.ListUsersPage;
-import com.google.firebase.cloud.FirestoreClient;
-import com.google.firebase.cloud.StorageClient;
+import com.google.common.io.Resources;
+import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.File;
-import java.io.FileInputStream;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.util.Arrays;
+import java.nio.file.Paths;
+import java.sql.*;
 
 @Slf4j
-@Component
-public class DataInitializer implements SmartInitializingSingleton {
+public class DataInitializer {
+
+    @Value("${spring.datasource.url}")
+    private String url;
+
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    @Value("${spring.datasource.password}")
+    private String password;
+
+    @Value("${nutritionDataPath}")
+    private String nutritionDataPath;
 
 
+    //Run this method when application started
+//    @EventListener(ApplicationReadyEvent.class)
+    public void getConnection() throws IOException, SQLException {
 
-    @Override
-    public void afterSingletonsInstantiated() {
-        log.debug("afterSingletonsInstantiated !! ---");
+        //Connect to Database
+        String query = Files.readString(ResourceUtils.getFile(nutritionDataPath).toPath());
+        DriverManager.registerDriver(new SQLServerDriver());
+
+        try (
+                Connection connection = DriverManager.getConnection(url, username, password);
+                Statement stmt = connection.createStatement()
+        ) {
+            int a = stmt.executeUpdate(query);
+            log.debug(String.valueOf(a));
+        } catch (SQLException e) {
+            log.error("Query \n" + query + "\nfailed !");
+        }
+
     }
 }

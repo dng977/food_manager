@@ -1,9 +1,7 @@
 package com.dng.foodmanager.receiptservice.repositories;
 
-import com.dng.foodmanager.receiptservice.domain.FoodItem;
 import com.dng.foodmanager.receiptservice.domain.FoodStock;
-import com.dng.foodmanager.receiptservice.domain.FoodStockId;
-import org.springframework.data.jpa.repository.Modifying;
+import com.dng.foodmanager.receiptservice.domain.id_classes.FoodStockId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

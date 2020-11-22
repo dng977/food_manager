@@ -1,7 +1,7 @@
 package com.dng.foodmanager.receiptservice.api.v1;
 
 import com.dng.foodmanager.receiptservice.config.security.CustomPrincipal;
-import com.dng.foodmanager.receiptservice.dto.PlainFoodItemDto;
+import com.dng.foodmanager.receiptservice.dto.FoodItemReceiptDto;
 import com.dng.foodmanager.receiptservice.dto.FoodItemDto;
 import com.dng.foodmanager.receiptservice.services.FoodService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class FoodItemsController {
 
     @GetMapping("plain/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public List<PlainFoodItemDto> getPlainFoodItemsByName(@AuthenticationPrincipal CustomPrincipal principal, @PathVariable String name) throws NumberFormatException, IOException {
+    public List<FoodItemReceiptDto> getPlainFoodItemsByName(@AuthenticationPrincipal CustomPrincipal principal, @PathVariable String name) throws NumberFormatException, IOException {
         log.debug(BASE_URL  + name + " GET mapping triggered");
 
         return foodService.getPlainFoodItemsByName(name);

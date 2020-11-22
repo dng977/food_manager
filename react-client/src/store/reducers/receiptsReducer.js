@@ -3,7 +3,7 @@ import { EDIT_RECEIPT_ITEMS, FETCH_RECEIPTS, UPLOAD_RECEIPT, LOADING, DELETE_REC
 
 const initState = { 
   receipts: {},
-  currentReceipt: {id: '', receiptItems: [], imageData: ''},
+  currentReceipt: {id: 0, receiptItems: [], imageData: ''},
 }
 export default (state = initState, action) => {
   console.log("DISPATCH: ", action.type);
@@ -17,7 +17,7 @@ export default (state = initState, action) => {
     case UPLOAD_RECEIPT:
       return { ...state, receipts: { ...state.receipts, [ action.payload.id ]: action.payload } };
     case FETCH_RECEIPT_IMAGE:
-      return { ...state, currentReceipt: {...state.currentReceipt,id: action.payload, imageData: action.payload.imageData} };
+      return { ...state, currentReceipt: {...state.currentReceipt,id: action.payload.id, imageData: action.payload.imageData} };
     case DELETE_RECEIPT:
       return {...state, currentReceipt: initState.currentReceipt, receipts: (_.omit(state.receipts, action.payload)) };
     case EDIT_RECEIPT_ITEM:

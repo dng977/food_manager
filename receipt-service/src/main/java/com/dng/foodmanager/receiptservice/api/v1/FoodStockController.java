@@ -1,7 +1,6 @@
 package com.dng.foodmanager.receiptservice.api.v1;
 
 import com.dng.foodmanager.receiptservice.config.security.CustomPrincipal;
-import com.dng.foodmanager.receiptservice.domain.NutritionState;
 import com.dng.foodmanager.receiptservice.dto.*;
 import com.dng.foodmanager.receiptservice.services.FoodService;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +48,9 @@ public class FoodStockController {
 
     @PostMapping("/item/add")
     @ResponseStatus(HttpStatus.OK)
-    public List<FoodStockDto> addItemToFoodStock(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody PlainFoodStockDto plainFoodStockDto) throws SQLDataException {
+    public List<FoodStockDto> addItemToFoodStock(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody FoodStockAddDto foodStockAddDto) throws SQLDataException {
 
-        return foodService.addItemToFoodStock(principal.getUid(), plainFoodStockDto);
+        return foodService.addItemToFoodStock(principal.getUid(), foodStockAddDto);
     }
 
     @PostMapping("/item/eat")

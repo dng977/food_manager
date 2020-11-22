@@ -29,11 +29,18 @@ const ReceiptPage = (props) => {
 
   const { path, params } = useRouteMatch();
 
+
+
   useEffect(() => {
-    props.fetchReceiptItems(parseInt(params.id, 10));
+    props.fetchReceiptItems(parseInt(params.id, 10), navigateToDashboardOnError);
   }, [])
 
   const history = useHistory();
+
+  const navigateToDashboardOnError = () => {
+    console.log("Exec on error!")
+    history.push('/dashboard');
+  }
   const columns = [
     {
       name: 'Item reference',
@@ -41,7 +48,7 @@ const ReceiptPage = (props) => {
     {
       name: 'Food Type',
       options: {
-        customBodyRender: (foodList, { rowIndex, rowData }) => {
+        customBodyRender: ({id, foodList}, { rowIndex, rowData }) => {
           // console.log("value: ", foodList);
           // console.log(foodList)
           let status = rowData[ 2 ];
@@ -49,7 +56,7 @@ const ReceiptPage = (props) => {
             <FoodTypeCell cellState={status} foodList={foodList} rowIndex={rowIndex}
               onConfirm={
                 (selectedFoodItem) => {
-                  props.editReceiptItem(rowIndex, selectedFoodItem)
+                  props.editReceiptItem(id, selectedFoodItem)
 
                 }
               }
@@ -61,6 +68,8 @@ const ReceiptPage = (props) => {
     {
       name: 'Status',
       options: {
+        sortDescFirst: true,
+        sortThirdClickReset: true,
         customBodyRender: (value, { }) => {
           // let foodList = rowData[1]
           return value === itemStatus.UNRECOGNIZED ? <Tooltip title="This receipt item is not recognized. Search for the corresponding food item."><WarningRoundedIcon color="error" /></Tooltip>
@@ -108,6 +117,10 @@ const ReceiptPage = (props) => {
     setOpenViewImage(false);
   }
   const options = {
+    // sortOrder: {
+    //   name: "Status",
+    //   direction: 'desc'
+    // },
     rowsPerPage: 20,
     rowsPerPageOptions: [],
     filterType: "dropdown",

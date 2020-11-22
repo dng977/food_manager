@@ -8,8 +8,7 @@ export const api = axios.create({
 const apiRequest = ({loading=false, dispatch, getFirebase,request:{method, url, payload = {}, otherHeaders = []} ,onSuccess, 
   onError = error => {
     dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
-    if(loading)
-      dispatch({type: POP_LOADING});
+
   }
 }) => {
   if(loading)
@@ -29,7 +28,11 @@ const apiRequest = ({loading=false, dispatch, getFirebase,request:{method, url, 
       if(loading)
         dispatch({type: POP_LOADING});
     })
-    .catch(onError)
+    .catch(error => {
+      onError(error);
+      if(loading)
+        dispatch({type: POP_LOADING});
+    })
   }).catch(error => {
     console.log(error);
     dispatch({type: MESSAGE, payload: "FIREBASE ERROR: " + error.message})

@@ -1,14 +1,13 @@
 package com.dng.foodmanager.receiptservice.domain;
 
+import com.dng.foodmanager.receiptservice.domain.id_classes.NutritionStateId;
 import com.dng.foodmanager.receiptservice.dto.NutritionStateDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -62,6 +61,8 @@ public class NutritionState {
     private Integer cholesterol_mg; // mg/d
     @Column(name = "[sugar_(g)]", precision = 9, scale = 2)
     private BigDecimal sugar_g; // mg/d
+    @Column(name = "[sucrose_(g)]", precision = 9, scale = 2)
+    private BigDecimal sucrose_g; // mg/d
 
     // ----MicroNutrients----
 
@@ -140,7 +141,7 @@ public class NutritionState {
         this.date = date;
     }
 
-    public void setNutrients(int amountEaten, boolean update, int energy_kcal, double water_g, double carbohydrates_g, double fiber_g, double fat_g, double satFat_g, double monoFat_g, double polyFat_g, double omega6_g, double omega3_g, double protein_g, int cholesterol_mg, double sugar_g, double vitaminA_mcg, double vitaminC_mg, double vitaminD_mcg, double vitaminE_mg, double vitaminK_mcg, double thiaminB1_mg, double riboflavinB2_mg, double niacinB3_mg, double vitaminB6_mg, double folateB9_mcg, double vitaminB12_mcg, double pantothenicAcidB5_mg, double biotinB7_mcg, double choline_mg, int calcium_mg, double chromium_mcg, double copper_mcg, double fluoride_mg, double iodine_mcg, double iron_mg, double magnesium_mg, double manganese_mg, double molybdenum_mcg, int phosphorus_mg, double selenium_mcg, double zinc_mg, int potassium_mg, int sodium_mg, double chloride_g, double lycopene_mcg, double lutZea_mcg) {
+    public void setNutrients(int amountEaten, boolean update, int energy_kcal, double water_g, double carbohydrates_g, double fiber_g, double fat_g, double satFat_g, double monoFat_g, double polyFat_g, double omega6_g, double omega3_g, double protein_g, int cholesterol_mg, double sugar_g, double sucrose_g, double vitaminA_mcg, double vitaminC_mg, double vitaminD_mcg, double vitaminE_mg, double vitaminK_mcg, double thiaminB1_mg, double riboflavinB2_mg, double niacinB3_mg, double vitaminB6_mg, double folateB9_mcg, double vitaminB12_mcg, double pantothenicAcidB5_mg, double biotinB7_mcg, double choline_mg, int calcium_mg, double chromium_mcg, double copper_mcg, double fluoride_mg, double iodine_mcg, double iron_mg, double magnesium_mg, double manganese_mg, double molybdenum_mcg, int phosphorus_mg, double selenium_mcg, double zinc_mg, int potassium_mg, int sodium_mg, double chloride_g, double lycopene_mcg, double lutZea_mcg) {
         if (update) {
             this.energy_kcal += amountEaten * energy_kcal / 100;
             this.water_g = BigDecimal.valueOf(this.water_g.floatValue() + amountEaten * water_g / 100);
@@ -155,6 +156,7 @@ public class NutritionState {
             this.protein_g = BigDecimal.valueOf(this.protein_g.floatValue() + amountEaten * protein_g / 100);
             this.cholesterol_mg += amountEaten * cholesterol_mg / 100;
             this.sugar_g = BigDecimal.valueOf(this.sugar_g.floatValue() + amountEaten * sugar_g / 100);
+            this.sucrose_g = BigDecimal.valueOf(this.sucrose_g.floatValue() + amountEaten * sucrose_g / 100);
             this.vitaminA_mcg = BigDecimal.valueOf(this.vitaminA_mcg.floatValue() + amountEaten * vitaminA_mcg / 100);
             this.vitaminC_mg = BigDecimal.valueOf(this.vitaminC_mg.floatValue() + amountEaten * vitaminC_mg / 100);
             this.vitaminD_mcg = BigDecimal.valueOf(this.vitaminD_mcg.floatValue() + amountEaten * vitaminD_mcg / 100);
@@ -200,6 +202,7 @@ public class NutritionState {
             this.protein_g = BigDecimal.valueOf(amountEaten * protein_g / 100);
             this.cholesterol_mg = (amountEaten * cholesterol_mg / 100);
             this.sugar_g = BigDecimal.valueOf(amountEaten * sugar_g / 100);
+            this.sucrose_g = BigDecimal.valueOf(amountEaten * sucrose_g / 100);
             this.vitaminA_mcg = BigDecimal.valueOf(amountEaten * vitaminA_mcg / 100);
             this.vitaminC_mg = BigDecimal.valueOf(amountEaten * vitaminC_mg / 100);
             this.vitaminD_mcg = BigDecimal.valueOf(amountEaten * vitaminD_mcg / 100);
@@ -252,7 +255,8 @@ public class NutritionState {
                 this.omega3_g.floatValue(),
                 this.protein_g.floatValue(),
                 this.cholesterol_mg,
-                this.sugar_g.floatValue()
+                this.sugar_g.floatValue(),
+                this.sucrose_g.floatValue()
         );
         nutritionStateDto.setMinerals(
             this.calcium_mg,

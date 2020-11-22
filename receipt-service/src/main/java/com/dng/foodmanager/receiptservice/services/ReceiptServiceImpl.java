@@ -103,7 +103,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     @Override
     public List<ReceiptItemDto> getReceiptItemsById(String userId, Long id) {
         List<ReceiptItem> receiptItems = receiptItemRepository.findByReceipt(id);
-        if(receiptItems.isEmpty())
+        if (receiptItems.isEmpty())
             throw new ResourceNotFoundException("There is no such receipt");
         //TODO - ? Perhpas use receiptRepository instead
         return receiptItems.stream().map(dtoConverter::convertToDto).collect(Collectors.toList());
@@ -130,7 +130,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     @Override
     public void editReceiptItem(String userId, Long rid, Long iid, ReceiptItemDto receiptItemDto) {
         Optional<ReceiptItem> receiptItemOpt = receiptItemRepository.findById(iid);
-        Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(receiptItemDto.getPlainFoodItemDto().get(0).getId());
+        Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(receiptItemDto.getFoodItemReceiptDto().get(0).getId());
         if (!newFoodItemOpt.isPresent() || !receiptItemOpt.isPresent()) {
             throw new RuntimeException("FoodItem id wrong.");
         }
@@ -171,21 +171,20 @@ public class ReceiptServiceImpl implements ReceiptService {
     public List<ReceiptItemDto> addReceiptToFoodStock(String userId, Long receiptId) {
         List<FoodStock> foodStockList = new ArrayList<>();
         List<ReceiptItem> foodItemList = receiptItemRepository.findByReceipt(receiptId);
-        for(ReceiptItem receiptItem : foodItemList){
-            if(receiptItem.getStatus().equals(ReceiptItemStatus.RECOGNIZED)) {
+        for (ReceiptItem receiptItem : foodItemList) {
+            if (receiptItem.getStatus().equals(ReceiptItemStatus.RECOGNIZED)) {
                 FoodItem newFoodItem = receiptItem.getRecognizedFoods().get(0);
                 Optional<FoodStock> foodItemInStockOpt = foodStockRepository.findByUserIdAndFoodItemId(userId, newFoodItem.getId());
-                if(foodItemInStockOpt.isPresent()){
+                if (foodItemInStockOpt.isPresent()) {
                     FoodStock foodItemInStock = foodItemInStockOpt.get();
                     Integer oldQuantity = foodItemInStock.getQuantity();
                     //TODO - Implement Quantity (maybe)
-                    Integer newQuantity = 500;
-                    if(oldQuantity != null){
+                    Integer newQuantity = newFoodItem.getDefaultQuantity();
+                    if (oldQuantity != null) {
                         foodItemInStock.setQuantity(oldQuantity + newQuantity);
                     }
-                }
-                else{
-                    foodStockRepository.save(new FoodStock(userId,newFoodItem, null));
+                } else {
+                    foodStockRepository.save(new FoodStock(userId, newFoodItem, newFoodItem.getDefaultQuantity()));
                 }
 
                 receiptItem.setStatus(ReceiptItemStatus.INSTOCK);
@@ -232,19 +231,17 @@ public class ReceiptServiceImpl implements ReceiptService {
         String referenceItemName = receiptItem.getReferenceName().toLowerCase();
         List<FoodItem> candidateFoodItems = new ArrayList<>();
         foodItemRepository.findAll().forEach(foodItem -> {
-            //1) Check if foodItem's name is contained in the itemReference
-//            log.debug("referenceItemName: " + referenceItemName);
-//            log.debug("foodItemName: " + foodItem.getName().toLowerCase());
 
+            //1) Check if foodItem's name is contained in the itemReference
             boolean candidateInFoodItemName = false;
-            for(String foodItemWord : foodItem.getName().toLowerCase().split(" ")){
+            for (String foodItemWord : foodItem.getName().toLowerCase().strip().split(" ")) {
                 if (referenceItemName.contains(foodItemWord)) {
                     candidateFoodItems.add(foodItem);
                     candidateInFoodItemName = true;
                     break;
                 }
             }
-             if(!candidateInFoodItemName) {
+            if (!candidateInFoodItemName) {
                 //2) Check foodItems's reference words Dictionary
                 foodItem.getReferenceWords().stream().forEach(foodReference -> {
                     if (foodReference.getReferenceWord().toLowerCase().contains(referenceItemName)) {
@@ -252,6 +249,7 @@ public class ReceiptServiceImpl implements ReceiptService {
                     }
                 });
             }
+
         });
         return candidateFoodItems;
     }
