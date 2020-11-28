@@ -6,6 +6,11 @@ export const styles = {
   },
 
   overrides: {
+    MuiRadio:{
+      root: {
+        padding: "3px",
+      }
+    },
     MuiTable:{
       root:{
         // borderCollapse: 'separate',
@@ -38,8 +43,16 @@ export const styles = {
         borderRight: 'inset',
         borderRightWidth: 'thin',
         borderBottom: 'inset',
-        borderBotttomWidth: 'medium'
-
+        borderBotttomWidth: 'medium',
+        padding: '10px',
+        // '&:hover': {
+        //   padding: '10px'
+        // }
+      }
+    },
+    MUIDataTableBodyRow: {
+      hoverCursor: {
+        cursor: 'default'
       }
     }
   }

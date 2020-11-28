@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class EatFoodStockDto {
-    private final Long foodItemId;
+public class EatFoodDto {
+    private final Long foodId;
     private final Integer quantity;
     private final boolean cooked;
 }

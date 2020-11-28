@@ -76,15 +76,14 @@ const mapStateToProps = (state) => {
     loading: state.food.food_loading
   };
 };
-const FoodLookUpNoConnect = (props) => {
+const FoodLookUpNoConnect = ({label="Search", ...props}) => {
   // console.log("lookupfield", props)
-  const [ selectedValue, setSelectedValue ] = useState('');
+  const [ selectedValue, setSelectedValue ] = useState(props.initSelectedValue ? props.initSelectedValue : '');
   const [ input, setInput ] = useState('');
   const [ debouncedInput, setDebouncedInput ] = useState(input);
   const foodItems = [ props.rowIndex ] in props.foodItems ? props.foodItems[ props.rowIndex ] : [];
 
   useEffect(() => {
-    // console.log("input change")
     const timerId = setTimeout(() => {
       setDebouncedInput(input);
     }, 1000);
@@ -96,6 +95,13 @@ const FoodLookUpNoConnect = (props) => {
   }, [ input ]);
 
   useEffect(() => {
+
+    // if(props.initSelectedValue){
+    //   console.log("SET INIT VALUE", props.initSelectedValue)
+
+    //   setSelectedValue(props.initSelectedValue);
+
+    // }
     if (debouncedInput.length && (!foodItems.length || !foodItems.some(item => item.name === debouncedInput))) {
       props.fetchFoodItems(debouncedInput, props.rowIndex);
     }
@@ -105,6 +111,7 @@ const FoodLookUpNoConnect = (props) => {
     <>
       <Grid item xs={12}>
         <Autocomplete
+          value={props.initSelectedValue}
           loading={props.loading}
           fullWidth={true}
           style={{ width: props.width}}
@@ -121,9 +128,10 @@ const FoodLookUpNoConnect = (props) => {
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
             <TextField
+              variant="outlined"
               {...params}
-              label="Search"
-              size="small" />
+              label={label}
+              size="small"></TextField>
           )}
         >
         </Autocomplete>

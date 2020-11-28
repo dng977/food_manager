@@ -1,7 +1,14 @@
 package com.dng.foodmanager.receiptservice.dto;
 
-public class MealItemDto {
-    private Long foodItemId;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-    private Integer quantity;
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class MealItemDto {
+    private final Long foodItemId;
+
+    private final Integer quantity;
 }

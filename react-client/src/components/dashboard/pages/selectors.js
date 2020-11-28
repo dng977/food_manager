@@ -4,6 +4,7 @@ const getReceiptsData = (state) => state.receipts.receipts;
 const getReceiptItemsData = (state) => state.receipts.currentReceipt.receiptItems;
 const getFoodStockData = (state) => state.food.foodStock;
 const getActivityFactorsData = (state) => state.nutrition.activityFactors;
+const getMealsData = (state) => state.food.meals;
 
 export const getReceipts = createSelector(
   getReceiptsData,(data) => {
@@ -33,6 +34,16 @@ export const getFoodStock = createSelector(
       return [ values.foodName, {...values}, {...values} ];
     })
     return [foodStockData, indexToKey];
+  }
+)
+export const getMeals = createSelector(
+  getMealsData,(data) => {
+    const indexToKey = [];
+    const mealsData = Object.values(data).map((values, index) => {
+      indexToKey[index] = parseInt(values.foodItemId, 10);
+      return [ values.name, {id: values.id, quantity: values.quantity, servingSize: values.quantity}, {id: values.id, quantity: values.quantity}, values ];
+    })
+    return [mealsData, indexToKey];
   }
 )
 

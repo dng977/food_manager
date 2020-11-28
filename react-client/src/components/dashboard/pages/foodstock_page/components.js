@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, createMuiTheme, ThemeProvider, RadioGroup, FormControlLabel, Radio, Box, } from '@material-ui/core';
+import { IconButton, Tooltip, Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, createMuiTheme, ThemeProvider, RadioGroup, FormControlLabel, Radio, Box, DialogContentText, TextField, Paper, Divider, } from '@material-ui/core';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
@@ -6,6 +6,8 @@ import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
+import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
+
 import { connect, useSelector } from 'react-redux';
 import { editFoodStockItem } from '../../../../store/actions/foodActions';
 import { Fraction } from 'fractional';
@@ -14,7 +16,7 @@ import { EmptyTable, FoodLookUp } from "../shared_components";
 import MUIDataTable from 'mui-datatables';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import _ from 'lodash';
-const theme = createMuiTheme({
+export const dialogTheme = createMuiTheme({
   overrides: {
     MuiDialogTitle: {
       root: {
@@ -31,115 +33,6 @@ const theme = createMuiTheme({
     }
   }
 })
-
-export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }) => {
-  console.log("render add meal dialog: ", openDialog)
-  const loading = useSelector(state => state.feedback.dialogLoading);
-  const [ ingredientList, setIngredientList ] = useState([ {} ]);
-  const [ emptyInput, setEmptyInput ] = useState(true);
-
-  useEffect(() => {
-    if (ingredientList.length) {
-      setEmptyInput(false);
-
-    } else {
-      setEmptyInput(true)
-    }
-
-  }, [ ingredientList ])
-  const onPortionChange = (index, servingInGrams) => {
-    ingredientList[index].quantity = servingInGrams;
-    setIngredientList(ingredientList)
-  }
-  const updateIngredientList = (selectedFood) => {
-    let ingList = ingredientList;
-    ingList.pop();
-    ingList.push({ selectedFood: selectedFood, quantity: selectedFood.baseServing })
-    ingList.push({});
-    setIngredientList(ingList);
-    
-  }
-
-  return (
-    <ThemeProvider theme={theme}>
-      <Dialog
-        open={openDialog}
-        onClose={onCancel}
-        fullWidth={true}
-        maxWidth="xs"
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >{
-          loading ?
-
-            <DialogTitle>Adding...</DialogTitle> :
-            error ?
-              <>
-                <DialogTitle>{`${error}`}</DialogTitle>
-                <DialogActions>
-                  <Button variant="outlined" onClick={onCancel} color="primary">
-                    Close
-                </Button>
-                </DialogActions>
-              </>
-              : openDialog ?
-                <>
-                  <DialogTitle id="alert-dialog-title">Add a new Meal</DialogTitle>
-                  <DialogContent dividers>
-                    <Grid container direction="column" alignItems="center" justify="center" spacing={3}>
-                      {ingredientList.map((ingredient, index) => {
-                        let selectedFood = ingredient.selectedFood;
-                        return (
-                          <Grid item container alignItems="center" justify="center" spacing={3}>
-                            <Grid item>
-                              <FoodLookUp
-                                width={250}
-
-                                rowIndex={0}
-                                hasConfirmButton={false}
-                                onChange={updateIngredientList}
-                                loading={loading}
-                              />
-                            </Grid>
-                            {_.isEmpty(ingredient) ? null :
-                              <Grid item>
-                                <FoodPortionControl
-                                  servingDesc={selectedFood.servingDesc}
-                                  baseServing={selectedFood.servingSize}
-                                  onPortionChange={servingInGrams => onPortionChange(index,servingInGrams)}
-                                  servingInGrams={ingredient.quantity}
-                                />
-                              </Grid>
-                            }
-                          </Grid>
-                        );
-                      })
-                      }
-                    </Grid>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button fullWidth variant="outlined" onClick={onCancel} color="primary">
-                      Cancel
-                  </Button>
-                    {/* <Button fullWidth disabled={emptyInput} variant="contained" onClick={() => { onConfirm(selectedFood.id, servingInGrams); setSelectedFood(''); }} color="primary" autoFocus>
-                      Add
-                  </Button> */}
-                  </DialogActions>
-                </> : <></>
-        }
-      </Dialog>
-    </ThemeProvider>
-
-  );
-}
-
-AddMealDialog.propTypes = {
-  dialogTitle: PropTypes.string.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  openDialog: PropTypes.bool.isRequired,
-  error: PropTypes.string.isRequired
-}
 
 export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, openDialog }) => {
   console.log("render add dialog: ", openDialog)
@@ -163,7 +56,7 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={dialogTheme}>
       <Dialog
         open={openDialog}
         onClose={onCancel}
@@ -202,7 +95,6 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
                           <FoodPortionControl
                             servingDesc={selectedFood.servingDesc}
                             baseServing={selectedFood.servingSize}
-                            servingUnit={selectedFood.servingUnit}
                             onPortionChange={onPortionChange}
                             servingInGrams={servingInGrams}
                           />
@@ -346,15 +238,19 @@ export class FoodTable extends React.Component {
   }
 }
 
+
 FoodTable.propTypes = {
   setRowsSelected: PropTypes.func.isRequired,
   foodStockItems: PropTypes.array.isRequired,
-  indexToKey: PropTypes.array.isRequired
+  indexToKey: PropTypes.array.isRequired,
+  editFoodStockItem: PropTypes.func,
+  eatFoodStockItem: PropTypes.func,
+  paperElevation: PropTypes.number,
 
 }
 
 
-export const EatCell = ({ value, onEat }) => {
+export const EatCell = ({ value, onEat, onPrepare }) => {
   const [ servingUnits, setServingUnits ] = React.useState(new Fraction(1, 1));
   const [ servingInGrams, setServingInGrams ] = React.useState(value.servingSize)
   const [ condition, setCondition ] = React.useState(value.hasRaw ? "raw" : "cooked");
@@ -371,7 +267,7 @@ export const EatCell = ({ value, onEat }) => {
   }, [ value ])
   const handleOnEatClick = () => {
     let eatFoodStockDto = {
-      foodItemId: value.foodItemId,
+      foodId: value.foodItemId,
       quantity: servingInGrams,
       cooked: condition === "cooked"
     }
@@ -379,43 +275,54 @@ export const EatCell = ({ value, onEat }) => {
   }
 
   return (
-    <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
-      <Grid item>
-        <FoodPortionControl servingDesc={value.servingDesc} servingUnit={value.servingUnit} baseServing={value.servingSize} portionUnits={servingUnits} servingInGrams={servingInGrams} onPortionChange={onPortionChange} />
-      </Grid>
-      <Grid item>
-        <RadioGroup aria-label="gender" name="condition" value={condition} onChange={event => { setCondition(event.target.value) }}>
-          <FormControlLabel value="raw" disabled={!value.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
-          <FormControlLabel value="cooked" disabled={!value.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
-        </RadioGroup>
-      </Grid>
-      <Grid item>{
-        value.quantity === 0 ?
-          <Tooltip title="No more quantiy left of this item.">
-            <div>
-              <Button variant="contained" disabled color="primary" onClick={handleOnEatClick}>
-                Eat
-            </Button>
-            </div>
-          </Tooltip>
-          :
+    value.quantity !== 0 ?
+      <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
+        <Grid item>
+          <FoodPortionControl servingDesc={value.servingDesc} baseServing={value.servingSize} portionUnits={servingUnits} servingInGrams={servingInGrams} onPortionChange={onPortionChange} />
+        </Grid>
+        {onPrepare ? null : <Grid item>
+          <RadioGroup aria-label="gender" name="condition" value={condition} onChange={event => { setCondition(event.target.value) }}>
+            <FormControlLabel value="raw" disabled={!value.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
+            <FormControlLabel value="cooked" disabled={!value.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
+          </RadioGroup>
+        </Grid>}
+        <Grid item>
           <Button variant="contained" color="primary" onClick={handleOnEatClick}>
             Eat
-      </Button>
-      }
-
+         </Button>
+        </Grid>
       </Grid>
-    </Grid>
+      :
+      <Grid container wrap="nowrap" alignItems="center" justify="center" spacing={2}>
+
+        <Grid item>
+          {onPrepare ?
+
+            <Button variant="contained" color="secondary" onClick={onPrepare}>
+              Prepare
+            </Button>
+            :
+            <Tooltip title="No more quantiy left of this item.">
+              <div>
+                <Button variant="contained" disabled color="primary">
+                  Eat
+            </Button>
+              </div>
+            </Tooltip>
+          }
+        </Grid>
+      </Grid>
   );
 }
 EatCell.propTypes = {
   value: PropTypes.object,
-  onEat: PropTypes.func
+  onEat: PropTypes.func,
+  onPrepare: PropTypes.func
 
 }
 
 
-export const QuantityCell = React.memo(({ submitEdit, value }) => {
+export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
   //console.log("before", currentQuantity);
   const [ currentQuantity, setCurrentQuantity ] = useState({ grams: value.quantity, units: new Fraction(value.quantity, value.servingSize) });
 
@@ -450,7 +357,7 @@ export const QuantityCell = React.memo(({ submitEdit, value }) => {
         < Grid item xs >
           <FoodPortionControl
             servingDesc={value.servingDesc}
-            baseServing={value.servingSize}
+            baseServing={value.servingSize ? value.servingSize : quantityInGrams}
             servingInGrams={quantityInGrams}
             onPortionChange={onPortionChange} />
         </Grid >
@@ -470,31 +377,58 @@ export const QuantityCell = React.memo(({ submitEdit, value }) => {
             {currentQuantity.grams === null ?
               <Tooltip title="Not specified"><div>-</div></Tooltip> :
               <Typography noWrap>{
-                `${currentQuantity.units} ${value.servingUnit === 'PIECE' || value.servingUnit === 'FRACTION' ? '' : value.servingUnit.toLowerCase()} (${currentQuantity.grams} g)`}
+                `${currentQuantity.units} (${currentQuantity.grams} g)`}
               </Typography>}
           </Grid>
+          {
+            hasEditMode ?
+              <Grid item>
+                <IconButton onClick={() => { setEditMode(true); }} size='small'>
+                  <Tooltip title="Edit"><EditRoundedIcon color="primary" fontSize="small" /></Tooltip>
+                </IconButton>
+              </Grid>
+              :
+              currentQuantity.grams !== 0 ?
+
+                <Grid item>
+                  <Tooltip title="Empty">
+                  <IconButton color="primary">
+                    <DeleteOutlineRoundedIcon />
+                  </IconButton>
+                  </Tooltip>
+                </Grid>
+                :
+                null
+          }
+
+        </Grid>
+        {value.servingDesc ?
           <Grid item>
-            <IconButton onClick={() => { setEditMode(true); }} size='small'>
-              <Tooltip title="Edit"><EditRoundedIcon color="primary" fontSize="small" /></Tooltip>
-            </IconButton>
+            <Typography variant="caption">
+              {`/${value.servingDesc.toLowerCase()}/`}
+            </Typography>
           </Grid>
-        </Grid>
-        <Grid item>
-          <Typography variant="caption">
-            {`/${value.servingDesc.toLowerCase()}/`}
-          </Typography>
-        </Grid>
+          :
+          null
+        }
       </Grid>
   );
-})
+});
+QuantityCell.propTypes = {
+  hasEditMode: PropTypes.bool
+}
+QuantityCell.defaultProps = {
+  hasEditMode: true
+}
 
 const getServingInUnits = (servingInGrams, baseServing) => {
+  if (baseServing === 0)
+    return new Fraction(0, 1);
   return new Fraction(servingInGrams, baseServing);
 }
 
-const FoodPortionControl = ({ servingDesc, baseServing, servingInGrams, onPortionChange }) => {
+export const FoodPortionControl = ({ servingDesc, baseServing, servingInGrams, onPortionChange }) => {
   // console.log("SERVING DESC", servingDesc)
-
   const changeServing = (plus) => {
     if (plus) {
       if (servingInGrams < baseServing) {
@@ -535,11 +469,17 @@ const FoodPortionControl = ({ servingDesc, baseServing, servingInGrams, onPortio
           </IconButton>
         </Grid>
       </Grid>
-      <Grid item>
-        <Typography variant="caption">
-          {`/${servingDesc.toLowerCase()}/`}
-        </Typography>
-      </Grid>
+      {
+        servingDesc ?
+          <Grid item>
+            <Typography variant="caption">
+              {`/${servingDesc.toLowerCase()}/`}
+            </Typography>
+          </Grid>
+          :
+          null
+      }
+
     </Grid>
   );
 }
@@ -549,5 +489,5 @@ FoodPortionControl.propTypes = {
   baseServing: PropTypes.number,
   portionUnits: PropTypes.instanceOf(Fraction),
   servingInGrams: PropTypes.number,
-  onPortionChange: PropTypes.func
+  onPortionChange: PropTypes.func,
 }

@@ -30,6 +30,7 @@ const apiRequest = ({loading=false, dispatch, getFirebase,request:{method, url, 
     })
     .catch(error => {
       onError(error);
+      dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
       if(loading)
         dispatch({type: POP_LOADING});
     })

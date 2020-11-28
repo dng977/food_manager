@@ -32,7 +32,7 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { fetchReceipts } from '../../store/actions/receiptsActions';
-import { fetchFoodStock } from '../../store/actions/foodActions';
+import { fetchFoodStock, fetchMeals } from '../../store/actions/foodActions';
 import { getPathRegex, dashboardRoutes } from '../../routes';
 import { CLEAR_MESSAGE, START_BATCH_LOADING, STOP_BATCH_LOADING } from '../../store/actions/types';
 import { startBatchLoading, stopBatchLoading } from '../../store/actions/feedbackActions';
@@ -55,6 +55,7 @@ class Dashboard extends React.PureComponent {
     props.fetchNutritionRda();
     props.fetchNutritionState();
     props.fetchFoodStock();
+    props.fetchMeals();
     }
 
     return {init: false};
@@ -285,7 +286,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return {
     clearError: () => dispatch({ type: CLEAR_MESSAGE }),
-    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, startBatchLoading, fetchNutritionRda, fetchNutritionState }, dispatch)
+    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, startBatchLoading, fetchNutritionRda, fetchNutritionState, fetchMeals }, dispatch)
   }
 }
 

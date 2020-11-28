@@ -1,6 +1,7 @@
 package com.dng.foodmanager.receiptservice.services;
 
 import com.dng.foodmanager.receiptservice.domain.FoodItem;
+import com.dng.foodmanager.receiptservice.domain.NutritionState;
 import com.dng.foodmanager.receiptservice.dto.*;
 
 import java.sql.SQLDataException;
@@ -21,6 +22,15 @@ public interface FoodService {
 
     List<FoodStockDto> addItemToFoodStock(String userId, FoodStockAddDto foodStockAddDto);
 
-    NutritionStateDto eat(String userId, EatFoodStockDto eatFoodStockDto);
+    NutritionStateDto eat(String userId, EatFoodDto eatFoodDto);
 
+    void editMeal(String userId, MealDto mealDto);
+
+    List<MealDto> addMeal(String userId, MealDto mealDto);
+
+    void deleteMeal(String uid, List<Long> idsArray);
+
+    List<MealDto> fetchMeals(String uid);
+
+    NutritionStateDto eatMeal(String userId, EatFoodDto eatFoodDto);
 }

@@ -3,10 +3,7 @@ package com.dng.foodmanager.receiptservice.services;
 import com.dng.foodmanager.receiptservice.domain.*;
 import com.dng.foodmanager.receiptservice.domain.id_classes.FoodStockId;
 import com.dng.foodmanager.receiptservice.dto.*;
-import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;
-import com.dng.foodmanager.receiptservice.repositories.FoodStockRepository;
-import com.dng.foodmanager.receiptservice.repositories.NutritionStateRepository;
-import com.dng.foodmanager.receiptservice.repositories.UserRepository;
+import com.dng.foodmanager.receiptservice.repositories.*;
 import com.dng.foodmanager.receiptservice.util.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +24,7 @@ public class FoodServiceImpl implements FoodService {
     private final DtoConverter dtoConverter;
     private final NutritionStateRepository nutritionStateRepository;
     private final UserRepository userRepository;
+    private final MealRepository mealRepository;
 
 
     @Override
@@ -53,29 +51,24 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public void editFoodStockItem(String uid, FoodStockDto foodStockDto) throws SQLDataException {
         Optional<FoodStock> foodStockOpt = foodStockRepository.findByUserIdAndFoodItemId(uid, foodStockDto.getFoodItemId());
-        if(foodStockOpt.isPresent()){
+        if (foodStockOpt.isPresent()) {
             FoodStock foodStock = foodStockOpt.get();
             foodStock.setQuantity(foodStockDto.getQuantity());
             foodStockRepository.save(foodStock);
-        }else{
+        } else {
             throw new SQLDataException("Food not present");
         }
     }
 
     @Override
     public List<FoodStockDto> getFoodStock(String uid) {
-        List<FoodStockDto> foodStockDtoList = new ArrayList<>();
-        foodStockRepository.findByUserId(uid).iterator().forEachRemaining(
-                foodStockItem -> foodStockDtoList.add(dtoConverter.convertToDto(foodStockItem))
-        );
-
-        return foodStockDtoList;
+        return foodStockRepository.findByUserId(uid).stream().map(dtoConverter::convertToDto).collect(Collectors.toList());
     }
 
     @Transactional
     @Override
     public void deleteFoodStockItems(String uid, List<Long> idsArray) {
-        for (Long id : idsArray){
+        for (Long id : idsArray) {
             foodStockRepository.deleteById(new FoodStockId(uid, id));
         }
     }
@@ -83,20 +76,19 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public List<FoodStockDto> addItemToFoodStock(String userId, FoodStockAddDto foodStockAddDto) {
         Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(foodStockAddDto.getFoodItemId());
-        if(newFoodItemOpt.isPresent()){
+        if (newFoodItemOpt.isPresent()) {
             FoodItem newFoodItem = newFoodItemOpt.get();
             Optional<FoodStock> oldFoodStockItemOpt = foodStockRepository.findByUserIdAndFoodItemId(userId, newFoodItem.getId());
-            if(oldFoodStockItemOpt.isPresent()){
+            if (oldFoodStockItemOpt.isPresent()) {
                 FoodStock oldFoodStockItem = oldFoodStockItemOpt.get();
                 oldFoodStockItem.setQuantity(oldFoodStockItem.getQuantity() + foodStockAddDto.getQuantity());
                 foodStockRepository.save(oldFoodStockItem);
-            }else{
-                FoodStock foodStockItem = new FoodStock(userId,newFoodItem, foodStockAddDto.getQuantity());
+            } else {
+                FoodStock foodStockItem = new FoodStock(userId, newFoodItem, foodStockAddDto.getQuantity());
                 foodStockRepository.save(foodStockItem);
             }
 
-        }
-        else{
+        } else {
             throw new NoSuchElementException("Food Item with id=" + foodStockAddDto.getFoodItemId() + " is not present.");
         }
 
@@ -105,15 +97,15 @@ public class FoodServiceImpl implements FoodService {
 
     @Transactional
     @Override
-    public NutritionStateDto eat(String userId, EatFoodStockDto eatFoodStockDto) throws NoSuchElementException{
+    public NutritionStateDto eat(String userId, EatFoodDto eatFoodDto) throws NoSuchElementException {
         //1) Remove eaten food
-        FoodStock foodStockItem = foodStockRepository.findByUserIdAndFoodItemId(userId, eatFoodStockDto.getFoodItemId()).get();
+        FoodStock foodStockItem = foodStockRepository.findByUserIdAndFoodItemId(userId, eatFoodDto.getFoodId()).get();
 
-        int amountEaten = eatFoodStockDto.getQuantity();
+        int amountEaten = eatFoodDto.getQuantity();
 
-        if(foodStockItem.getQuantity() != null){
+        if (foodStockItem.getQuantity() != null) {
             int oldQuantity = foodStockItem.getQuantity();
-            if(oldQuantity < amountEaten)
+            if (oldQuantity < amountEaten)
                 throw new IllegalArgumentException("The food hasn't got sufficient quantity.");
 
             foodStockItem.setQuantity(oldQuantity - amountEaten);
@@ -121,12 +113,11 @@ public class FoodServiceImpl implements FoodService {
         }
 
 
-
         //2) Set nutrition
-        Optional<FoodItem> foodItemOptional = foodItemRepository.findById(eatFoodStockDto.getFoodItemId());
+        Optional<FoodItem> foodItemOptional = foodItemRepository.findById(eatFoodDto.getFoodId());
 
-        Optional<FoodNutrition> foodNutritionOptional = eatFoodStockDto.isCooked() ? foodItemOptional.get().getNutritionCooked() : foodItemOptional.get().getNutritionRaw();
-        if(!foodNutritionOptional.isPresent())
+        Optional<FoodNutrition> foodNutritionOptional = eatFoodDto.isCooked() ? foodItemOptional.get().getNutritionCooked() : foodItemOptional.get().getNutritionRaw();
+        if (!foodNutritionOptional.isPresent())
             throw new IllegalArgumentException("Nutrition info for either raw or cooked isn't present.");
 
         FoodNutrition foodNutrition = foodNutritionOptional.get();
@@ -139,7 +130,7 @@ public class FoodServiceImpl implements FoodService {
             update = true;
             nutritionState = nutritionStateOptional.get();
         } else {
-            nutritionState = new NutritionState(userId,LocalDate.now());
+            nutritionState = new NutritionState(userId, LocalDate.now());
         }
 
         nutritionState.setNutrients(
@@ -198,4 +189,42 @@ public class FoodServiceImpl implements FoodService {
 
     }
 
+    @Override
+    public void editMeal(String userId, MealDto mealDto) {
+        Optional<Meal> mealOptional = mealDto.getId() == null ? Optional.empty() : mealRepository.findById(mealDto.getId());
+        Meal meal = mealOptional.orElseThrow(() -> new NoSuchElementException("Meal Item with name=" + mealDto.getName() + " is not present."));
+        meal.setName(mealDto.getName());
+        meal.setDescription(mealDto.getDescription());
+        meal.setIngredients(mealDto.getIngredients().stream().map(mealItemDto ->
+                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(), mealItemDto.getQuantity())).collect(Collectors.toList()));
+        mealRepository.save(meal);
+
+    }
+
+    @Override
+    public List<MealDto> addMeal(String userId, MealDto mealDto) {
+        User user = userRepository.findById(userId).get();
+        Meal meal = new Meal();
+        meal.setUser(user);
+        meal.setName(mealDto.getName());
+        meal.setDescription(mealDto.getDescription());
+        meal.setQuantity(mealDto.getQuantity());
+        meal.setIngredients(mealDto.getIngredients().stream().map(mealItemDto ->
+                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(), mealItemDto.getQuantity())).collect(Collectors.toList()));
+        mealRepository.save(meal);
+
+        return mealRepository.findByUserId(userId).stream().map(Meal::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteMeal(String uid, List<Long> idsArray) {
+        for (Long id : idsArray) {
+            mealRepository.deleteById(id);
+        }
+    }
+
+    @Override
+    public List<MealDto> fetchMeals(String uid) {
+        return  mealRepository.findByUserId(uid).stream().map(Meal::toDto).collect(Collectors.toList());
+    }
 }

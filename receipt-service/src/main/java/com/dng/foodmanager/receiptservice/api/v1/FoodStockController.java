@@ -22,7 +22,7 @@ public class FoodStockController {
     public static final String BASE_URL = "/api/v1/foodstock";
     private final FoodService foodService;
 
-    @PutMapping("/item")
+    @PutMapping("/items")
     @ResponseStatus(HttpStatus.OK)
     public void editFoodStockItem(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody FoodStockDto foodStockDto) throws SQLDataException {
         
@@ -30,7 +30,7 @@ public class FoodStockController {
         foodService.editFoodStockItem(principal.getUid(), foodStockDto);
     }
 
-    @GetMapping
+    @GetMapping("/items")
     @ResponseStatus(HttpStatus.OK)
     public List<FoodStockDto> getFoodStock(@AuthenticationPrincipal CustomPrincipal principal){
         
@@ -39,25 +39,59 @@ public class FoodStockController {
     }
 
 
-    @DeleteMapping
+    @DeleteMapping("/items")
     @ResponseStatus(HttpStatus.OK)
     public void deleteFoodStockItems(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody List<Long> idsArray){
 
         foodService.deleteFoodStockItems(principal.getUid(), idsArray);
     }
 
-    @PostMapping("/item/add")
+    @PostMapping("/items/add")
     @ResponseStatus(HttpStatus.OK)
-    public List<FoodStockDto> addItemToFoodStock(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody FoodStockAddDto foodStockAddDto) throws SQLDataException {
+    public List<FoodStockDto> addItemToFoodStock(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody FoodStockAddDto foodStockAddDto) {
 
         return foodService.addItemToFoodStock(principal.getUid(), foodStockAddDto);
     }
 
-    @PostMapping("/item/eat")
+    @PostMapping("/items/eat")
     @ResponseStatus(HttpStatus.OK)
-    public NutritionStateDto eatAnItem(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody EatFoodStockDto eatFoodStockDto) throws SQLDataException {
+    public NutritionStateDto eatAnItem(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody EatFoodDto eatFoodDto) {
 
-        return foodService.eat(principal.getUid(), eatFoodStockDto);
+        return foodService.eat(principal.getUid(), eatFoodDto);
+    }
+
+    @GetMapping("/meals")
+    @ResponseStatus(HttpStatus.OK)
+    public List<MealDto> fetchMeals(@AuthenticationPrincipal CustomPrincipal principal) {
+
+        return foodService.fetchMeals(principal.getUid());
+    }
+
+    @PutMapping("/meals")
+    @ResponseStatus(HttpStatus.OK)
+    public void editMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody MealDto mealDto) {
+
+        foodService.editMeal(principal.getUid(), mealDto);
+    }
+
+    @PostMapping("/meals")
+    @ResponseStatus(HttpStatus.OK)
+    public List<MealDto> addMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody MealDto mealDto) {
+
+        return foodService.addMeal(principal.getUid(), mealDto);
+    }
+
+    @DeleteMapping("/meals")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody List<Long> idsArray) {
+
+        foodService.deleteMeal(principal.getUid(), idsArray);
+    }
+    @PostMapping("/meals/eat")
+    @ResponseStatus(HttpStatus.OK)
+    public void eatMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody EatFoodDto eatFoodDto) {
+
+        foodService.eatMeal(principal.getUid(), eatFoodDto);
     }
 
 }
