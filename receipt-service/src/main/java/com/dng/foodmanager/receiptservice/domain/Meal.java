@@ -1,6 +1,6 @@
 package com.dng.foodmanager.receiptservice.domain;
 
-import com.dng.foodmanager.receiptservice.dto.MealDto;
+import com.dng.foodmanager.receiptservice.dto.food_dtos.MealDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

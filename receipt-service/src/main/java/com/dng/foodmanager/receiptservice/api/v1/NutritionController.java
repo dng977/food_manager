@@ -2,10 +2,8 @@ package com.dng.foodmanager.receiptservice.api.v1;
 
 import com.dng.foodmanager.receiptservice.config.security.CustomPrincipal;
 import com.dng.foodmanager.receiptservice.dto.ActivityDto;
-import com.dng.foodmanager.receiptservice.dto.FoodStockDto;
 import com.dng.foodmanager.receiptservice.dto.NutritionRdaDto;
 import com.dng.foodmanager.receiptservice.dto.NutritionStateDto;
-import com.dng.foodmanager.receiptservice.services.FoodService;
 import com.dng.foodmanager.receiptservice.services.NutritionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLDataException;
 import java.util.List;
 
 @Slf4j

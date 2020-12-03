@@ -69,7 +69,7 @@ export function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="">
-        Your Website
+        Food Manager
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}

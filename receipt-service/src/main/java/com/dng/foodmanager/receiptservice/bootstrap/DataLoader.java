@@ -1,7 +1,10 @@
 package com.dng.foodmanager.receiptservice.bootstrap;
 
 import com.dng.foodmanager.receiptservice.domain.User;
+import com.dng.foodmanager.receiptservice.dto.food_dtos.FoodStockDto;
 import com.dng.foodmanager.receiptservice.repositories.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.ExportedUserRecord;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -19,6 +22,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -59,7 +63,21 @@ public class DataLoader implements ApplicationRunner {
         log.info("----Loading users----");
         loadUsers();
 
+//        log.info("----Creating Json DTOs----");
+//        createJsonDtos();
 
+    }
+    private void createJsonDtos() {
+        if(autoDDL.equals("create")){
+            try{
+                String json = new ObjectMapper().writeValueAsString(new FoodStockDto());
+                Files.writeString(Path.of("src/main/resources/data/json_dto/FoodStockDto.json"),json);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void loadFromDatabase() {

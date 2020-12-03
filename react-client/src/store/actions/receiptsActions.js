@@ -83,7 +83,8 @@ export const deleteReceipt = (id, callback) => async (dispatch , getState, {getF
 export const editReceiptItem = (oldItemId,newFoodItemDto) => async (dispatch , getState, {getFirebase}) => {
   //dispatch({type: LOADING});
   const id = getState().receipts.currentReceipt.id
-  const oldReceiptItem = getState().receipts.currentReceipt.receiptItems[oldItemId - 1]
+  const oldReceiptItem = getState().receipts.currentReceipt.receiptItems[oldItemId]
+
   const newReceiptItem = {...oldReceiptItem, foodItemReceiptDto: [newFoodItemDto], status: itemStatus.RECOGNIZED}
   
   apiRequest({
@@ -99,7 +100,7 @@ export const editReceiptItem = (oldItemId,newFoodItemDto) => async (dispatch , g
 };
 
 const itemsReadyForStock = (receiptItems) => {
-  return receiptItems.some(item => item.status === itemStatus.RECOGNIZED)
+  return Object.values(receiptItems).some(item => item.status === itemStatus.RECOGNIZED)
 }
 
 export const addReceiptItemsToFoodStock = () => async (dispatch , getState, {getFirebase}) => {

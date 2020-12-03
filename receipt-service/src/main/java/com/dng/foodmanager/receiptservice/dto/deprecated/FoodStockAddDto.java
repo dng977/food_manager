@@ -1,4 +1,4 @@
-package com.dng.foodmanager.receiptservice.dto;
+package com.dng.foodmanager.receiptservice.dto.deprecated;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

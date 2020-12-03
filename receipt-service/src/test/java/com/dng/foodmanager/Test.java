@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 public class Test {
     public static void main(String[] args) {
-        System.out.println("  asdasd asdas".strip());
+        System.out.print("  asdasd asdas".strip());
 
     }
 }

@@ -12,7 +12,7 @@ export default (state = initState, action) => {
       return { ...state, receipts: { ...(_.mapKeys(action.payload, 'id')) } };
     case FETCH_RECEIPT_ITEMS:
       return { ...state, 
-        currentReceipt: {id: action.payload.id, imageData: '', receiptItems: action.payload.receiptItems}, 
+        currentReceipt: {id: action.payload.id, imageData: '', receiptItems: { ...(_.mapKeys(action.payload.receiptItems, 'id'))}}, 
         }
     case UPLOAD_RECEIPT:
       return { ...state, receipts: { ...state.receipts, [ action.payload.id ]: action.payload } };
@@ -23,7 +23,7 @@ export default (state = initState, action) => {
     case EDIT_RECEIPT_ITEM:
       return { ...state, 
         currentReceipt: {
-         ...state.currentReceipt, receiptItems: state.currentReceipt.receiptItems.map(item => item.id === action.payload.newReceiptItem.id ? action.payload.newReceiptItem : item)
+         ...state.currentReceipt, receiptItems: { ...state.currentReceipt.receiptItems, [action.payload.newReceiptItem.id]: action.payload.newReceiptItem }
         }, 
           };
 

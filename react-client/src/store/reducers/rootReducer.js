@@ -7,8 +7,9 @@ import receiptsReducer from './receiptsReducer';
 import foodReducer from './foodReducer';
 import feedbackReducer from './feedbackReducer';
 import nutritionReducer from './nutritionReducer';
+import {SIGNOUT_SUCCESS} from '../actions/types'
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   auth: authReducer,
   firestore: firestoreReducer,
   firebase: firebaseReducer,
@@ -19,6 +20,13 @@ const rootReducer = combineReducers({
   nutrition: nutritionReducer
 
 });
+
+const rootReducer = (state, action) => {
+  if(action.type ===  SIGNOUT_SUCCESS){
+    state = {};
+  }
+  return appReducer(state, action);
+}
 
 export default rootReducer
 

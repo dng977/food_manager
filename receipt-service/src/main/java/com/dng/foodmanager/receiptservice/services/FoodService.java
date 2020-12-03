@@ -1,8 +1,8 @@
 package com.dng.foodmanager.receiptservice.services;
 
 import com.dng.foodmanager.receiptservice.domain.FoodItem;
-import com.dng.foodmanager.receiptservice.domain.NutritionState;
 import com.dng.foodmanager.receiptservice.dto.*;
+import com.dng.foodmanager.receiptservice.dto.food_dtos.*;
 
 import java.sql.SQLDataException;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface FoodService {
     Set<FoodItem> getFoodItems();
-    List<FoodItemReceiptDto> getPlainFoodItemsByName(String name);
+//    List<FoodItemReceiptDto> getPlainFoodItemsByName(String name);
     List<FoodItemDto> getFoodItemsByName(String name);
 
 
@@ -20,7 +20,7 @@ public interface FoodService {
 
     void deleteFoodStockItems(String uid, List<Long> fItemIds);
 
-    List<FoodStockDto> addItemToFoodStock(String userId, FoodStockAddDto foodStockAddDto);
+    List<FoodStockDto> addItemToFoodStock(String userId, FoodStockDto foodStockDto);
 
     NutritionStateDto eat(String userId, EatFoodDto eatFoodDto);
 

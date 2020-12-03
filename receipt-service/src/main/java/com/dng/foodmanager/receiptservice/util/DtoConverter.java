@@ -2,6 +2,8 @@ package com.dng.foodmanager.receiptservice.util;
 
 import com.dng.foodmanager.receiptservice.domain.*;
 import com.dng.foodmanager.receiptservice.dto.*;
+import com.dng.foodmanager.receiptservice.dto.food_dtos.FoodItemDto;
+import com.dng.foodmanager.receiptservice.dto.food_dtos.FoodStockDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -21,7 +23,7 @@ public class DtoConverter {
         ReceiptItemDto receiptItemDto = new ReceiptItemDto(
                 receiptItem.getId(),
                 receiptItem.getReferenceName(),
-                receiptItem.getRecognizedFoods().stream().map(this::convertToPlainDto).collect(Collectors.toList()),
+                receiptItem.getRecognizedFoods().stream().map(this::convertToDto).collect(Collectors.toList()),
                 receiptItem.getStatus().toString());
         System.out.println(receiptItemDto.toString());
         return receiptItemDto;
@@ -29,13 +31,9 @@ public class DtoConverter {
 
     public FoodStockDto convertToDto(FoodStock foodStock){
         FoodItem foodItem = foodStock.getFoodItem();
-        return new FoodStockDto(
-                foodStock.getFoodItemId(),
-                foodItem.getName(),
+        FoodItemDto foodItemDto = convertToDto(foodItem);
+        return new FoodStockDto(foodItemDto,
                 foodStock.getQuantity(),
-                foodItem.getServingSize(),
-                foodItem.getServingDesc(),
-                foodItem.getServingUnit().isPresent() ? foodItem.getServingUnit().get() : ServingUnit.PIECE,
                 foodItem.getNutritionRaw().isPresent(),
                 foodItem.getNutritionCooked().isPresent()
         );
@@ -51,9 +49,9 @@ public class DtoConverter {
                 null);
         //TODO get nutrition as well
     }
-
-    public FoodItemReceiptDto convertToPlainDto(FoodItem foodItem) {
-        return new FoodItemReceiptDto(foodItem.getId(), foodItem.getName());
-    }
+//
+//    public FoodItemReceiptDto convertToPlainDto(FoodItem foodItem) {
+//        return new FoodItemReceiptDto(foodItem.getId(), foodItem.getName());
+//    }
 
 }

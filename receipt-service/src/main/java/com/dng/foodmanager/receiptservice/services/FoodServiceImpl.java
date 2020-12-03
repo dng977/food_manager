@@ -3,6 +3,7 @@ package com.dng.foodmanager.receiptservice.services;
 import com.dng.foodmanager.receiptservice.domain.*;
 import com.dng.foodmanager.receiptservice.domain.id_classes.FoodStockId;
 import com.dng.foodmanager.receiptservice.dto.*;
+import com.dng.foodmanager.receiptservice.dto.food_dtos.*;
 import com.dng.foodmanager.receiptservice.repositories.*;
 import com.dng.foodmanager.receiptservice.util.DtoConverter;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +36,11 @@ public class FoodServiceImpl implements FoodService {
         return foodItems;
     }
 
-    @Override
-    public List<FoodItemReceiptDto> getPlainFoodItemsByName(String name) {
-        List<FoodItem> foodItems = foodItemRepository.findByNameLike("%" + name + "%");
-        return foodItems.stream().map(dtoConverter::convertToPlainDto).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<FoodItemReceiptDto> getPlainFoodItemsByName(String name) {
+//        List<FoodItem> foodItems = foodItemRepository.findByNameLike("%" + name + "%");
+//        return foodItems.stream().map(dtoConverter::convertToPlainDto).collect(Collectors.toList());
+//    }
 
     @Override
     public List<FoodItemDto> getFoodItemsByName(String name) {
@@ -50,7 +51,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public void editFoodStockItem(String uid, FoodStockDto foodStockDto) throws SQLDataException {
-        Optional<FoodStock> foodStockOpt = foodStockRepository.findByUserIdAndFoodItemId(uid, foodStockDto.getFoodItemId());
+        Optional<FoodStock> foodStockOpt = foodStockRepository.findByUserIdAndFoodItemId(uid, foodStockDto.getFoodItemDto().getId());
         if (foodStockOpt.isPresent()) {
             FoodStock foodStock = foodStockOpt.get();
             foodStock.setQuantity(foodStockDto.getQuantity());
@@ -74,22 +75,22 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public List<FoodStockDto> addItemToFoodStock(String userId, FoodStockAddDto foodStockAddDto) {
-        Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(foodStockAddDto.getFoodItemId());
+    public List<FoodStockDto> addItemToFoodStock(String userId, FoodStockDto foodStockDto) {
+        Optional<FoodItem> newFoodItemOpt = foodItemRepository.findById(foodStockDto.getFoodItemDto().getId());
         if (newFoodItemOpt.isPresent()) {
             FoodItem newFoodItem = newFoodItemOpt.get();
             Optional<FoodStock> oldFoodStockItemOpt = foodStockRepository.findByUserIdAndFoodItemId(userId, newFoodItem.getId());
             if (oldFoodStockItemOpt.isPresent()) {
                 FoodStock oldFoodStockItem = oldFoodStockItemOpt.get();
-                oldFoodStockItem.setQuantity(oldFoodStockItem.getQuantity() + foodStockAddDto.getQuantity());
+                oldFoodStockItem.setQuantity(oldFoodStockItem.getQuantity() + foodStockDto.getQuantity());
                 foodStockRepository.save(oldFoodStockItem);
             } else {
-                FoodStock foodStockItem = new FoodStock(userId, newFoodItem, foodStockAddDto.getQuantity());
+                FoodStock foodStockItem = new FoodStock(userId, newFoodItem, foodStockDto.getQuantity());
                 foodStockRepository.save(foodStockItem);
             }
 
         } else {
-            throw new NoSuchElementException("Food Item with id=" + foodStockAddDto.getFoodItemId() + " is not present.");
+            throw new NoSuchElementException("Food Item with id=" + foodStockDto.getFoodItemDto().getId() + " is not present.");
         }
 
         return getFoodStock(userId);
@@ -116,7 +117,7 @@ public class FoodServiceImpl implements FoodService {
         //2) Set nutrition
         Optional<FoodItem> foodItemOptional = foodItemRepository.findById(eatFoodDto.getFoodId());
 
-        Optional<FoodNutrition> foodNutritionOptional = eatFoodDto.isCooked() ? foodItemOptional.get().getNutritionCooked() : foodItemOptional.get().getNutritionRaw();
+        Optional<FoodNutrition> foodNutritionOptional = eatFoodDto.getCooked() ? foodItemOptional.get().getNutritionCooked() : foodItemOptional.get().getNutritionRaw();
         if (!foodNutritionOptional.isPresent())
             throw new IllegalArgumentException("Nutrition info for either raw or cooked isn't present.");
 
@@ -226,5 +227,10 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public List<MealDto> fetchMeals(String uid) {
         return  mealRepository.findByUserId(uid).stream().map(Meal::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public NutritionStateDto eatMeal(String userId, EatFoodDto eatFoodDto) {
+        return null;
     }
 }

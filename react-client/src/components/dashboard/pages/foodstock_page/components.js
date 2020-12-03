@@ -16,6 +16,7 @@ import { EmptyTable, FoodLookUp } from "../shared_components";
 import MUIDataTable from 'mui-datatables';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import _ from 'lodash';
+import { FoodStockDto } from '../../../../apis/dtos/foodDtos';
 export const dialogTheme = createMuiTheme({
   overrides: {
     MuiDialogTitle: {
@@ -144,7 +145,7 @@ export class FoodTable extends React.Component {
     rowsPerPageOptions: [],
     filterType: "dropdown",
     responsive: "standard",
-    tableBodyHeight: "600px",
+    // tableBodyHeight: "600px",
     tableBodyMaxHeight: "800px",
     selectableRows: "multiple",
     selectableRowsHeader: true,
@@ -177,7 +178,7 @@ export class FoodTable extends React.Component {
     {
       name: '',
       options: {
-        customBodyRender: (value) => {
+        customBodyRender: (value, tableMeta) => {
           return <EatCell value={value} onEat={(eatFoodStockDto) => this.props.eatFoodStockItem(eatFoodStockDto)} />;
         }
       }
@@ -185,11 +186,13 @@ export class FoodTable extends React.Component {
     {
       name: 'Quantity',
       options: {
-        customBodyRender: (value, { rowIndex }) => {
+        customBodyRender: (value, { rowIndex, rowData }) => {
           return <QuantityCell
             value={value}
             submitEdit={(newQuantity) => {
-              this.props.editFoodStockItem(this.props.indexToKey[ rowIndex ], { quantity: newQuantity })
+              console.log(value, rowData);
+              let newFoodStockDto = {...rowData, quantity: newQuantity};//rowData or Value
+              this.props.editFoodStockItem(newFoodStockDto);
             }} />;
         },
         sortCompare: (order) => {
@@ -267,7 +270,7 @@ export const EatCell = ({ value, onEat, onPrepare }) => {
   }, [ value ])
   const handleOnEatClick = () => {
     let eatFoodStockDto = {
-      foodId: value.foodItemId,
+      foodItemId: value.foodItemId,
       quantity: servingInGrams,
       cooked: condition === "cooked"
     }

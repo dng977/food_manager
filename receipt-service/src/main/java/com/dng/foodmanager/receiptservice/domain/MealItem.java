@@ -1,11 +1,8 @@
 package com.dng.foodmanager.receiptservice.domain;
 
-import com.dng.foodmanager.receiptservice.domain.id_classes.MealItemId;
-import com.dng.foodmanager.receiptservice.dto.MealItemDto;
-import com.fasterxml.jackson.databind.ser.Serializers;
+import com.dng.foodmanager.receiptservice.dto.food_dtos.MealItemDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 

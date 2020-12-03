@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { FETCH_ACTIVITY_FACTORS,FETCH_NUTRITION_RDA,FETCH_NUTRITION_STATE,UPDATE_USER_STATE } from '../actions/types';
 
 const initState = {
-  userDetails: true,
+  userDetails: false,
   nutritionRDA: {},
   nutritionState: {},
   activityFactors: [],
