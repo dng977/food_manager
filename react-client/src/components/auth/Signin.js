@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { reduxForm, Field, SubmissionError } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { signIn } from '../../store/actions/authActions'
+import { signIn } from '../../redux_store/auth_store/authActions'
 import { Redirect } from 'react-router-dom';
 import styles from './Signin.styles';
 import { makeStyles } from '@material-ui/core/styles';

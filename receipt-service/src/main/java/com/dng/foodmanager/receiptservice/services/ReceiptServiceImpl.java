@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 import com.dng.foodmanager.receiptservice.converters.ImageToReceipt;
 import com.dng.foodmanager.receiptservice.domain.*;
-import com.dng.foodmanager.receiptservice.dto.ReceiptDto;
-import com.dng.foodmanager.receiptservice.dto.ReceiptItemDto;
+import com.dng.foodmanager.receiptservice.dto.receipt_dtos.ReceiptDto;
+import com.dng.foodmanager.receiptservice.dto.receipt_dtos.ReceiptItemDto;
 import com.dng.foodmanager.receiptservice.repositories.FoodItemRepository;
 import com.dng.foodmanager.receiptservice.repositories.FoodStockRepository;
 import com.dng.foodmanager.receiptservice.repositories.ReceiptItemRepository;

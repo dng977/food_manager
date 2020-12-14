@@ -9,14 +9,13 @@ import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 
 import { connect, useSelector } from 'react-redux';
-import { editFoodStockItem } from '../../../../store/actions/foodActions';
+import { editFoodStockItem } from '../../../../redux_store/food_store/foodActions';
 import { Fraction } from 'fractional';
 import PropTypes from 'prop-types';
 import { EmptyTable, FoodLookUp } from "../shared_components";
 import MUIDataTable from 'mui-datatables';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import _ from 'lodash';
-import { FoodStockDto } from '../../../../apis/dtos/foodDtos';
 export const dialogTheme = createMuiTheme({
   overrides: {
     MuiDialogTitle: {

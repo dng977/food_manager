@@ -8,11 +8,11 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { styles } from '../../../shared/styles';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { uploadReceipt, fetchReceiptItems, setCurrentReceipt } from '../../../../store/actions/receiptsActions';
+import { uploadReceipt, fetchReceiptItems } from '../../../../redux_store/receipt_store/receiptsActions';
 import { EmptyTable } from '../shared_components';
 import { getReceipts } from '../selectors';
 import { useRef } from 'react';
-import { CLEAR_MESSAGE } from '../../../../store/actions/types';
+import { CLEAR_MESSAGE } from '../../../../redux_store/sharedTypes';
 import { bindActionCreators } from 'redux';
 import loadImage from 'blueimp-load-image';
 
@@ -20,7 +20,6 @@ import loadImage from 'blueimp-load-image';
 const Receipts = (props) => {
   const fileInput = useRef();
   useEffect(() => {
-    // props.setCurrentReceipt('');
     console.log("use effect receipts trigggered");
   }, []);
 
@@ -140,7 +139,7 @@ const mapDispatchToProps = dispatch => {
   return {
     // clearError: () => dispatch({ type: CLEAR_ERROR }),
     dispatch,
-    ...bindActionCreators({ uploadReceipt, fetchReceiptItems, setCurrentReceipt }, dispatch)
+    ...bindActionCreators({ uploadReceipt, fetchReceiptItems }, dispatch)
   }
 }
 const mapStateToProps = (state) => {

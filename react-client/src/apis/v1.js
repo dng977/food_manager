@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { PUSH_LOADING, MESSAGE, POP_LOADING } from '../store/actions/types';
+import { PUSH_LOADING, MESSAGE, POP_LOADING } from '../redux_store/feedback_store/feedbackTypes';
 
 export const api = axios.create({
   baseURL: 'http://localhost:8081/api/v1/',
 });
 
-const apiRequest = ({loading=false, dispatch, getFirebase,request:{method, url, payload = {}, otherHeaders = []} ,onSuccess, 
+const apiRequest = ({loading=false, dispatch, getFirebase,request:{method, url, payload = {}, otherHeaders = {}} ,onSuccess, 
   onError = error => {
     dispatch({type: MESSAGE, payload: "ERROR: " + error.message})
 

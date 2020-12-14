@@ -16,7 +16,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import requireAuth from '../requireAuth';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { signOut } from '../../store/actions/authActions';
+import { signOut } from '../../redux_store/auth_store/authActions';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { Menu, MenuItem, Tooltip, Badge, Snackbar } from '@material-ui/core';
@@ -31,13 +31,12 @@ import FastfoodIcon from '@material-ui/icons/Fastfood';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { fetchReceipts } from '../../store/actions/receiptsActions';
-import { fetchFoodStock, fetchMeals } from '../../store/actions/foodActions';
+import { fetchReceipts } from '../../redux_store/receipt_store/receiptsActions';
+import { fetchFoodStock, fetchMeals } from '../../redux_store/food_store/foodActions';
 import { getPathRegex, dashboardRoutes } from '../../routes';
-import { CLEAR_MESSAGE, START_BATCH_LOADING, STOP_BATCH_LOADING } from '../../store/actions/types';
-import { startBatchLoading, stopBatchLoading } from '../../store/actions/feedbackActions';
-import { fetchNutritionRda, fetchNutritionState } from '../../store/actions/nutritionActions';
+import { fetchNutritionRda, fetchNutritionState } from '../../redux_store/nutrition_store/nutritionActions';
 import { getReceipts } from './pages/selectors';
+import { CLEAR_MESSAGE } from '../../redux_store/feedback_store/dist/feedbackTypes';
 
 class Dashboard extends React.PureComponent {
 
@@ -286,7 +285,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return {
     clearError: () => dispatch({ type: CLEAR_MESSAGE }),
-    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, startBatchLoading, fetchNutritionRda, fetchNutritionState, fetchMeals }, dispatch)
+    ...bindActionCreators({ signOut, fetchReceipts, fetchFoodStock, fetchNutritionRda, fetchNutritionState, fetchMeals }, dispatch)
   }
 }
 

@@ -1,8 +1,8 @@
 package com.dng.foodmanager.receiptservice.services;
 
 import com.dng.foodmanager.receiptservice.domain.FoodItem;
-import com.dng.foodmanager.receiptservice.dto.*;
 import com.dng.foodmanager.receiptservice.dto.food_dtos.*;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionStateDto;
 
 import java.sql.SQLDataException;
 import java.util.List;

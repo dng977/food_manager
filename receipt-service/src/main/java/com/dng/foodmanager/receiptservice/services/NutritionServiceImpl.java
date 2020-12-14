@@ -5,8 +5,8 @@ import com.dng.foodmanager.receiptservice.domain.NutritionRDA;
 import com.dng.foodmanager.receiptservice.domain.NutritionState;
 import com.dng.foodmanager.receiptservice.domain.User;
 import com.dng.foodmanager.receiptservice.dto.ActivityDto;
-import com.dng.foodmanager.receiptservice.dto.NutritionRdaDto;
-import com.dng.foodmanager.receiptservice.dto.NutritionStateDto;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionRdaDto;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionStateDto;
 import com.dng.foodmanager.receiptservice.repositories.LifeStageGroupRepository;
 import com.dng.foodmanager.receiptservice.repositories.NutritionRDARepository;
 import com.dng.foodmanager.receiptservice.repositories.NutritionStateRepository;
@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 

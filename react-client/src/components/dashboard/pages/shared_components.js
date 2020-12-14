@@ -6,7 +6,7 @@ import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { connect, useSelector } from 'react-redux';
-import { fetchFoodItems } from '../../../store/actions/foodActions';
+import { fetchFoodItems } from '../../../redux_store/food_store/foodActions';
 
 export const EmptyTable = (props) => {
   return (

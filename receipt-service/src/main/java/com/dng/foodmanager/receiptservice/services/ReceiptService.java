@@ -1,12 +1,11 @@
 package com.dng.foodmanager.receiptservice.services;
 
-import com.dng.foodmanager.receiptservice.dto.ReceiptDto;
-import com.dng.foodmanager.receiptservice.dto.ReceiptItemDto;
+import com.dng.foodmanager.receiptservice.dto.receipt_dtos.ReceiptDto;
+import com.dng.foodmanager.receiptservice.dto.receipt_dtos.ReceiptItemDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 public interface ReceiptService {
     void uploadReceipt(String userId, MultipartFile receiptImage) throws IOException;

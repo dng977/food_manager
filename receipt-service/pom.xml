@@ -17,6 +17,7 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<typescript-generator.version>2.27.744</typescript-generator.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -166,6 +167,38 @@
 	</dependencyManagement>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>cz.habarta.typescript-generator</groupId>
+				<artifactId>typescript-generator-maven-plugin</artifactId>
+				<version>${typescript-generator.version}</version>
+				<executions>
+					<execution>
+						<id>generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<phase>process-classes</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<jsonLibrary>jackson2</jsonLibrary>
+					<outputFileType>implementationFile </outputFileType>
+					<outputFile>C:\Users\dgarb\Development\Projects\food_manager\react-client\src\apis\dtos\serverDtos.ts</outputFile>
+<!--					<outputFile>target/typescript-generator/serverDtos.d.ts</outputFile>-->
+					<optionalAnnotations>
+						<optionalAnnotation>org.springframework.lang.Nullable</optionalAnnotation>
+					</optionalAnnotations>
+					<mapEnum>asEnum</mapEnum>
+					<classPatterns>
+						<pattern>com.dng.foodmanager.receiptservice.dto.**</pattern>
+					</classPatterns>
+
+					<excludeClassPatterns>
+						<pattern>com.dng.foodmanager.receiptservice.dto.deprecated.*</pattern>
+					</excludeClassPatterns>
+					<outputKind>module</outputKind>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

@@ -1,6 +1,6 @@
 package com.dng.foodmanager.receiptservice.domain;
 
-import com.dng.foodmanager.receiptservice.dto.NutritionRdaDto;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionRdaDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

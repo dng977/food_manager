@@ -2,8 +2,8 @@ package com.dng.foodmanager.receiptservice.services;
 
 import com.dng.foodmanager.receiptservice.domain.*;
 import com.dng.foodmanager.receiptservice.domain.id_classes.FoodStockId;
-import com.dng.foodmanager.receiptservice.dto.*;
 import com.dng.foodmanager.receiptservice.dto.food_dtos.*;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionStateDto;
 import com.dng.foodmanager.receiptservice.repositories.*;
 import com.dng.foodmanager.receiptservice.util.DtoConverter;
 import lombok.RequiredArgsConstructor;

@@ -1,9 +1,10 @@
 package com.dng.foodmanager.receiptservice.util;
 
 import com.dng.foodmanager.receiptservice.domain.*;
-import com.dng.foodmanager.receiptservice.dto.*;
 import com.dng.foodmanager.receiptservice.dto.food_dtos.FoodItemDto;
 import com.dng.foodmanager.receiptservice.dto.food_dtos.FoodStockDto;
+import com.dng.foodmanager.receiptservice.dto.receipt_dtos.ReceiptDto;
+import com.dng.foodmanager.receiptservice.dto.receipt_dtos.ReceiptItemDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -24,7 +25,7 @@ public class DtoConverter {
                 receiptItem.getId(),
                 receiptItem.getReferenceName(),
                 receiptItem.getRecognizedFoods().stream().map(this::convertToDto).collect(Collectors.toList()),
-                receiptItem.getStatus().toString());
+                receiptItem.getStatus());
         System.out.println(receiptItemDto.toString());
         return receiptItemDto;
     }
@@ -45,7 +46,6 @@ public class DtoConverter {
                 foodItem.getDefaultQuantity(),
                 foodItem.getServingSize(),
                 foodItem.getServingDesc(),
-                foodItem.getServingUnit().isPresent() ? foodItem.getServingUnit().get() : ServingUnit.PIECE,
                 null);
         //TODO get nutrition as well
     }

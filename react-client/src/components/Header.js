@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import styles from './Header.styles';
-import {signOut} from '../store/actions/authActions';
+import {signOut} from '../redux_store/auth_store/authActions';
 
 
 const useStyles = makeStyles(styles);

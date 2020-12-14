@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { signUp } from '../../store/actions/authActions';
+import { signUp } from '../../redux_store/auth_store/authActions';
 import { Redirect, useHistory, useLocation } from 'react-router-dom';
 import styles from './Signup.styles';
 import Avatar from '@material-ui/core/Avatar';

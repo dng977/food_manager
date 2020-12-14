@@ -6,7 +6,6 @@ import { macronutrient, MacroNutrient, MicroNutrient } from './objects';
 import _ from 'lodash';
 import { Box, Divider, Grid, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, ListSubheader, makeStyles, Paper, Typography, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { getFormInitialValues } from 'redux-form';
 import clsx from 'clsx';
 import StopRoundedIcon from '@material-ui/icons/StopRounded';
 import PieChartRoundedIcon from '@material-ui/icons/PieChartRounded';

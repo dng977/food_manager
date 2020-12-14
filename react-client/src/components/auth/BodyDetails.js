@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { fetchActivityFactors, sendUserData } from '../../store/actions/nutritionActions';
+import { fetchActivityFactors, sendUserData } from '../../redux_store/nutrition_store/nutritionActions';
 import { Redirect, useHistory } from 'react-router-dom';
 import styles from './BodyDetails.styles';
 import Avatar from '@material-ui/core/Avatar';

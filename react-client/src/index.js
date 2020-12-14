@@ -6,17 +6,18 @@ import ReactDOM from 'react-dom';
 import App from './App';
 // import registerServiceWorker from './registerServiceWorker';
 import { createStore, applyMiddleware, compose } from 'redux';
-import rootReducer from './store/reducers/rootReducer';
+import rootReducer from './redux_store/rootReducer';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createFirestoreInstance } from 'redux-firestore'
 import {ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase';
 import firebase from './config/fbConfig';
 
+//Redux devtools browser extension
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(rootReducer,
-    composeEnhancers(applyMiddleware(thunk.withExtraArgument({getFirebase})))
+    composeEnhancers(applyMiddleware(thunk.withExtraArgument(getFirebase)))
 );
 // react-redux-firebase config
 const rrfConfig = {

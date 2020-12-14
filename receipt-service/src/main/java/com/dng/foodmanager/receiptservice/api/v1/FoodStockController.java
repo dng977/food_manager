@@ -1,10 +1,10 @@
 package com.dng.foodmanager.receiptservice.api.v1;
 
 import com.dng.foodmanager.receiptservice.config.security.CustomPrincipal;
-import com.dng.foodmanager.receiptservice.dto.*;
 import com.dng.foodmanager.receiptservice.dto.food_dtos.EatFoodDto;
 import com.dng.foodmanager.receiptservice.dto.food_dtos.FoodStockDto;
 import com.dng.foodmanager.receiptservice.dto.food_dtos.MealDto;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionStateDto;
 import com.dng.foodmanager.receiptservice.services.FoodService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

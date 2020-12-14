@@ -1,7 +1,7 @@
 package com.dng.foodmanager.receiptservice.domain;
 
 import com.dng.foodmanager.receiptservice.domain.id_classes.NutritionStateId;
-import com.dng.foodmanager.receiptservice.dto.NutritionStateDto;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionStateDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 

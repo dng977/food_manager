@@ -2,8 +2,8 @@ package com.dng.foodmanager.receiptservice.api.v1;
 
 import com.dng.foodmanager.receiptservice.config.security.CustomPrincipal;
 import com.dng.foodmanager.receiptservice.dto.ActivityDto;
-import com.dng.foodmanager.receiptservice.dto.NutritionRdaDto;
-import com.dng.foodmanager.receiptservice.dto.NutritionStateDto;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionRdaDto;
+import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionStateDto;
 import com.dng.foodmanager.receiptservice.services.NutritionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,21 +26,21 @@ public class NutritionController {
 
     @GetMapping("/activity")
     @ResponseStatus(HttpStatus.OK)
-    public List<ActivityDto> getActivityFactors() {
-
+    public List<ActivityDto> fetchActivityFactors() {
         return nutritionService.getActivities();
     }
 
     @GetMapping("/state")
     @ResponseStatus(HttpStatus.OK)
-    public NutritionStateDto getNutritionState(@AuthenticationPrincipal CustomPrincipal principal) {
+    public NutritionStateDto fetchNutritionState(@AuthenticationPrincipal CustomPrincipal principal) {
 
         return nutritionService.getNutritionStateDto(principal.getUid());
     }
 
     @GetMapping("/rda")
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public NutritionRdaDto getNutritionRda(@AuthenticationPrincipal CustomPrincipal principal) {
+    public NutritionRdaDto fetchNutritionRda(@AuthenticationPrincipal CustomPrincipal principal) {
 
         return nutritionService.getNutritionRda(principal.getUid());
     }
