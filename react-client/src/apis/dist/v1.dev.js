@@ -18,7 +18,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var api = _axios["default"].create({
-  baseURL: 'http://localhost:8081/api/v1/'
+  baseURL: 'http://localhost:9090/api/v1/'
 });
 
 exports.api = api;

@@ -15,7 +15,7 @@ spring:
     show-sql: true
     hibernate.ddl-auto: create
 #    hibernate.ddl-auto: update
-  #    properties.hibernate.hbm2ddl.import_files: classpath:/data/sql/food_nutrition_bulk.sql #,classpath:/data/sql/food_items_bulk.sql,classpath:/data/sql/nutrition_rda_data/lifestagegroup_data.sql, classpath:/data/sql/nutrition_rda_data/nutritionRDA_data.sql
+#    properties.hibernate.hbm2ddl.import_files: classpath:/data/sql/food_nutrition_bulk.sql #,classpath:/data/sql/food_items_bulk.sql,classpath:/data/sql/nutrition_rda_data/lifestagegroup_data.sql, classpath:/data/sql/nutrition_rda_data/nutritionRDA_data.sql
 #    generate-ddl: true
 
   servlet:
@@ -29,7 +29,7 @@ firebase:
     resource-path: food-manager-bb596-firebase-adminsdk-asq3n-98af5fc484.json
 
 server:
-  port: 8081
+  port: 9090
 
 data:
   -

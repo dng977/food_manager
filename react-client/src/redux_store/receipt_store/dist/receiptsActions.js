@@ -177,7 +177,7 @@ exports.addReceiptItemsToFoodStock = function () { return function (dispatch, ge
             onSuccess: function (response) {
                 console.log("RI: ", response.data);
                 dispatch({ type: receiptTypes_1.FETCH_RECEIPT_ITEMS, payload: { id: id, receiptItems: response.data } });
-                foodActions_1.fetchFoodStock([{ type: feedbackTypes_1.MESSAGE, payload: "Items have been added successfully" }]);
+                dispatch(foodActions_1.fetchFoodStock([{ type: feedbackTypes_1.MESSAGE, payload: "Items have been added successfully" }]));
             }
         });
         return [2 /*return*/];

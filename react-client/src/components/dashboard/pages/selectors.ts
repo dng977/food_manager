@@ -29,7 +29,7 @@ export const getReceiptItems = createSelector(selectReceiptItemsData,(itemsData)
   }
 )
 
-type FoodStockListType = Array<[string, FoodStockDto, FoodStockDto]>
+export type FoodStockListType = Array<[string, FoodStockDto, FoodStockDto]>
 export const getFoodStock: Selector<RootState,[FoodStockListType, Array<number>]> = createSelector(
   selectFoodStockData,(data) => {
     const indexToKey: number[] = [];

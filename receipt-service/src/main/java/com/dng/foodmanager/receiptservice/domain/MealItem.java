@@ -8,7 +8,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
-@Data
+//@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

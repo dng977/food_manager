@@ -128,7 +128,7 @@ export const addReceiptItemsToFoodStock = (): AppThunk<FetchReceiptItemsAction |
     onSuccess: response => {
       console.log("RI: ", response.data);
       dispatch({ type: FETCH_RECEIPT_ITEMS, payload: { id: id, receiptItems: response.data } });
-      fetchFoodStock([ { type: MESSAGE, payload: "Items have been added successfully" } ])
+      dispatch(fetchFoodStock([ { type: MESSAGE, payload: "Items have been added successfully" } ]));
     }
   });
 };

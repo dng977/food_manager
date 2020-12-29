@@ -139,7 +139,7 @@ var FoodStock = /** @class */ (function (_super) {
                                 react_1["default"].createElement(core_1.Tab, { label: "Meals" })))),
                     this.state.tableNumber === 0 ?
                         react_1["default"].createElement(core_1.Grid, { item: true },
-                            react_1["default"].createElement(components_1.FoodTable, { paperElevation: this.paperElevation, eatFoodStockItem: this.props.eatFoodStockItem, editFoodStockItem: this.props.editFoodStockItem, foodStockItems: this.props.foodStockItems, indexToKey: this.props.indexToKeyFS, setRowsSelected: function (rowsSelected) { _this.setState({ rowsSelected: rowsSelected }); } }))
+                            react_1["default"].createElement(components_1.FoodTable, { loading: this.props.loading, paperElevation: this.paperElevation, eatFoodStockItem: this.props.eatFoodStockItem, editFoodStockItem: this.props.editFoodStockItem, foodStockItems: this.props.foodStockItems, indexToKey: this.props.indexToKeyFS, setRowsSelected: function (rowsSelected) { _this.setState({ rowsSelected: rowsSelected }); } }))
                         :
                             react_1["default"].createElement(core_1.Grid, { item: true },
                                 react_1["default"].createElement(meals_components_1.MealsTable, { paperElevation: this.paperElevation, eatMeal: function () { }, editMeal: this.props.editMeal, meals: this.props.meals, indexToKey: this.props.indexToKeyMeals, setRowsSelected: function (rowsSelected) { _this.setState({ rowsSelected: rowsSelected }); } }))))));

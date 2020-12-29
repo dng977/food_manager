@@ -191,7 +191,7 @@ class FoodStock extends React.Component<PropsFromRedux, FoodStockState> {
             </Grid>
             {this.state.tableNumber === 0 ?
               <Grid item>
-                <FoodTable paperElevation={this.paperElevation} eatFoodStockItem={this.props.eatFoodStockItem} editFoodStockItem={this.props.editFoodStockItem} foodStockItems={this.props.foodStockItems} indexToKey={this.props.indexToKeyFS} setRowsSelected={(rowsSelected) => { this.setState({ rowsSelected }) }} />
+                <FoodTable loading={this.props.loading} paperElevation={this.paperElevation} eatFoodStockItem={this.props.eatFoodStockItem} editFoodStockItem={this.props.editFoodStockItem} foodStockItems={this.props.foodStockItems} indexToKey={this.props.indexToKeyFS} setRowsSelected={(rowsSelected) => { this.setState({ rowsSelected }) }} />
               </Grid>
               :
               <Grid item>

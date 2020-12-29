@@ -16,6 +16,9 @@ import { EmptyTable, FoodLookUp } from "../shared_components";
 import MUIDataTable from 'mui-datatables';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import _ from 'lodash';
+import { FoodStockListType } from '../selectors';
+import { EatFoodDto, FoodItemDto, FoodStockDto } from '../../../../apis/dtos/serverDtos';
+import { RootState } from '../../../../redux_store/rootReducer';
 export const dialogTheme = createMuiTheme({
   overrides: {
     MuiDialogTitle: {
@@ -36,8 +39,8 @@ export const dialogTheme = createMuiTheme({
 
 export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, openDialog }) => {
   console.log("render add dialog: ", openDialog)
-  const loading = useSelector(state => state.feedback.dialogLoading);
-  const [ selectedFood, setSelectedFood ] = useState('');
+  const loading = useSelector((state: RootState) => state.feedback.dialogLoading);
+  const [ selectedFood, setSelectedFood ] = useState<FoodItemDto | null>(null);
   const [ servingInGrams, setServingInGrams ] = React.useState(0)
   const [ emptyInput, setEmptyInput ] = useState(true);
 
@@ -87,7 +90,7 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
 
                         rowIndex={0}
                         hasConfirmButton={false}
-                        onChange={(selectedFood) => setSelectedFood(selectedFood)}
+                        onChange={(selectedFood: React.SetStateAction<FoodItemDto>) => setSelectedFood(selectedFood)}
                         loading={loading}
                       />
                       {selectedFood ?
@@ -109,7 +112,7 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
                     <Button fullWidth variant="outlined" onClick={onCancel} color="primary">
                       Cancel
                   </Button>
-                    <Button fullWidth disabled={emptyInput} variant="contained" onClick={() => { onConfirm(selectedFood.id, servingInGrams); setSelectedFood(''); }} color="primary" autoFocus>
+                    <Button fullWidth disabled={emptyInput} variant="contained" onClick={() => { onConfirm(selectedFood.id, servingInGrams); setSelectedFood(null); }} color="primary" autoFocus>
                       Add
                   </Button>
                   </DialogActions>
@@ -131,9 +134,17 @@ AddNewFoodDialog.propTypes = {
 
 
 //TABLE
-
-export class FoodTable extends React.Component {
-  constructor(props) {
+interface FoodTableProps {
+  setRowsSelected: any;
+  foodStockItems: FoodStockListType;
+  indexToKey: number[];
+  editFoodStockItem: (foodStockDto: FoodStockDto) => any;
+  eatFoodStockItem: (eatFoodStockDto: EatFoodDto) => any;
+  paperElevation: number;
+  loading: boolean;
+}
+export class FoodTable extends React.Component<FoodTableProps> {
+  constructor(props: FoodTableProps) {
     super(props);
   }
 
@@ -157,14 +168,14 @@ export class FoodTable extends React.Component {
     filter: false,
     sort: false,
     rowsSelected: [],
-    onRowSelectionChange: (currentRowsSelected, allRowsSelected, rowsSelected) => {
+    onRowSelectionChange: (_currentRowsSelected, _allRowsSelected, rowsSelected) => {
       console.log(rowsSelected)
       this.props.setRowsSelected(rowsSelected)
       //setRowsSelected(rowsSelected)
 
     },
     expandableRowsOnClick: true,
-    onRowClick: (rowData, { }) => {
+    onRowClick: (_rowData, { }) => {
       // history.push(`${url}/${dataIndex}`);
     },
 
@@ -177,15 +188,15 @@ export class FoodTable extends React.Component {
     {
       name: '',
       options: {
-        customBodyRender: (value, tableMeta) => {
-          return <EatCell value={value} onEat={(eatFoodStockDto) => this.props.eatFoodStockItem(eatFoodStockDto)} />;
+        customBodyRender: (value: FoodStockDto, _tableMeta) => {
+          return <EatCell value={value} onEat={(eatFoodStockDto: EatFoodDto) => this.props.eatFoodStockItem(eatFoodStockDto)} />;
         }
       }
     },
     {
       name: 'Quantity',
       options: {
-        customBodyRender: (value, { rowIndex, rowData }) => {
+        customBodyRender: (value: FoodStockDto, { rowIndex, rowData }) => {
           return <QuantityCell
             value={value}
             submitEdit={(newQuantity) => {
@@ -207,7 +218,7 @@ export class FoodTable extends React.Component {
     {
       name: 'Expiry Date',
       options: {
-        customBodyRender: (value) => {
+        customBodyRender: (_value) => {
           return <Typography variant="caption">-</Typography>;
         }
       }
@@ -215,7 +226,7 @@ export class FoodTable extends React.Component {
     {
       name: 'Info',
       options: {
-        customBodyRender: (value) => {
+        customBodyRender: (_value) => {
           return <InfoRoundedIcon color="action" />;
         }
       }
@@ -241,35 +252,39 @@ export class FoodTable extends React.Component {
 }
 
 
-FoodTable.propTypes = {
-  setRowsSelected: PropTypes.func.isRequired,
-  foodStockItems: PropTypes.array.isRequired,
-  indexToKey: PropTypes.array.isRequired,
-  editFoodStockItem: PropTypes.func,
-  eatFoodStockItem: PropTypes.func,
-  paperElevation: PropTypes.number,
+// FoodTable.propTypes = {
+//   setRowsSelected: PropTypes.func.isRequired,
+//   foodStockItems: PropTypes.array.isRequired,
+//   indexToKey: PropTypes.array.isRequired,
+//   editFoodStockItem: PropTypes.func,
+//   eatFoodStockItem: PropTypes.func,
+//   paperElevation: PropTypes.number,
 
+// }
+
+type EatCellProps = {
+  value: FoodStockDto;
+  onEat: (arg0: EatFoodDto) => any;
+  onPrepare?: (arg0: any) => any;
 }
-
-
-export const EatCell = ({ value, onEat, onPrepare }) => {
+export const EatCell = ({ value, onEat, onPrepare }: EatCellProps) => {
   const [ servingUnits, setServingUnits ] = React.useState(new Fraction(1, 1));
-  const [ servingInGrams, setServingInGrams ] = React.useState(value.servingSize)
+  const [ servingInGrams, setServingInGrams ] = React.useState(value.foodItemDto.servingSize)
   const [ condition, setCondition ] = React.useState(value.hasRaw ? "raw" : "cooked");
   //eval(servingUnits)
   const onPortionChange = (servingInGrams) => {
     setServingInGrams(servingInGrams)
-    setServingUnits(getServingInUnits(servingInGrams, value.servingSize));
+    setServingUnits(getServingInUnits(servingInGrams, value.foodItemDto.servingSize));
   }
 
   useEffect(() => {
     setServingUnits(new Fraction(1, 1));
-    setServingInGrams(value.servingSize);
+    setServingInGrams(value.foodItemDto.servingSize);
     setCondition(value.hasRaw ? "raw" : "cooked");
   }, [ value ])
   const handleOnEatClick = () => {
-    let eatFoodStockDto = {
-      foodItemId: value.foodItemId,
+    let eatFoodStockDto: EatFoodDto = {
+      foodId: value.foodItemDto.id,
       quantity: servingInGrams,
       cooked: condition === "cooked"
     }
@@ -280,7 +295,7 @@ export const EatCell = ({ value, onEat, onPrepare }) => {
     value.quantity !== 0 ?
       <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
         <Grid item>
-          <FoodPortionControl servingDesc={value.servingDesc} baseServing={value.servingSize} portionUnits={servingUnits} servingInGrams={servingInGrams} onPortionChange={onPortionChange} />
+          <FoodPortionControl servingDesc={value.foodItemDto.servingDesc} baseServing={value.foodItemDto.servingSize} portionUnits={servingUnits} servingInGrams={servingInGrams} onPortionChange={onPortionChange} />
         </Grid>
         {onPrepare ? null : <Grid item>
           <RadioGroup aria-label="gender" name="condition" value={condition} onChange={event => { setCondition(event.target.value) }}>
@@ -316,16 +331,14 @@ export const EatCell = ({ value, onEat, onPrepare }) => {
       </Grid>
   );
 }
-EatCell.propTypes = {
-  value: PropTypes.object,
-  onEat: PropTypes.func,
-  onPrepare: PropTypes.func
-
-}
 
 
-export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
+
+// export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
+export const QuantityCell = ({ submitEdit, value, hasEditMode }) => {
+  
   //console.log("before", currentQuantity);
+  
   const [ currentQuantity, setCurrentQuantity ] = useState({ grams: value.quantity, units: new Fraction(value.quantity, value.servingSize) });
 
   const [ editMode, setEditMode ] = useState(false)
@@ -344,12 +357,12 @@ export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
     setQuantityInGrams(servingInGrams)
 
   }
-  const handleSubmit = (event) => {
+  const handleSubmit = (_event) => {
     setEditMode(false);
     setCurrentQuantity({ units: getServingInUnits(quantityInGrams, value.servingSize), grams: quantityInGrams })
     submitEdit(quantityInGrams)
   }
-  const handleCancel = event => {
+  const handleCancel = _event => {
     setEditMode(false)
   }
 
@@ -415,7 +428,7 @@ export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
         }
       </Grid>
   );
-});
+};
 QuantityCell.propTypes = {
   hasEditMode: PropTypes.bool
 }
