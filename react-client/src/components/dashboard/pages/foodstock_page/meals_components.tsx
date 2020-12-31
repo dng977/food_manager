@@ -1,10 +1,10 @@
-import { Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, ThemeProvider, TextField, Divider, Tooltip, IconButton, } from '@material-ui/core';
+import { Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, ThemeProvider, TextField, Divider, Tooltip, IconButton, Select, Input, MenuItem, FormControl, InputLabel, } from '@material-ui/core';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
 import KeyboardArrowRightRoundedIcon from '@material-ui/icons/KeyboardArrowRightRounded';
 import LaunchRoundedIcon from '@material-ui/icons/LaunchRounded';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 
@@ -13,40 +13,53 @@ import { EmptyTable, FoodLookUp } from "../shared_components";
 import _ from 'lodash';
 import { dialogTheme, EatCell, FoodPortionControl, QuantityCell } from './components';
 import MUIDataTable from 'mui-datatables';
+import { MealsListType } from '../selectors';
+import { EatFoodDto, FoodItemDto, MealDto, MealItemDto } from '../../../../apis/dtos/serverDtos';
+import { RootState } from '../../../../redux_store/rootReducer';
 
-export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }) => {
+
+
+type AddMealDialogPropTypes = {
+  onCancel: () => any;
+  onConfirm: (mealDto: MealDto) => void;
+  openDialog: boolean;
+  error: string;
+}
+export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMealDialogPropTypes) => {
   console.log("render add meal dialog: ", openDialog)
-  const loading = useSelector(state => state.feedback.dialogLoading);
+  const loading = useSelector((state: RootState) => state.feedback.dialogLoading);
   const [ name, setName ] = useState('');
   const [ description, setDescription ] = useState('');
-  const [ ingredientList, setIngredientList ] = useState([ {} ]);
+  const [ servings, setServings ] = useState(null);
+  const [ ingredientList, setIngredientList ] = useState<Array<{ mealItemDto: MealItemDto, foodItemDto: FoodItemDto }>>([ null ]);
 
   const onPortionChange = (indexToChange, servingInGrams) => {
     console.log("On port change");
 
     setIngredientList(ingredientList.map((ingredient, ind) => {
       if (ind === indexToChange)
-        ingredient.quantity = servingInGrams;
+        ingredient.mealItemDto.quantity = servingInGrams;
       return ingredient;
     }));
   }
-  const updateIngredientList = (newIngredient, selFoodIndex) => {
+
+  const updateIngredientList = (newFoodItem: FoodItemDto, selFoodIndex: number) => {
     console.log("updIngList");
     let lastIndex = ingredientList.length - 1;
-    const reducer = (acc, cur, idx) => {
+    const reducer = (acc: Array<{ mealItemDto: MealItemDto, foodItemDto: FoodItemDto }>, cur: { mealItemDto: MealItemDto; foodItemDto: FoodItemDto; }, idx: number) => {
 
       //Add the previous element if index is different from selFood
       if (idx !== selFoodIndex) {
         return acc.concat([ cur ]);
       }
       //If there is a new ingredient
-      if (newIngredient && idx === lastIndex) {
-        return acc.concat([ { ingredient: newIngredient, quantity: newIngredient.servingSize }, {} ]);
+      if (newFoodItem && idx === lastIndex) {
+        return acc.concat([ { mealItemDto: { foodItemId: newFoodItem.id, quantity: newFoodItem.servingSize, cooked: false }, foodItemDto: newFoodItem }, null ]);
       }
-      if (newIngredient && idx !== lastIndex) {
-        return acc.concat([ { ingredient: newIngredient, quantity: newIngredient.servingSize } ]);
+      if (newFoodItem && idx !== lastIndex) {
+        return acc.concat([ { mealItemDto: { foodItemId: newFoodItem.id, quantity: newFoodItem.servingSize, cooked: false }, foodItemDto: newFoodItem } ]);
       }
-      if (!newIngredient) {
+      if (!newFoodItem) {
         return acc;
       }
     }
@@ -56,27 +69,25 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }) => {
 
   }
   const onClose = () => {
-    setIngredientList([ {} ]);
+    setIngredientList([ null ]);
+    setServings(null);
     console.log("on clse:", ingredientList)
     onCancel();
   }
 
-  const createMealDto = () => {
+  const createMealDto = (): MealDto => {
     let totalQuantity = 0;
-    let ingredients = ingredientList.filter(ing => !_.isEmpty(ing)).map(ingredientTuple => {
-      totalQuantity += ingredientTuple.quantity;
-      return {
-        foodItemId: ingredientTuple.ingredient.id,
-        quantity: ingredientTuple.quantity
-      }
+    let ingredients = ingredientList.filter(ing => ing !== null).map(ingredient => {
+      totalQuantity += ingredient.mealItemDto.quantity;
+      return ingredient.mealItemDto;
     });
     return {
       id: null,
       name: name,
       description: description,
       ingredients: ingredients,
-      quantity: totalQuantity
-
+      quantity: totalQuantity,
+      servings: servings
     };
   }
 
@@ -130,31 +141,33 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }) => {
                       <Grid item>
                         <Grid container direction="column" alignItems="flex-start" justify="flex-start" spacing={1}>
                           {ingredientList.map((ingredientTuple, index) => {
-                            console.log("ingredientTuple: ", ingredientTuple)
-                            let emptyIngredient = _.isEmpty(ingredientTuple);
-                            let ingredient = emptyIngredient ? null : ingredientTuple.ingredient;
-                            console.log(emptyIngredient)
-                            console.log(ingredient);
+                            console.log("ingredientTuple: ", ingredientTuple);
+                            let mealItemDto = null;
+                            let foodItemDto = null;
+                            if (ingredientTuple !== null) {
+                              mealItemDto = ingredientTuple.mealItemDto;
+                              foodItemDto = ingredientTuple.foodItemDto;
+                            }
                             return (
                               <Grid item container alignItems="center" justify="flex-start" spacing={3} key={index} >
                                 <Grid item>
                                   <FoodLookUp
                                     label={index === (ingredientList.length - 1) ? "Add ingredient" : "#" + (index + 1)}
-                                    initSelectedValue={ingredient}
-                                    width={250}
+                                    initSelectedValue={foodItemDto}
+                                    width={200}
                                     rowIndex={0}
                                     hasConfirmButton={false}
                                     onChange={selectedFood => updateIngredientList(selectedFood, index)}
-                                    loading={loading}
                                   />
                                 </Grid>
-                                {emptyIngredient ? null :
+                                {ingredientTuple === null ? null :
                                   <Grid item>
                                     <FoodPortionControl
-                                      servingDesc={ingredient.servingDesc}
-                                      baseServing={ingredient.servingSize}
+                                      maxQuantity={null}
+                                      servingDesc={foodItemDto.servingDesc}
+                                      baseServing={foodItemDto.servingSize}
                                       onPortionChange={servingInGrams => onPortionChange(index, servingInGrams)}
-                                      servingInGrams={ingredientTuple.quantity}
+                                      quantity={mealItemDto.quantity}
                                     />
                                   </Grid>
                                 }
@@ -163,6 +176,37 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }) => {
                           })
                           }
                         </Grid>
+                      </Grid>
+                      <Divider />
+                      <Grid item>
+                        <FormControl size="small" variant="outlined" style={{ width: 120 }}>
+                          <InputLabel id="servings-select-label">Servings</InputLabel>
+                          <Select
+                            MenuProps={
+                              {
+                                PaperProps: {
+                                  style: {
+                                    maxHeight: 200,
+                                  }
+                                }
+                              }
+                            }
+                            labelId="servings-select-label"
+                            id="servings-select"
+                            label="Servings LABEL"
+                            value={servings}
+                            onChange={({ target }) => setServings(target.value as number)}
+                          >
+                            {
+                              _.range(1, 20, 1).map(number => (
+                                <MenuItem key={number} value={number} >
+                                  {number}
+                                </MenuItem>
+                              ))
+                            }
+                          </Select>
+                        </FormControl>
+
                       </Grid>
                       <Divider />
                       <Grid item >
@@ -184,7 +228,7 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }) => {
                     <Button fullWidth variant="outlined" onClick={onClose} color="primary">
                       Cancel
                   </Button>
-                    <Button fullWidth disabled={!name.length} variant="contained" onClick={() => { onConfirm(createMealDto()); setIngredientList([ {} ]); }} color="primary">
+                    <Button fullWidth disabled={!name.length} variant="contained" onClick={() => { onConfirm(createMealDto()); setIngredientList([ null ]); }} color="primary">
                       Add
                   </Button>
                   </DialogActions>
@@ -196,17 +240,20 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }) => {
   );
 }
 
-AddMealDialog.propTypes = {
-  onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  openDialog: PropTypes.bool.isRequired,
-  error: PropTypes.string.isRequired
-}
 
 //TABLE
 
-export class MealsTable extends React.Component {
-  constructor(props) {
+type MealTableProps = {
+  setRowsSelected: any;
+  meals: MealsListType;
+  indexToKey: number[];
+  editMeal: (mealDto: MealDto) => any;
+  eatMeal: (eatMealDto: EatFoodDto) => any;
+  paperElevation: number;
+  loading: boolean;
+}
+export class MealsTable extends React.Component<MealTableProps> {
+  constructor(props: MealTableProps) {
     super(props);
   }
 
@@ -252,22 +299,23 @@ export class MealsTable extends React.Component {
     {
       name: '',
       options: {
-        customBodyRender: (value) => {
-          return <EatCell value={value} onPrepare={() => console.log("PREPARE")} onEat={(eatMealDto) => this.props.eatMeal(eatMealDto)} />;
+        customBodyRender: (value: MealDto) => {
+          return <EatMealCell value={value} onPrepare={(id) => console.log("PREPARE " + id)} onEat={(eatMealDto) => this.props.eatMeal(eatMealDto)} />;
         }
       }
     },
     {
       name: 'Quantity',
       options: {
-        customBodyRender: (value, { rowIndex }) => {
+        customBodyRender: (value: MealDto, { _rowIndex }) => {
           return (
             <Grid container alignItems="center" justify="center">
-            <Grid item>
-              <QuantityCell
-                hasEditMode={false}
-                value={value} />
-            </Grid>
+              <Grid item>
+                <QuantityCell
+                  hasEditMode={false}
+                  foodItem={{ quantity: value.quantity }}
+                />
+              </Grid>
 
             </Grid>);
         },
@@ -290,10 +338,10 @@ export class MealsTable extends React.Component {
     //   }
     // },
     {
-      name: '',
+      name: 'Info',
       options: {
         customBodyRender: ({ rowIndex }) => {
-          return <IconButton color="primary" onClick={() => {this.props.editMeal(rowIndex)}} >
+          return <IconButton color="primary" onClick={() => { this.props.editMeal(rowIndex) }} >
             <KeyboardArrowRightRoundedIcon />
           </IconButton>
 
@@ -320,12 +368,49 @@ export class MealsTable extends React.Component {
   }
 }
 
-MealsTable.propTypes = {
-  setRowsSelected: PropTypes.func.isRequired,
-  meals: PropTypes.array.isRequired,
-  indexToKey: PropTypes.array.isRequired,
-  editMeal: PropTypes.func,
-  eatMeal: PropTypes.func,
-  paperElevation: PropTypes.number,
+type EatMealCellProps = {
+  value: MealDto;
+  onEat: (arg0: EatFoodDto) => any;
+  onPrepare?: (arg0: number) => any;
+}
+export const EatMealCell = ({ value, onEat, onPrepare }: EatMealCellProps) => {
+  const quantityStmt = value.quantity / value.servings;
+  const [ quantity, setQuantity ] = React.useState(quantityStmt)
+  const onPortionChange = (servingInGrams) => {
+    console.log("onport change-serving in grams: ", servingInGrams);
+    setQuantity(servingInGrams)
+  }
+
+  useEffect(() => {
+    setQuantity(quantityStmt);
+  }, [ value ])
+  const handleOnEatClick = () => {
+    let eatMealDto: EatFoodDto = {
+      foodId: value.id,
+      quantity: quantity,
+      cooked: null
+    }
+    onEat(eatMealDto);
+  }
+
+  return (
+    value.quantity !== 0 ?
+      <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
+        <Grid item>
+          <FoodPortionControl servingDesc={null} baseServing={value.quantity / value.servings} quantity={quantity} onPortionChange={onPortionChange} maxQuantity={value.quantity} />
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={handleOnEatClick}>
+            Eat
+          	</Button>
+        </Grid>
+      </Grid>
+      :
+      <Button variant="contained" color="secondary" onClick={() => onPrepare(value.id)}>
+        Prepare
+    </Button>
+  );
+
 
 }
+

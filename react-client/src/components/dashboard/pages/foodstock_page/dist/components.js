@@ -86,10 +86,10 @@ exports.AddNewFoodDialog = function (_a) {
                         react_1["default"].createElement(core_1.DialogTitle, { id: "alert-dialog-title" }, dialogTitle),
                         react_1["default"].createElement(core_1.DialogContent, { dividers: true },
                             react_1["default"].createElement(core_1.Grid, { container: true, direction: "column", alignItems: "center", justify: "center", spacing: 3 },
-                                react_1["default"].createElement(shared_components_1.FoodLookUp, { width: 250, rowIndex: 0, hasConfirmButton: false, onChange: function (selectedFood) { return setSelectedFood(selectedFood); }, loading: loading }),
+                                react_1["default"].createElement(shared_components_1.FoodLookUp, { width: 250, rowIndex: 0, hasConfirmButton: false, onChange: function (selectedFood) { return setSelectedFood(selectedFood); } }),
                                 selectedFood ?
                                     react_1["default"].createElement(core_1.Grid, { item: true },
-                                        react_1["default"].createElement(exports.FoodPortionControl, { servingDesc: selectedFood.servingDesc, baseServing: selectedFood.servingSize, onPortionChange: onPortionChange, servingInGrams: servingInGrams }))
+                                        react_1["default"].createElement(exports.FoodPortionControl, { servingDesc: selectedFood.servingDesc, baseServing: selectedFood.servingSize, onPortionChange: onPortionChange, quantity: servingInGrams, maxQuantity: null }))
                                     :
                                         null)),
                         react_1["default"].createElement(core_1.DialogActions, null,
@@ -152,11 +152,9 @@ var FoodTable = /** @class */ (function (_super) {
             {
                 name: 'Quantity',
                 options: {
-                    customBodyRender: function (value, _a) {
-                        var rowIndex = _a.rowIndex, rowData = _a.rowData;
-                        return react_1["default"].createElement(exports.QuantityCell, { value: value, submitEdit: function (newQuantity) {
-                                console.log(value, rowData);
-                                var newFoodStockDto = __assign(__assign({}, rowData), { quantity: newQuantity }); //rowData or Value
+                    customBodyRender: function (value) {
+                        return react_1["default"].createElement(exports.QuantityCell, { foodItem: { quantity: value.quantity, servingDesc: value.foodItemDto.servingDesc, servingSize: value.foodItemDto.servingSize }, submitEdit: function (newQuantity) {
+                                var newFoodStockDto = __assign(__assign({}, value), { quantity: newQuantity });
                                 _this.props.editFoodStockItem(newFoodStockDto);
                             } });
                     },
@@ -198,24 +196,22 @@ var FoodTable = /** @class */ (function (_super) {
 }(react_1["default"].Component));
 exports.FoodTable = FoodTable;
 exports.EatCell = function (_a) {
-    var value = _a.value, onEat = _a.onEat, onPrepare = _a.onPrepare;
-    var _b = react_1["default"].useState(new fractional_1.Fraction(1, 1)), servingUnits = _b[0], setServingUnits = _b[1];
-    var _c = react_1["default"].useState(value.foodItemDto.servingSize), servingInGrams = _c[0], setServingInGrams = _c[1];
-    var _d = react_1["default"].useState(value.hasRaw ? "raw" : "cooked"), condition = _d[0], setCondition = _d[1];
+    var value = _a.value, onEat = _a.onEat;
+    var cQstatement = value.quantity <= value.foodItemDto.servingSize ? value.quantity : value.foodItemDto.servingSize;
+    var _b = react_1["default"].useState(cQstatement), currentQuantity = _b[0], setCurrentQuantity = _b[1];
+    var _c = react_1["default"].useState(value.hasRaw ? "raw" : "cooked"), condition = _c[0], setCondition = _c[1];
     //eval(servingUnits)
-    var onPortionChange = function (servingInGrams) {
-        setServingInGrams(servingInGrams);
-        setServingUnits(getServingInUnits(servingInGrams, value.foodItemDto.servingSize));
+    var onPortionChange = function (currentQuantity) {
+        setCurrentQuantity(currentQuantity);
     };
     react_1.useEffect(function () {
-        setServingUnits(new fractional_1.Fraction(1, 1));
-        setServingInGrams(value.foodItemDto.servingSize);
+        setCurrentQuantity(cQstatement);
         setCondition(value.hasRaw ? "raw" : "cooked");
     }, [value]);
     var handleOnEatClick = function () {
         var eatFoodStockDto = {
             foodId: value.foodItemDto.id,
-            quantity: servingInGrams,
+            quantity: currentQuantity,
             cooked: condition === "cooked"
         };
         onEat(eatFoodStockDto);
@@ -223,8 +219,8 @@ exports.EatCell = function (_a) {
     return (value.quantity !== 0 ?
         react_1["default"].createElement(core_1.Grid, { container: true, wrap: "nowrap", alignItems: "center", justify: "flex-start", spacing: 2 },
             react_1["default"].createElement(core_1.Grid, { item: true },
-                react_1["default"].createElement(exports.FoodPortionControl, { servingDesc: value.foodItemDto.servingDesc, baseServing: value.foodItemDto.servingSize, portionUnits: servingUnits, servingInGrams: servingInGrams, onPortionChange: onPortionChange })),
-            onPrepare ? null : react_1["default"].createElement(core_1.Grid, { item: true },
+                react_1["default"].createElement(exports.FoodPortionControl, { maxQuantity: value.quantity, servingDesc: value.foodItemDto.servingDesc, baseServing: value.foodItemDto.servingSize, quantity: currentQuantity, onPortionChange: onPortionChange })),
+            react_1["default"].createElement(core_1.Grid, { item: true },
                 react_1["default"].createElement(core_1.RadioGroup, { "aria-label": "gender", name: "condition", value: condition, onChange: function (event) { setCondition(event.target.value); } },
                     react_1["default"].createElement(core_1.FormControlLabel, { value: "raw", disabled: !value.hasRaw, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Raw" }),
                     react_1["default"].createElement(core_1.FormControlLabel, { value: "cooked", disabled: !value.hasCooked, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Cooked" }))),
@@ -232,34 +228,32 @@ exports.EatCell = function (_a) {
                 react_1["default"].createElement(core_1.Button, { variant: "contained", color: "primary", onClick: handleOnEatClick }, "Eat")))
         :
             react_1["default"].createElement(core_1.Grid, { container: true, wrap: "nowrap", alignItems: "center", justify: "center", spacing: 2 },
-                react_1["default"].createElement(core_1.Grid, { item: true }, onPrepare ?
-                    react_1["default"].createElement(core_1.Button, { variant: "contained", color: "secondary", onClick: onPrepare }, "Prepare")
-                    :
-                        react_1["default"].createElement(core_1.Tooltip, { title: "No more quantiy left of this item." },
-                            react_1["default"].createElement("div", null,
-                                react_1["default"].createElement(core_1.Button, { variant: "contained", disabled: true, color: "primary" }, "Eat"))))));
+                react_1["default"].createElement(core_1.Grid, { item: true },
+                    react_1["default"].createElement(core_1.Tooltip, { title: "No more quantiy left of this item." },
+                        react_1["default"].createElement("div", null,
+                            react_1["default"].createElement(core_1.Button, { variant: "contained", disabled: true, color: "primary" }, "Eat"))))));
 };
 // export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
 exports.QuantityCell = function (_a) {
     //console.log("before", currentQuantity);
-    var submitEdit = _a.submitEdit, value = _a.value, hasEditMode = _a.hasEditMode;
-    var _b = react_1.useState({ grams: value.quantity, units: new fractional_1.Fraction(value.quantity, value.servingSize) }), currentQuantity = _b[0], setCurrentQuantity = _b[1];
-    var _c = react_1.useState(false), editMode = _c[0], setEditMode = _c[1];
-    var _d = react_1.useState(currentQuantity.grams === null || currentQuantity.grams === 0 ? value.servingSize : currentQuantity.grams), quantityInGrams = _d[0], setQuantityInGrams = _d[1];
+    var submitEdit = _a.submitEdit, foodItem = _a.foodItem, _b = _a.hasEditMode, hasEditMode = _b === void 0 ? true : _b, emptyContents = _a.emptyContents;
+    var _c = react_1.useState({ grams: foodItem.quantity, units: new fractional_1.Fraction(foodItem.quantity, foodItem.servingSize) }), currentQuantity = _c[0], setCurrentQuantity = _c[1];
+    var _d = react_1.useState(false), editMode = _d[0], setEditMode = _d[1];
+    var _e = react_1.useState(currentQuantity.grams === null || currentQuantity.grams === 0 ? foodItem.servingSize : currentQuantity.grams), quantityInGrams = _e[0], setQuantityInGrams = _e[1];
     react_1.useEffect(function () {
-        if (value.quantity !== currentQuantity.grams) {
-            var grams = value.quantity;
-            var units = new fractional_1.Fraction(value.quantity, value.servingSize);
+        if (foodItem.quantity !== currentQuantity.grams) {
+            var grams = foodItem.quantity;
+            var units = new fractional_1.Fraction(foodItem.quantity, foodItem.servingSize);
             setCurrentQuantity({ grams: grams, units: units });
-            setQuantityInGrams(grams === null || grams === 0 ? value.servingSize : grams);
+            setQuantityInGrams(grams === null || grams === 0 ? foodItem.servingSize : grams);
         }
-    }, [value]);
+    }, [foodItem]);
     var onPortionChange = function (servingInGrams) {
         setQuantityInGrams(servingInGrams);
     };
     var handleSubmit = function (_event) {
         setEditMode(false);
-        setCurrentQuantity({ units: getServingInUnits(quantityInGrams, value.servingSize), grams: quantityInGrams });
+        setCurrentQuantity({ units: getServingInUnits(quantityInGrams, foodItem.servingSize), grams: quantityInGrams });
         submitEdit(quantityInGrams);
     };
     var handleCancel = function (_event) {
@@ -268,7 +262,7 @@ exports.QuantityCell = function (_a) {
     return (editMode ?
         react_1["default"].createElement(core_1.Grid, { container: true, direction: "column", alignItems: "center", justify: "center", spacing: 0 },
             react_1["default"].createElement(core_1.Grid, { item: true, xs: true },
-                react_1["default"].createElement(exports.FoodPortionControl, { servingDesc: value.servingDesc, baseServing: value.servingSize ? value.servingSize : quantityInGrams, servingInGrams: quantityInGrams, onPortionChange: onPortionChange })),
+                react_1["default"].createElement(exports.FoodPortionControl, { maxQuantity: null, servingDesc: foodItem.servingDesc, baseServing: foodItem.servingSize ? foodItem.servingSize : quantityInGrams, quantity: quantityInGrams, onPortionChange: onPortionChange })),
             react_1["default"].createElement(core_1.Grid, { item: true },
                 react_1["default"].createElement(core_1.IconButton, { size: "small", onClick: handleSubmit },
                     react_1["default"].createElement(CheckRounded_1["default"], null)),
@@ -290,71 +284,86 @@ exports.QuantityCell = function (_a) {
                             currentQuantity.grams !== 0 ?
                                 react_1["default"].createElement(core_1.Grid, { item: true },
                                     react_1["default"].createElement(core_1.Tooltip, { title: "Empty" },
-                                        react_1["default"].createElement(core_1.IconButton, { color: "primary" },
+                                        react_1["default"].createElement(core_1.IconButton, { onClick: emptyContents, color: "primary" },
                                             react_1["default"].createElement(DeleteOutlineRounded_1["default"], null))))
                                 :
                                     null),
-                value.servingDesc ?
+                foodItem.servingDesc ?
                     react_1["default"].createElement(core_1.Grid, { item: true },
-                        react_1["default"].createElement(core_1.Typography, { variant: "caption" }, "/" + value.servingDesc.toLowerCase() + "/"))
+                        react_1["default"].createElement(core_1.Typography, { variant: "caption" }, "/" + foodItem.servingDesc.toLowerCase() + "/"))
                     :
                         null));
 };
-exports.QuantityCell.propTypes = {
-    hasEditMode: prop_types_1["default"].bool
-};
-exports.QuantityCell.defaultProps = {
-    hasEditMode: true
-};
-var getServingInUnits = function (servingInGrams, baseServing) {
+var getServingInUnits = function (quantity, baseServing) {
     if (baseServing === 0)
         return new fractional_1.Fraction(0, 1);
-    return new fractional_1.Fraction(servingInGrams, baseServing);
+    return new fractional_1.Fraction(quantity, baseServing);
 };
 exports.FoodPortionControl = function (_a) {
-    var servingDesc = _a.servingDesc, baseServing = _a.baseServing, servingInGrams = _a.servingInGrams, onPortionChange = _a.onPortionChange;
-    // console.log("SERVING DESC", servingDesc)
+    var servingDesc = _a.servingDesc, baseServing = _a.baseServing, quantity = _a.quantity, onPortionChange = _a.onPortionChange, maxQuantity = _a.maxQuantity;
+    console.log(quantity, maxQuantity);
+    var _b = react_1.useState(false), minusDisabled = _b[0], setMinusDisabled = _b[1];
+    var plusDisabledStmt = maxQuantity && quantity === maxQuantity ? true : false;
+    var _c = react_1.useState(plusDisabledStmt), plusDisabled = _c[0], setPlusDisabled = _c[1];
+    react_1.useEffect(function () {
+        setPlusDisabled(plusDisabledStmt);
+    }, [maxQuantity, quantity]);
     var changeServing = function (plus) {
         if (plus) {
-            if (servingInGrams < baseServing) {
-                var newservingInGrams = servingInGrams * 2;
-                if (servingInGrams < baseServing && newservingInGrams > baseServing) {
+            //Enable minus 
+            if (quantity < 1) {
+                setMinusDisabled(false);
+            }
+            var newQuantity = void 0;
+            //If quantity < 1 unit(base serving)
+            if (quantity < baseServing) {
+                newQuantity = quantity * 2;
+            }
+            else {
+                newQuantity = quantity + baseServing;
+            }
+            //if there is maxQuantity and it is exceeded
+            if (maxQuantity && newQuantity >= maxQuantity) {
+                onPortionChange(maxQuantity);
+                setPlusDisabled(true);
+            }
+            else {
+                //Change quantity to base serving to keep the proportions right
+                if (quantity < baseServing && newQuantity > baseServing) {
                     onPortionChange(baseServing);
                 }
-                else {
-                    onPortionChange(newservingInGrams);
-                }
+                else
+                    onPortionChange(newQuantity);
             }
-            else
-                onPortionChange(servingInGrams + baseServing);
         }
         else {
-            if (servingInGrams <= baseServing)
-                onPortionChange(servingInGrams / 2);
+            if (quantity === maxQuantity) {
+                setPlusDisabled(false);
+            }
+            if (quantity <= baseServing) {
+                var newQuantity = quantity / 2;
+                if (newQuantity < 1) {
+                    setMinusDisabled(true);
+                }
+                onPortionChange(newQuantity);
+            }
             else
-                onPortionChange(servingInGrams - baseServing);
+                onPortionChange(quantity - baseServing);
         }
     };
     return (react_1["default"].createElement(core_1.Grid, { container: true, direction: "column", alignItems: "center", justify: "center", spacing: 0 },
         react_1["default"].createElement(core_1.Grid, { item: true, container: true, wrap: "nowrap", alignItems: "center", justify: "flex-start", spacing: 1 },
             react_1["default"].createElement(core_1.Grid, { item: true },
-                react_1["default"].createElement(core_1.IconButton, { size: "small", color: "primary", onClick: function () { return changeServing(false); } },
+                react_1["default"].createElement(core_1.IconButton, { size: "small", disabled: minusDisabled, color: "primary", onClick: function () { return changeServing(false); } },
                     react_1["default"].createElement(RemoveRounded_1["default"], null))),
             react_1["default"].createElement(core_1.Grid, { item: true },
-                react_1["default"].createElement(core_1.Typography, { noWrap: true }, getServingInUnits(servingInGrams, baseServing) + " (" + servingInGrams + " g)")),
+                react_1["default"].createElement(core_1.Typography, { noWrap: true }, getServingInUnits(quantity, baseServing) + " (" + quantity + " g)")),
             react_1["default"].createElement(core_1.Grid, { item: true },
-                react_1["default"].createElement(core_1.IconButton, { size: "small", color: "primary", onClick: function () { return changeServing(true); } },
+                react_1["default"].createElement(core_1.IconButton, { size: "small", disabled: plusDisabled, color: "primary", onClick: function () { return changeServing(true); } },
                     react_1["default"].createElement(AddRounded_1["default"], null)))),
         servingDesc ?
             react_1["default"].createElement(core_1.Grid, { item: true },
                 react_1["default"].createElement(core_1.Typography, { variant: "caption" }, "/" + servingDesc.toLowerCase() + "/"))
             :
                 null));
-};
-exports.FoodPortionControl.propTypes = {
-    servingDesc: prop_types_1["default"].string,
-    baseServing: prop_types_1["default"].number,
-    portionUnits: prop_types_1["default"].instanceOf(fractional_1.Fraction),
-    servingInGrams: prop_types_1["default"].number,
-    onPortionChange: prop_types_1["default"].func
 };

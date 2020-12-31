@@ -1,12 +1,15 @@
 import { TableBody, TableRow, TableCell, Button, Grid, Dialog, DialogTitle, DialogActions, Tabs, Tab, Paper } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import {  IconButton, TextField, Tooltip } from '@material-ui/core';
+import { IconButton, TextField, Tooltip } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { connect, useSelector } from 'react-redux';
+import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { fetchFoodItems } from '../../../redux_store/food_store/foodActions';
+import { RootState } from '../../../redux_store/rootReducer';
+import { FoodItemDto } from '../../../apis/dtos/serverDtos';
+import { AutocompleteFreeSoloValueMapping } from '@material-ui/lab/useAutocomplete';
 
 export const EmptyTable = (props) => {
   return (
@@ -23,7 +26,7 @@ export const EmptyTable = (props) => {
 }
 
 export const DeleteAlertDialog = ({ dialogTitle, onDeleteDialogNo, onDeleteDialogYes, openDeleteDialog, error }) => {
-  const loading = useSelector(state => state.feedback.dialogLoading);
+  const loading = useSelector((state: RootState) => state.feedback.dialogLoading);
 
   console.log("render Dialog: ", openDeleteDialog)
   return (
@@ -62,26 +65,46 @@ export const DeleteAlertDialog = ({ dialogTitle, onDeleteDialogNo, onDeleteDialo
   );
 }
 DeleteAlertDialog.propTypes = {
-  dialogTitle: PropTypes.string, 
-  onDeleteDialogNo: PropTypes.func, 
-  onDeleteDialogYes: PropTypes.func, 
-  openDeleteDialog: PropTypes.bool, 
-  loading: PropTypes.bool, 
+  dialogTitle: PropTypes.string,
+  onDeleteDialogNo: PropTypes.func,
+  onDeleteDialogYes: PropTypes.func,
+  openDeleteDialog: PropTypes.bool,
+  loading: PropTypes.bool,
   error: PropTypes.string
 }
 
-const mapStateToProps = (state) => {
+
+const mapStateToProps = (state: RootState) => {
   return {
     foodItems: state.food.searchedItems,
     loading: state.food.food_loading
   };
 };
-const FoodLookUpNoConnect = ({label="Search", ...props}) => {
+
+const reduxConnector = connect(mapStateToProps, { fetchFoodItems });
+
+type PropsFromRedux = ConnectedProps<typeof reduxConnector>
+type FoodLookUpProps = PropsFromRedux & {
+  rowIndex: number;
+  onChange: (foodItemDto: FoodItemDto) => any;
+  editMode?: boolean;
+  closeEditMode?: () => any;
+  hasConfirmButton?: boolean;
+  onConfirm?: (foodItemDto: FoodItemDto) => any;
+  initSelectedValue?: FoodItemDto;
+  label?: string;
+  width?: number;
+}
+
+export const FoodLookUp = reduxConnector((props: FoodLookUpProps) => {
+  //Default props
+  props = { label: "Search", editMode: false, hasConfirmButton: true, width: 180, ...props };
+
   // console.log("lookupfield", props)
-  const [ selectedValue, setSelectedValue ] = useState(props.initSelectedValue ? props.initSelectedValue : '');
+  const [ selectedValue, setSelectedValue ] = useState<FoodItemDto>(props.initSelectedValue ? props.initSelectedValue : null);
   const [ input, setInput ] = useState('');
   const [ debouncedInput, setDebouncedInput ] = useState(input);
-  const foodItems = [ props.rowIndex ] in props.foodItems ? props.foodItems[ props.rowIndex ] : [];
+  const foodItems = props.rowIndex in props.foodItems ? props.foodItems[ props.rowIndex ] : [];
 
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -110,14 +133,14 @@ const FoodLookUpNoConnect = ({label="Search", ...props}) => {
   return (
     <>
       <Grid item xs={12}>
-        <Autocomplete
+        <Autocomplete<FoodItemDto, undefined, undefined, false>
           value={props.initSelectedValue}
           loading={props.loading}
           fullWidth={true}
-          style={{ width: props.width}}
-          onChange={(event, newValue) => {
+          style={{ width: props.width }}
+          onChange={(event, newValue: FoodItemDto) => {
             setSelectedValue(newValue);
-            if(props.onChange)
+            if (props.onChange)
               props.onChange(newValue);
           }}
           onInputChange={(event, newValue) => {
@@ -130,11 +153,10 @@ const FoodLookUpNoConnect = ({label="Search", ...props}) => {
             <TextField
               variant="outlined"
               {...params}
-              label={label}
+              label={props.label}
               size="small"></TextField>
           )}
-        >
-        </Autocomplete>
+        />
       </Grid>
       {props.editMode ?
         <Grid item>
@@ -161,24 +183,9 @@ const FoodLookUpNoConnect = ({label="Search", ...props}) => {
 
     </>
   );
-};
-
-
-
-
-export const FoodLookUp = connect(mapStateToProps, { fetchFoodItems })(FoodLookUpNoConnect);
-FoodLookUp.propTypes = {
-  rowIndex: PropTypes.number,
-  hasConfirmButton: PropTypes.bool,
-  onConfirm: PropTypes.func,
-  editMode: PropTypes.bool,
-  closeEditMode: PropTypes.func,
-  loading: PropTypes.bool,
-  onChange: PropTypes.func,
-  
 }
-FoodLookUp.defaultProps = {
-  editMode: false,
-  hasConfirmButton: true,
-  width: 180
-}
+);
+
+
+
+

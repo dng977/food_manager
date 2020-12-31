@@ -85,7 +85,7 @@ var FoodStock = /** @class */ (function (_super) {
             openAddFoodDialog: false,
             openAddMealDialog: false,
             rowsSelected: [],
-            tableNumber: 0
+            tableNumber: 1
         };
         // this.path = this.props.match.path;
         // this.params = this.props.match.params;
@@ -142,7 +142,7 @@ var FoodStock = /** @class */ (function (_super) {
                             react_1["default"].createElement(components_1.FoodTable, { loading: this.props.loading, paperElevation: this.paperElevation, eatFoodStockItem: this.props.eatFoodStockItem, editFoodStockItem: this.props.editFoodStockItem, foodStockItems: this.props.foodStockItems, indexToKey: this.props.indexToKeyFS, setRowsSelected: function (rowsSelected) { _this.setState({ rowsSelected: rowsSelected }); } }))
                         :
                             react_1["default"].createElement(core_1.Grid, { item: true },
-                                react_1["default"].createElement(meals_components_1.MealsTable, { paperElevation: this.paperElevation, eatMeal: function () { }, editMeal: this.props.editMeal, meals: this.props.meals, indexToKey: this.props.indexToKeyMeals, setRowsSelected: function (rowsSelected) { _this.setState({ rowsSelected: rowsSelected }); } }))))));
+                                react_1["default"].createElement(meals_components_1.MealsTable, { loading: this.props.loading, paperElevation: this.paperElevation, eatMeal: function () { }, editMeal: function (mealDto) { return _this.props.editMeal(mealDto, function () { }); }, meals: this.props.meals, indexToKey: this.props.indexToKeyMeals, setRowsSelected: function (rowsSelected) { _this.setState({ rowsSelected: rowsSelected }); } }))))));
     };
     return FoodStock;
 }(react_1["default"].Component));

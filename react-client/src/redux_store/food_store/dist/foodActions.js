@@ -209,7 +209,7 @@ exports.addMeal = function (mealDto, callBackOnSuccess) { return function (dispa
 }); }; };
 exports.editMeal = function (mealDto, callBackOnSuccess) { return function (dispatch, getState, getFirebase) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        dispatch({ type: feedbackTypes_1.DIALOG_LOADING });
+        //dispatch({ type: DIALOG_LOADING });
         v1_1["default"]({
             dispatch: dispatch,
             getFirebase: getFirebase,

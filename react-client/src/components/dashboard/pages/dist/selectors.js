@@ -46,7 +46,7 @@ exports.getMeals = reselect_1.createSelector(selectMealsData, function (data) {
     var indexToKey = [];
     var mealsData = Object.values(data).map(function (values, index) {
         indexToKey[index] = values.id;
-        return [values.name, { id: values.id, quantity: values.quantity, servingSize: values.quantity }, { id: values.id, quantity: values.quantity }, values];
+        return [values.name, __assign({}, values), __assign({}, values), __assign({}, values)];
     });
     return [mealsData, indexToKey];
 });

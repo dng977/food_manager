@@ -1,5 +1,5 @@
 import { createSelector, Selector } from 'reselect'
-import { FoodStockDto } from '../../../apis/dtos/serverDtos';
+import { FoodStockDto, MealDto } from '../../../apis/dtos/serverDtos';
 import { RootState } from '../../../redux_store/rootReducer';
 
 const selectReceiptsData = (state: RootState) => state.receipts.receipts;
@@ -42,12 +42,14 @@ export const getFoodStock: Selector<RootState,[FoodStockListType, Array<number>]
 
   }
 )
-export const getMeals = createSelector(
+
+export type MealsListType = Array<[string, MealDto, MealDto, MealDto]>
+export const getMeals: Selector<RootState, [MealsListType, Array<number>]> = createSelector(
   selectMealsData,(data) => {
     const indexToKey = [];
-    const mealsData = Object.values(data).map((values, index) => {
+    const mealsData: MealsListType = Object.values(data).map((values, index): [string, MealDto, MealDto, MealDto] => {
       indexToKey[index] = values.id;
-      return [ values.name, {id: values.id, quantity: values.quantity, servingSize: values.quantity}, {id: values.id, quantity: values.quantity}, values ];
+      return [ values.name, {...values}, {...values}, {...values}];
     })
     return [mealsData, indexToKey];
   }

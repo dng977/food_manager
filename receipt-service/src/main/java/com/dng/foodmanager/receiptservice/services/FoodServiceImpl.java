@@ -197,7 +197,7 @@ public class FoodServiceImpl implements FoodService {
         meal.setName(mealDto.getName());
         meal.setDescription(mealDto.getDescription());
         meal.setIngredients(mealDto.getIngredients().stream().map(mealItemDto ->
-                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(), mealItemDto.getQuantity())).collect(Collectors.toList()));
+                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(),mealItemDto.isCooked(), mealItemDto.getQuantity())).collect(Collectors.toList()));
         mealRepository.save(meal);
 
     }
@@ -210,8 +210,9 @@ public class FoodServiceImpl implements FoodService {
         meal.setName(mealDto.getName());
         meal.setDescription(mealDto.getDescription());
         meal.setQuantity(mealDto.getQuantity());
+        meal.setServings(mealDto.getServings());
         meal.setIngredients(mealDto.getIngredients().stream().map(mealItemDto ->
-                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(), mealItemDto.getQuantity())).collect(Collectors.toList()));
+                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(),mealItemDto.isCooked(),  mealItemDto.getQuantity())).collect(Collectors.toList()));
         mealRepository.save(meal);
 
         return mealRepository.findByUserId(userId).stream().map(Meal::toDto).collect(Collectors.toList());

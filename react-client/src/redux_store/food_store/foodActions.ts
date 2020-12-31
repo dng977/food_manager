@@ -146,7 +146,7 @@ export const addMeal = (mealDto: MealDto, callBackOnSuccess: () => void ) : AppT
 
 
 export const editMeal = (mealDto: MealDto, callBackOnSuccess: () => void) : AppThunk<MealsActions> => async (dispatch, getState, getFirebase) => {
-  dispatch({ type: DIALOG_LOADING });
+  //dispatch({ type: DIALOG_LOADING });
   apiRequest({
     dispatch,
     getFirebase,

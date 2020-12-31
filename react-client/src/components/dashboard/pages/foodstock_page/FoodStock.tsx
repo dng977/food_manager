@@ -59,7 +59,7 @@ class FoodStock extends React.Component<PropsFromRedux, FoodStockState> {
       openAddFoodDialog: false,
       openAddMealDialog: false,
       rowsSelected: [],
-      tableNumber: 0,
+      tableNumber: 1,
     }
     // this.path = this.props.match.path;
     // this.params = this.props.match.params;
@@ -196,9 +196,10 @@ class FoodStock extends React.Component<PropsFromRedux, FoodStockState> {
               :
               <Grid item>
                 <MealsTable
+                  loading={this.props.loading}
                   paperElevation={this.paperElevation}
                   eatMeal={() => { }}
-                  editMeal={this.props.editMeal}
+                  editMeal={mealDto => this.props.editMeal(mealDto, () => {})}
                   meals={this.props.meals}
                   indexToKey={this.props.indexToKeyMeals}
                   setRowsSelected={(rowsSelected) => { this.setState({ rowsSelected }) }}

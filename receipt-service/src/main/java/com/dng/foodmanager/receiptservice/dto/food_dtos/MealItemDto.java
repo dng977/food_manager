@@ -11,5 +11,5 @@ public class MealItemDto {
     private final Long foodItemId;
 
     private final Integer quantity;
-    private boolean cooked;
+    private final boolean cooked;
 }

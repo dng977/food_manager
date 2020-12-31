@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.27.744 on 2020-12-06 16:32:21.
+// Generated using typescript-generator version 2.27.744 on 2020-12-30 15:54:46.
 
 export interface ActivityDto {
     activityFactor: ActivityFactor;
@@ -42,6 +42,7 @@ export interface MealDto {
     name: string;
     description: string;
     quantity: number;
+    servings: number;
     ingredients: MealItemDto[];
 }
 

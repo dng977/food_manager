@@ -22,10 +22,12 @@ public class MealItem extends BaseEntity {
     @JoinColumn(name = "foodItemId")
     private FoodItem foodItem;
 
+    private boolean cooked;
+
     @Nullable
     private Integer quantity;
 
     public MealItemDto toDto() {
-        return new MealItemDto(foodItem.getId(),quantity);
+        return new MealItemDto(this.foodItem.getId(),this.quantity, this.cooked);
     }
 }

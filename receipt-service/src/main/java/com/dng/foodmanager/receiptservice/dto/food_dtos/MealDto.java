@@ -13,6 +13,7 @@ public class MealDto {
     private final String name;
     private final String description;
     private final int quantity;
+    private final int servings;
     private final List<MealItemDto> ingredients;
 
 }

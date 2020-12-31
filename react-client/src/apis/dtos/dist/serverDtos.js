@@ -1,7 +1,7 @@
 "use strict";
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.27.744 on 2020-12-06 16:32:21.
+// Generated using typescript-generator version 2.27.744 on 2020-12-30 15:54:46.
 exports.__esModule = true;
 exports.ReceiptItemStatus = exports.ActivityFactor = void 0;
 var ActivityFactor;

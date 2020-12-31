@@ -25,6 +25,8 @@ public class Meal extends BaseEntity {
 
     private Integer quantity;
 
+    private Integer servings;
+
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "meal", fetch = FetchType.LAZY)
@@ -39,7 +41,7 @@ public class Meal extends BaseEntity {
     }
 
     public MealDto toDto(){
-        return new MealDto(this.getId(),this.name,this.description,this.quantity,ingredients.stream().map(MealItem::toDto).collect(Collectors.toList()));
+        return new MealDto(this.getId(),this.name,this.description,this.quantity,this.servings, ingredients.stream().map(MealItem::toDto).collect(Collectors.toList()));
     }
 
 }

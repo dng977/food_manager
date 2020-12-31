@@ -9,7 +9,6 @@ import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 
 import { connect, useSelector } from 'react-redux';
-import { editFoodStockItem } from '../../../../redux_store/food_store/foodActions';
 import { Fraction } from 'fractional';
 import PropTypes from 'prop-types';
 import { EmptyTable, FoodLookUp } from "../shared_components";
@@ -17,7 +16,7 @@ import MUIDataTable from 'mui-datatables';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import _ from 'lodash';
 import { FoodStockListType } from '../selectors';
-import { EatFoodDto, FoodItemDto, FoodStockDto } from '../../../../apis/dtos/serverDtos';
+import { EatFoodDto, FoodItemDto, FoodStockDto, MealDto } from '../../../../apis/dtos/serverDtos';
 import { RootState } from '../../../../redux_store/rootReducer';
 export const dialogTheme = createMuiTheme({
   overrides: {
@@ -87,11 +86,9 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
                     <Grid container direction="column" alignItems="center" justify="center" spacing={3}>
                       <FoodLookUp
                         width={250}
-
                         rowIndex={0}
                         hasConfirmButton={false}
                         onChange={(selectedFood: React.SetStateAction<FoodItemDto>) => setSelectedFood(selectedFood)}
-                        loading={loading}
                       />
                       {selectedFood ?
                         <Grid item>
@@ -99,7 +96,8 @@ export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, open
                             servingDesc={selectedFood.servingDesc}
                             baseServing={selectedFood.servingSize}
                             onPortionChange={onPortionChange}
-                            servingInGrams={servingInGrams}
+                            quantity={servingInGrams}
+                            maxQuantity={null}
                           />
                         </Grid>
                         :
@@ -196,12 +194,11 @@ export class FoodTable extends React.Component<FoodTableProps> {
     {
       name: 'Quantity',
       options: {
-        customBodyRender: (value: FoodStockDto, { rowIndex, rowData }) => {
+        customBodyRender: (value: FoodStockDto) => {
           return <QuantityCell
-            value={value}
+            foodItem={{quantity: value.quantity, servingDesc: value.foodItemDto.servingDesc, servingSize: value.foodItemDto.servingSize}}
             submitEdit={(newQuantity) => {
-              console.log(value, rowData);
-              let newFoodStockDto = {...rowData, quantity: newQuantity};//rowData or Value
+              let newFoodStockDto: FoodStockDto = { ...value, quantity: newQuantity };
               this.props.editFoodStockItem(newFoodStockDto);
             }} />;
         },
@@ -251,107 +248,90 @@ export class FoodTable extends React.Component<FoodTableProps> {
   }
 }
 
-
-// FoodTable.propTypes = {
-//   setRowsSelected: PropTypes.func.isRequired,
-//   foodStockItems: PropTypes.array.isRequired,
-//   indexToKey: PropTypes.array.isRequired,
-//   editFoodStockItem: PropTypes.func,
-//   eatFoodStockItem: PropTypes.func,
-//   paperElevation: PropTypes.number,
-
-// }
-
-type EatCellProps = {
-  value: FoodStockDto;
-  onEat: (arg0: EatFoodDto) => any;
-  onPrepare?: (arg0: any) => any;
-}
-export const EatCell = ({ value, onEat, onPrepare }: EatCellProps) => {
-  const [ servingUnits, setServingUnits ] = React.useState(new Fraction(1, 1));
-  const [ servingInGrams, setServingInGrams ] = React.useState(value.foodItemDto.servingSize)
-  const [ condition, setCondition ] = React.useState(value.hasRaw ? "raw" : "cooked");
-  //eval(servingUnits)
-  const onPortionChange = (servingInGrams) => {
-    setServingInGrams(servingInGrams)
-    setServingUnits(getServingInUnits(servingInGrams, value.foodItemDto.servingSize));
+  type EatCellProps = {
+    value: FoodStockDto;
+    onEat: (arg0: EatFoodDto) => any;
   }
-
-  useEffect(() => {
-    setServingUnits(new Fraction(1, 1));
-    setServingInGrams(value.foodItemDto.servingSize);
-    setCondition(value.hasRaw ? "raw" : "cooked");
-  }, [ value ])
-  const handleOnEatClick = () => {
-    let eatFoodStockDto: EatFoodDto = {
-      foodId: value.foodItemDto.id,
-      quantity: servingInGrams,
-      cooked: condition === "cooked"
+  export const EatCell = ({ value, onEat }: EatCellProps) => {
+    const cQstatement = value.quantity <= value.foodItemDto.servingSize ? value.quantity : value.foodItemDto.servingSize;
+    const [ currentQuantity, setCurrentQuantity ] = React.useState(cQstatement)
+    const [ condition, setCondition ] = React.useState(value.hasRaw ? "raw" : "cooked");
+    //eval(servingUnits)
+    const onPortionChange = (currentQuantity) => {
+      setCurrentQuantity(currentQuantity)
     }
-    onEat(eatFoodStockDto);
-  }
 
-  return (
-    value.quantity !== 0 ?
-      <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
-        <Grid item>
-          <FoodPortionControl servingDesc={value.foodItemDto.servingDesc} baseServing={value.foodItemDto.servingSize} portionUnits={servingUnits} servingInGrams={servingInGrams} onPortionChange={onPortionChange} />
+    useEffect(() => {
+      setCurrentQuantity(cQstatement);
+      setCondition(value.hasRaw ? "raw" : "cooked");
+    }, [ value ])
+    const handleOnEatClick = () => {
+      let eatFoodStockDto: EatFoodDto = {
+        foodId: value.foodItemDto.id,
+        quantity: currentQuantity,
+        cooked: condition === "cooked"
+      }
+      onEat(eatFoodStockDto);
+    }
+
+    return (
+      value.quantity !== 0 ?
+        <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
+          <Grid item>
+            <FoodPortionControl maxQuantity={value.quantity} servingDesc={value.foodItemDto.servingDesc} baseServing={value.foodItemDto.servingSize} quantity={currentQuantity} onPortionChange={onPortionChange} />
+          </Grid>
+          <Grid item>
+            <RadioGroup aria-label="gender" name="condition" value={condition} onChange={event => { setCondition(event.target.value) }}>
+              <FormControlLabel value="raw" disabled={!value.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
+              <FormControlLabel value="cooked" disabled={!value.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
+            </RadioGroup>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" onClick={handleOnEatClick}>
+              Eat
+          	</Button>
+          </Grid>
         </Grid>
-        {onPrepare ? null : <Grid item>
-          <RadioGroup aria-label="gender" name="condition" value={condition} onChange={event => { setCondition(event.target.value) }}>
-            <FormControlLabel value="raw" disabled={!value.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
-            <FormControlLabel value="cooked" disabled={!value.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
-          </RadioGroup>
-        </Grid>}
-        <Grid item>
-          <Button variant="contained" color="primary" onClick={handleOnEatClick}>
-            Eat
-         </Button>
-        </Grid>
-      </Grid>
-      :
-      <Grid container wrap="nowrap" alignItems="center" justify="center" spacing={2}>
-
-        <Grid item>
-          {onPrepare ?
-
-            <Button variant="contained" color="secondary" onClick={onPrepare}>
-              Prepare
-            </Button>
-            :
+        :
+        <Grid container wrap="nowrap" alignItems="center" justify="center" spacing={2}>
+          <Grid item>
             <Tooltip title="No more quantiy left of this item.">
               <div>
                 <Button variant="contained" disabled color="primary">
                   Eat
-            </Button>
+                </Button>
               </div>
             </Tooltip>
-          }
+          </Grid>
         </Grid>
-      </Grid>
-  );
+    );
+  }
+
+type QuantityCellPropTypes = {
+  hasEditMode?: boolean;
+  submitEdit?: (quantity: number) => any;
+  foodItem: {quantity: number, servingSize?: number, servingDesc?: string };
+  emptyContents?: () => any;
 }
 
-
-
 // export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
-export const QuantityCell = ({ submitEdit, value, hasEditMode }) => {
-  
+export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyContents }: QuantityCellPropTypes) => {
+
   //console.log("before", currentQuantity);
-  
-  const [ currentQuantity, setCurrentQuantity ] = useState({ grams: value.quantity, units: new Fraction(value.quantity, value.servingSize) });
+
+  const [ currentQuantity, setCurrentQuantity ] = useState({ grams: foodItem.quantity, units: new Fraction(foodItem.quantity, foodItem.servingSize) });
 
   const [ editMode, setEditMode ] = useState(false)
-  const [ quantityInGrams, setQuantityInGrams ] = useState(currentQuantity.grams === null || currentQuantity.grams === 0 ? value.servingSize : currentQuantity.grams)
+  const [ quantityInGrams, setQuantityInGrams ] = useState(currentQuantity.grams === null || currentQuantity.grams === 0 ? foodItem.servingSize : currentQuantity.grams)
 
   useEffect(() => {
-    if (value.quantity !== currentQuantity.grams) {
-      let grams = value.quantity;
-      let units = new Fraction(value.quantity, value.servingSize);
+    if (foodItem.quantity !== currentQuantity.grams) {
+      let grams = foodItem.quantity;
+      let units = new Fraction(foodItem.quantity, foodItem.servingSize);
       setCurrentQuantity({ grams, units });
-      setQuantityInGrams(grams === null || grams === 0 ? value.servingSize : grams);
+      setQuantityInGrams(grams === null || grams === 0 ? foodItem.servingSize : grams);
     }
-  }, [ value ]);
+  }, [ foodItem ]);
 
   const onPortionChange = (servingInGrams) => {
     setQuantityInGrams(servingInGrams)
@@ -359,7 +339,7 @@ export const QuantityCell = ({ submitEdit, value, hasEditMode }) => {
   }
   const handleSubmit = (_event) => {
     setEditMode(false);
-    setCurrentQuantity({ units: getServingInUnits(quantityInGrams, value.servingSize), grams: quantityInGrams })
+    setCurrentQuantity({ units: getServingInUnits(quantityInGrams, foodItem.servingSize), grams: quantityInGrams })
     submitEdit(quantityInGrams)
   }
   const handleCancel = _event => {
@@ -371,9 +351,10 @@ export const QuantityCell = ({ submitEdit, value, hasEditMode }) => {
       <Grid container direction="column" alignItems="center" justify="center" spacing={0}>
         < Grid item xs >
           <FoodPortionControl
-            servingDesc={value.servingDesc}
-            baseServing={value.servingSize ? value.servingSize : quantityInGrams}
-            servingInGrams={quantityInGrams}
+            maxQuantity={null}
+            servingDesc={foodItem.servingDesc}
+            baseServing={foodItem.servingSize ? foodItem.servingSize : quantityInGrams}
+            quantity={quantityInGrams}
             onPortionChange={onPortionChange} />
         </Grid >
         <Grid item>
@@ -407,9 +388,9 @@ export const QuantityCell = ({ submitEdit, value, hasEditMode }) => {
 
                 <Grid item>
                   <Tooltip title="Empty">
-                  <IconButton color="primary">
-                    <DeleteOutlineRoundedIcon />
-                  </IconButton>
+                    <IconButton onClick={emptyContents} color="primary">
+                      <DeleteOutlineRoundedIcon />
+                    </IconButton>
                   </Tooltip>
                 </Grid>
                 :
@@ -417,10 +398,10 @@ export const QuantityCell = ({ submitEdit, value, hasEditMode }) => {
           }
 
         </Grid>
-        {value.servingDesc ?
+        {foodItem.servingDesc ?
           <Grid item>
             <Typography variant="caption">
-              {`/${value.servingDesc.toLowerCase()}/`}
+              {`/${foodItem.servingDesc.toLowerCase()}/`}
             </Typography>
           </Grid>
           :
@@ -429,57 +410,90 @@ export const QuantityCell = ({ submitEdit, value, hasEditMode }) => {
       </Grid>
   );
 };
-QuantityCell.propTypes = {
-  hasEditMode: PropTypes.bool
-}
-QuantityCell.defaultProps = {
-  hasEditMode: true
-}
 
-const getServingInUnits = (servingInGrams, baseServing) => {
+
+const getServingInUnits = (quantity: number, baseServing: number) => {
   if (baseServing === 0)
     return new Fraction(0, 1);
-  return new Fraction(servingInGrams, baseServing);
+  return new Fraction(quantity, baseServing);
 }
 
-export const FoodPortionControl = ({ servingDesc, baseServing, servingInGrams, onPortionChange }) => {
-  // console.log("SERVING DESC", servingDesc)
+type FoodPortionControlType = {
+  servingDesc: string;
+  baseServing: number;
+  quantity: number;
+  onPortionChange: (serving: number) => any,
+  maxQuantity: number;
+}
+
+export const FoodPortionControl = ({ servingDesc, baseServing, quantity, onPortionChange, maxQuantity }: FoodPortionControlType) => {
+  console.log(quantity, maxQuantity);
+  const [minusDisabled, setMinusDisabled] = useState(false);
+  const plusDisabledStmt = maxQuantity && quantity === maxQuantity ? true : false;
+  const [plusDisabled, setPlusDisabled] = useState(plusDisabledStmt);
+
+  useEffect(()=>{
+    setPlusDisabled(plusDisabledStmt)
+  },[maxQuantity, quantity])
+
   const changeServing = (plus) => {
     if (plus) {
-      if (servingInGrams < baseServing) {
-        let newservingInGrams = servingInGrams * 2;
-        if (servingInGrams < baseServing && newservingInGrams > baseServing) {
+      //Enable minus 
+      if(quantity < 1) {
+        setMinusDisabled(false);
+      }
+      let newQuantity: number;
+      //If quantity < 1 unit(base serving)
+      if (quantity < baseServing) {
+        newQuantity = quantity * 2;
+      }
+      else{
+        newQuantity = quantity + baseServing;
+      }
+
+      //if there is maxQuantity and it is exceeded
+      if(maxQuantity && newQuantity >= maxQuantity){
+        onPortionChange(maxQuantity)
+        setPlusDisabled(true);
+      }else{
+        //Change quantity to base serving to keep the proportions right
+        if (quantity < baseServing && newQuantity > baseServing) {
           onPortionChange(baseServing)
         }
-        else {
-          onPortionChange(newservingInGrams)
-        }
+        else
+          onPortionChange(newQuantity)
       }
-      else
-        onPortionChange(servingInGrams + baseServing)
     }
     else {
-      if (servingInGrams <= baseServing)
-        onPortionChange(servingInGrams / 2)
+      if(quantity === maxQuantity){
+        setPlusDisabled(false);
+      }
+      if (quantity <= baseServing){
+        let newQuantity = quantity / 2;
+        if(newQuantity < 1){
+          setMinusDisabled(true);
+        }
+        onPortionChange(newQuantity)
+      }
       else
-        onPortionChange(servingInGrams - baseServing)
+        onPortionChange(quantity - baseServing)
     }
   }
   return (
     <Grid container direction="column" alignItems="center" justify="center" spacing={0}>
       <Grid item container wrap="nowrap" alignItems="center" justify="flex-start" spacing={1}>
         <Grid item>
-          <IconButton size="small" color="primary" onClick={() => changeServing(false)}>
+          <IconButton size="small" disabled={minusDisabled} color="primary" onClick={() => changeServing(false)}>
             <RemoveRoundedIcon />
           </IconButton>
         </Grid>
         <Grid item>
           <Typography noWrap >{
-            `${getServingInUnits(servingInGrams, baseServing)} (${servingInGrams} g)`}
+            `${getServingInUnits(quantity, baseServing)} (${quantity} g)`}
           </Typography>
         </Grid>
         <Grid item>
-          <IconButton size="small" color="primary" onClick={() => changeServing(true)}>
+          <IconButton size="small" disabled={plusDisabled} color="primary" onClick={() => changeServing(true)}>
             <AddRoundedIcon />
           </IconButton>
         </Grid>
@@ -499,10 +513,4 @@ export const FoodPortionControl = ({ servingDesc, baseServing, servingInGrams, o
   );
 }
 
-FoodPortionControl.propTypes = {
-  servingDesc: PropTypes.string,
-  baseServing: PropTypes.number,
-  portionUnits: PropTypes.instanceOf(Fraction),
-  servingInGrams: PropTypes.number,
-  onPortionChange: PropTypes.func,
-}
+
