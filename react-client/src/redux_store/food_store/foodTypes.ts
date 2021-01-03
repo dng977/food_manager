@@ -1,5 +1,6 @@
-import { FoodStockDto, FoodItemDto, MealDto } from "../../apis/dtos/serverDtos";
+import { FoodStockDto, FoodItemDto, MealDto, NutritionStateDto } from "../../apis/dtos/serverDtos";
 import { DIALOG_LOADING } from "../feedback_store/feedbackTypes";
+import { FETCH_NUTRITION_STATE } from "../nutrition_store/dist/nutritionTypes";
 import { EditReceiptItemAction } from "../receipt_store/receiptTypes";
 import {IdMap} from '../sharedTypes';
 //TYPE CONSTANTS
@@ -16,7 +17,7 @@ export const EAT_ITEM_FOODSTOCK = 'EAT_ITEM_FOODSTOCK';
 
 export const EDIT_MEAL = 'EDIT_MEAL';
 export const FETCH_MEALS = 'FETCH_MEALS';
-export const DELETE_MEALS = 'DELETE_MEALS';
+export const DELETE_MEAL = 'DELETE_MEAL';
 
 
 
@@ -56,9 +57,10 @@ interface EditMealAction {
   payload:MealDto;
 }
 interface DeleteMealsAction {
-  type: typeof DELETE_MEALS;
-  payload: number[];
+  type: typeof DELETE_MEAL;
+  payload: number;
 }
+
 export type MealsActions = DeleteMealsAction | EditMealAction | FetchMealsAction | FoodLoadingAction;
 
 //FOOD

@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.deleteMeals = exports.editMeal = exports.addMeal = exports.fetchMeals = exports.eatFoodStockItem = exports.addFoodStockItem = exports.deleteFoodStockItems = exports.editFoodStockItem = exports.fetchFoodStock = exports.fetchFoodItems = void 0;
+exports.eatMeal = exports.deleteMeal = exports.editMeal = exports.addMeal = exports.fetchMeals = exports.eatFoodStockItem = exports.addFoodStockItem = exports.deleteFoodStockItems = exports.editFoodStockItem = exports.fetchFoodStock = exports.fetchFoodItems = void 0;
 var v1_1 = require("../../apis/v1");
 var feedbackTypes_1 = require("../feedback_store/feedbackTypes");
 var nutritionTypes_1 = require("../nutrition_store/nutritionTypes");
@@ -226,7 +226,7 @@ exports.editMeal = function (mealDto, callBackOnSuccess) { return function (disp
         return [2 /*return*/];
     });
 }); }; };
-exports.deleteMeals = function (idArray) { return function (dispatch, getState, getFirebase) { return __awaiter(void 0, void 0, void 0, function () {
+exports.deleteMeal = function (id) { return function (dispatch, getState, getFirebase) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         dispatch({ type: feedbackTypes_1.DIALOG_LOADING });
         v1_1["default"]({
@@ -234,10 +234,29 @@ exports.deleteMeals = function (idArray) { return function (dispatch, getState, 
             getFirebase: getFirebase,
             request: {
                 method: 'delete',
-                url: 'foodstock/meals',
-                payload: idArray
+                url: "foodstock/meals/" + id
             },
-            onSuccess: function () { return dispatch({ type: foodTypes_1.DELETE_MEALS, payload: idArray }); }
+            onSuccess: function () { return dispatch({ type: foodTypes_1.DELETE_MEAL, payload: id }); }
+        });
+        return [2 /*return*/];
+    });
+}); }; };
+exports.eatMeal = function (eatFoodDto) { return function (dispatch, getState, getFirebase) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        v1_1["default"]({
+            dispatch: dispatch,
+            getFirebase: getFirebase,
+            request: {
+                method: 'post',
+                url: 'foodstock/meals/eat',
+                payload: eatFoodDto
+            },
+            onSuccess: function (response) {
+                dispatch({ type: nutritionTypes_1.FETCH_NUTRITION_STATE, payload: response.data });
+                var oldMeal = getState().food.meals[eatFoodDto.foodId];
+                var newMeal = __assign(__assign({}, oldMeal), { quantityLeft: oldMeal.quantityLeft - eatFoodDto.quantity });
+                dispatch({ type: foodTypes_1.EDIT_MEAL, payload: newMeal });
+            }
         });
         return [2 /*return*/];
     });

@@ -8,9 +8,11 @@ import com.dng.foodmanager.receiptservice.repositories.*;
 import com.dng.foodmanager.receiptservice.util.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.websocket.MessageHandler;
 import java.sql.SQLDataException;
 import java.time.LocalDate;
 import java.util.*;
@@ -115,14 +117,14 @@ public class FoodServiceImpl implements FoodService {
 
 
         //2) Set nutrition
-        Optional<FoodItem> foodItemOptional = foodItemRepository.findById(eatFoodDto.getFoodId());
+        Optional<FoodItem> foodItemOptional = foodItemRepository.findById(foodStockItem.getFoodItemId());
 
-        Optional<FoodNutrition> foodNutritionOptional = eatFoodDto.getCooked() ? foodItemOptional.get().getNutritionCooked() : foodItemOptional.get().getNutritionRaw();
-        if (!foodNutritionOptional.isPresent())
+        Optional<FoodNutrition> foodNutritionOptional = eatFoodDto.getCooked() ? foodItemOptional.orElseThrow().getNutritionCooked() : foodItemOptional.orElseThrow().getNutritionRaw();
+        if (foodNutritionOptional.isEmpty())
             throw new IllegalArgumentException("Nutrition info for either raw or cooked isn't present.");
+        NutritionState nutritionState;
 
         FoodNutrition foodNutrition = foodNutritionOptional.get();
-        NutritionState nutritionState;
         boolean update = false;
 
         Optional<NutritionState> nutritionStateOptional = nutritionStateRepository.findByUserIdAndDate(userId, LocalDate.now()); //todays date - must be fixed to get users locale
@@ -136,7 +138,7 @@ public class FoodServiceImpl implements FoodService {
 
         nutritionState.setNutrients(
                 amountEaten,
-                update,
+                true,
                 foodNutrition.getEnergy_kcal().isPresent() ? foodNutrition.getEnergy_kcal().get() : 0,
                 foodNutrition.getWater_g().isPresent() ? foodNutrition.getWater_g().get() : 0,
                 foodNutrition.getCarbohydrates_g().isPresent() ? foodNutrition.getCarbohydrates_g().get() : 0,
@@ -190,13 +192,20 @@ public class FoodServiceImpl implements FoodService {
 
     }
 
+    private Meal getMealFromRepository(Long mealId) throws NoSuchElementException {
+        Optional<Meal> mealOptional = mealId == null ? Optional.empty() : mealRepository.findById(mealId);
+        Meal meal = mealOptional.orElseThrow(() -> new NoSuchElementException("Meal Item with id=" + mealId+ " is not present."));
+        return meal;
+    }
     @Override
     public void editMeal(String userId, MealDto mealDto) {
-        Optional<Meal> mealOptional = mealDto.getId() == null ? Optional.empty() : mealRepository.findById(mealDto.getId());
-        Meal meal = mealOptional.orElseThrow(() -> new NoSuchElementException("Meal Item with name=" + mealDto.getName() + " is not present."));
-        meal.setName(mealDto.getName());
-        meal.setDescription(mealDto.getDescription());
-        meal.setIngredients(mealDto.getIngredients().stream().map(mealItemDto ->
+        Meal meal = getMealFromRepository(mealDto.getId());
+        if (mealDto.getName().isPresent()) meal.setName(mealDto.getName().get());
+        if (mealDto.getDescription().isPresent()) meal.setDescription(mealDto.getDescription().get());
+        if (mealDto.getQuantity().isPresent()) meal.setQuantity(mealDto.getQuantity().get());
+        if (mealDto.getQuantityLeft().isPresent()) meal.setQuantityLeft(mealDto.getQuantityLeft().get());
+        if (mealDto.getServings().isPresent()) meal.setServings(mealDto.getServings().get());
+        if (mealDto.getIngredients().isPresent()) meal.setIngredients(mealDto.getIngredients().get().stream().map(mealItemDto ->
                 new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(),mealItemDto.isCooked(), mealItemDto.getQuantity())).collect(Collectors.toList()));
         mealRepository.save(meal);
 
@@ -204,14 +213,15 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public List<MealDto> addMeal(String userId, MealDto mealDto) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow();
         Meal meal = new Meal();
         meal.setUser(user);
-        meal.setName(mealDto.getName());
-        meal.setDescription(mealDto.getDescription());
-        meal.setQuantity(mealDto.getQuantity());
-        meal.setServings(mealDto.getServings());
-        meal.setIngredients(mealDto.getIngredients().stream().map(mealItemDto ->
+        meal.setName(mealDto.getName().get());
+        meal.setDescription(mealDto.getDescription().get());
+        meal.setQuantity(mealDto.getQuantity().get());
+        meal.setQuantityLeft(mealDto.getQuantityLeft().get());
+        meal.setServings(mealDto.getServings().get());
+        meal.setIngredients(mealDto.getIngredients().get().stream().map(mealItemDto ->
                 new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(),mealItemDto.isCooked(),  mealItemDto.getQuantity())).collect(Collectors.toList()));
         mealRepository.save(meal);
 
@@ -219,10 +229,8 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public void deleteMeal(String uid, List<Long> idsArray) {
-        for (Long id : idsArray) {
-            mealRepository.deleteById(id);
-        }
+    public void deleteMeal(String uid, Long mealId) {
+        mealRepository.deleteById(mealId);
     }
 
     @Override
@@ -230,8 +238,97 @@ public class FoodServiceImpl implements FoodService {
         return  mealRepository.findByUserId(uid).stream().map(Meal::toDto).collect(Collectors.toList());
     }
 
+    private void updateNutritionForSingleFood(NutritionState nutritionState, FoodItem foodItem,int quantity, boolean cooked){
+        Optional<FoodNutrition> foodNutritionOptional = cooked ? foodItem.getNutritionCooked() : foodItem.getNutritionRaw();
+        if (foodNutritionOptional.isEmpty())
+            throw new IllegalArgumentException("Nutrition info for either raw or cooked isn't present.");
+        FoodNutrition foodNutrition = foodNutritionOptional.get();
+        nutritionState.setNutrients(
+                quantity,
+                true,
+                foodNutrition.getEnergy_kcal().isPresent() ? foodNutrition.getEnergy_kcal().get() : 0,
+                foodNutrition.getWater_g().isPresent() ? foodNutrition.getWater_g().get() : 0,
+                foodNutrition.getCarbohydrates_g().isPresent() ? foodNutrition.getCarbohydrates_g().get() : 0,
+                foodNutrition.getFiber_g().isPresent() ? foodNutrition.getFiber_g().get() : 0,
+                foodNutrition.getFat_g().isPresent() ? foodNutrition.getFat_g().get() : 0,
+                foodNutrition.getSatFat_g().isPresent() ? foodNutrition.getSatFat_g().get() : 0,
+                foodNutrition.getMonoFat_g().isPresent() ? foodNutrition.getMonoFat_g().get() : 0,
+                foodNutrition.getPolyFat_g().isPresent() ? foodNutrition.getPolyFat_g().get() : 0,
+                foodNutrition.getOmega6_g().isPresent() ? foodNutrition.getOmega6_g().get() : 0,
+                foodNutrition.getOmega3_g().isPresent() ? foodNutrition.getOmega3_g().get() : 0,
+                foodNutrition.getProtein_g().isPresent() ? foodNutrition.getProtein_g().get() : 0,
+                foodNutrition.getCholesterol_mg().isPresent() ? foodNutrition.getCholesterol_mg().get() : 0,
+                foodNutrition.getSugar_g().isPresent() ? foodNutrition.getSugar_g().get() : 0,
+                foodNutrition.getSucrose_g().isPresent() ? foodNutrition.getSucrose_g().get() : 0,
+                foodNutrition.getVitaminA_mcg().isPresent() ? foodNutrition.getVitaminA_mcg().get() : 0,
+                foodNutrition.getVitaminC_mg().isPresent() ? foodNutrition.getVitaminC_mg().get() : 0,
+                foodNutrition.getVitaminD_mcg().isPresent() ? foodNutrition.getVitaminD_mcg().get() : 0,
+                foodNutrition.getVitaminE_mg().isPresent() ? foodNutrition.getVitaminE_mg().get() : 0,
+                foodNutrition.getVitaminK_mcg().isPresent() ? foodNutrition.getVitaminK_mcg().get() : 0,
+                foodNutrition.getThiaminB1_mg().isPresent() ? foodNutrition.getThiaminB1_mg().get() : 0,
+                foodNutrition.getRiboflavinB2_mg().isPresent() ? foodNutrition.getRiboflavinB2_mg().get() : 0,
+                foodNutrition.getNiacinB3_mg().isPresent() ? foodNutrition.getNiacinB3_mg().get() : 0,
+                foodNutrition.getVitaminB6_mg().isPresent() ? foodNutrition.getVitaminB6_mg().get() : 0,
+                foodNutrition.getFolateB9_mcg().isPresent() ? foodNutrition.getFolateB9_mcg().get() : 0,
+                foodNutrition.getVitaminB12_mcg().isPresent() ? foodNutrition.getVitaminB12_mcg().get() : 0,
+                foodNutrition.getPantothenicAcidB5_mg().isPresent() ? foodNutrition.getPantothenicAcidB5_mg().get() : 0,
+                0,
+                foodNutrition.getCholine_mg().isPresent() ? foodNutrition.getCholine_mg().get() : 0,
+                foodNutrition.getCalcium_mg().isPresent() ? foodNutrition.getCalcium_mg().get() : 0,
+                0,
+                foodNutrition.getCopper_mg().isPresent() ? foodNutrition.getCopper_mg().get() : 0,
+                0,
+                0,
+                foodNutrition.getIron_mg().isPresent() ? foodNutrition.getIron_mg().get() : 0,
+                foodNutrition.getMagnesium_mg().isPresent() ? foodNutrition.getMagnesium_mg().get() : 0,
+                foodNutrition.getManganese_mg().isPresent() ? foodNutrition.getManganese_mg().get() : 0,
+                0,
+                foodNutrition.getPhosphorus_mg().isPresent() ? foodNutrition.getPhosphorus_mg().get() : 0,
+                foodNutrition.getSelenium_mcg().isPresent() ? foodNutrition.getSelenium_mcg().get() : 0,
+                foodNutrition.getZinc_mg().isPresent() ? foodNutrition.getZinc_mg().get() : 0,
+                foodNutrition.getPotassium_mg().isPresent() ? foodNutrition.getPotassium_mg().get() : 0,
+                foodNutrition.getSodium_mg().isPresent() ? foodNutrition.getSodium_mg().get() : 0,
+                0,
+                foodNutrition.getLycopene_mcg().isPresent() ? foodNutrition.getLycopene_mcg().get() : 0,
+                foodNutrition.getLutZea_mcg().isPresent() ? foodNutrition.getLutZea_mcg().get() : 0
+        );
+    }
+
     @Override
     public NutritionStateDto eatMeal(String userId, EatFoodDto eatFoodDto) {
-        return null;
+        log.debug("EAT MEAL METHOD");
+        //1) Remove eaten meal
+        Meal meal = getMealFromRepository(eatFoodDto.getFoodId());
+
+        int amountEaten = eatFoodDto.getQuantity();
+
+        int oldQuantity = meal.getQuantityLeft();
+        if (oldQuantity < amountEaten)
+            throw new IllegalArgumentException("The food hasn't got sufficient quantity.");
+
+        meal.setQuantityLeft(oldQuantity - amountEaten);
+        mealRepository.save(meal);
+
+
+        //2) Set nutrition
+
+        NutritionState nutritionState;
+        Optional<NutritionState> nutritionStateOptional = nutritionStateRepository.findByUserIdAndDate(userId, LocalDate.now()); //todays date - must be fixed to get users locale
+        //If there is already such state
+        nutritionState = nutritionStateOptional.orElseGet(() -> new NutritionState(userId, LocalDate.now()));
+        for (MealItem mealItem : meal.getIngredients()){
+            log.debug("mealItem quantity : " + mealItem.getQuantity());
+            log.debug("meal quantity : " + meal.getQuantity());
+            log.debug("amountEaten: " + amountEaten);
+
+            int proportionalItemQuantity = (int) ((mealItem.getQuantity().floatValue() / meal.getQuantity().floatValue()) * amountEaten);
+            log.debug("Prop item quantity:  " + proportionalItemQuantity);
+            updateNutritionForSingleFood(nutritionState,mealItem.getFoodItem(), proportionalItemQuantity, mealItem.isCooked());
+        }
+        nutritionStateRepository.save(nutritionState);
+
+
+        return nutritionState.convertToDto();
+
     }
 }

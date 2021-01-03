@@ -1,4 +1,4 @@
-import { DELETE_FOODSTOCK, EDIT_FOODSTOCK, FETCH_FOODSTOCK, FETCH_FOOD_ITEMS, FOOD_LOADING, FETCH_MEALS, DELETE_MEALS, EDIT_MEAL, FoodActionTypes } from './foodTypes';
+import { DELETE_FOODSTOCK, EDIT_FOODSTOCK, FETCH_FOODSTOCK, FETCH_FOOD_ITEMS, FOOD_LOADING, FETCH_MEALS, DELETE_MEAL, EDIT_MEAL, FoodActionTypes } from './foodTypes';
 import _ from 'lodash';
 import { EditReceiptItemAction, EDIT_RECEIPT_ITEM } from '../receipt_store/receiptTypes';
 import { IdMap } from '../sharedTypes';
@@ -34,8 +34,8 @@ export default (state = initState, action: FoodActionTypes | EditReceiptItemActi
     case FETCH_MEALS:
       return {...state, meals: {...(_.mapKeys(action.payload, 'id'))}, searchedItems: {}}
     case EDIT_MEAL:
-      return {...state, meals: {...state.meals, [action.payload.id]: action.payload}}
-    case DELETE_MEALS:
+      return {...state, meals: {...state.meals, [action.payload.id]: {...state.meals[action.payload.id],...action.payload}}}
+    case DELETE_MEAL:
       return {...state, meals: _.omit(state.meals, action.payload)};
     
     default:

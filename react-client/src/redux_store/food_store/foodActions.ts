@@ -1,12 +1,13 @@
-import { EatFoodDto, FoodItemDto, FoodStockDto, MealDto } from '../../apis/dtos/serverDtos';
+import { EatFoodDto, FoodItemDto, FoodStockDto, MealDto, NutritionStateDto } from '../../apis/dtos/serverDtos';
 import apiRequest from '../../apis/v1';
 import {ThunkAction} from 'redux-thunk';
 import { RootState } from '../rootReducer';
 import { ExtendedFirebaseInstance } from 'react-redux-firebase';
 import { DIALOG_LOADING } from '../feedback_store/feedbackTypes';
 import { FetchNutritionStateAction, FETCH_NUTRITION_STATE } from '../nutrition_store/nutritionTypes';
-import { FoodItemsActions, FOOD_LOADING, FETCH_FOOD_ITEMS, FoodStockActions, FETCH_FOODSTOCK, EDIT_FOODSTOCK, DELETE_FOODSTOCK, MealsActions, FETCH_MEALS, EDIT_MEAL, DELETE_MEALS } from './foodTypes';
+import { FoodItemsActions, FOOD_LOADING, FETCH_FOOD_ITEMS, FoodStockActions, FETCH_FOODSTOCK, EDIT_FOODSTOCK, DELETE_FOODSTOCK, MealsActions, FETCH_MEALS, EDIT_MEAL, DELETE_MEAL } from './foodTypes';
 import { AppThunk, AppThunkDispatch } from '../sharedTypes';
+import { getHeapStatistics } from 'v8';
 export const fetchFoodItems = (foodName, rowIndex) : AppThunk<FoodItemsActions> => async (dispatch, _getState, getFirebase) => {
   dispatch({ type: FOOD_LOADING });
   apiRequest({
@@ -162,16 +163,34 @@ export const editMeal = (mealDto: MealDto, callBackOnSuccess: () => void) : AppT
   });
 };
 
-export const deleteMeals = (idArray: number[]) : AppThunk<MealsActions> => async (dispatch, getState, getFirebase) => {
+export const deleteMeal = (id: number) : AppThunk<MealsActions> => async (dispatch, getState, getFirebase) => {
   dispatch({ type: DIALOG_LOADING });
   apiRequest({
     dispatch,
     getFirebase,
     request: {
       method: 'delete',
-      url: 'foodstock/meals',
-      payload: idArray
+      url: `foodstock/meals/${id}`,
     },
-    onSuccess: () => dispatch({ type: DELETE_MEALS, payload: idArray }),
+    onSuccess: () => dispatch({ type: DELETE_MEAL, payload: id }),
   });
 };
+
+export const eatMeal = (eatFoodDto: EatFoodDto) : AppThunk<MealsActions | FetchNutritionStateAction> => async (dispatch, getState, getFirebase) => {
+  apiRequest({
+    dispatch,
+    getFirebase,
+    request: {
+      method: 'post',
+      url: 'foodstock/meals/eat',
+      payload: eatFoodDto
+    },
+    onSuccess: (response: { data: NutritionStateDto; }) => {
+      dispatch({ type: FETCH_NUTRITION_STATE, payload: response.data });
+
+      const oldMeal: MealDto = getState().food.meals[ eatFoodDto.foodId ];
+      const newMeal: MealDto = { ...oldMeal, quantityLeft: oldMeal.quantityLeft - eatFoodDto.quantity };
+      dispatch({ type: EDIT_MEAL, payload: newMeal });
+    }
+  });
+}

@@ -84,17 +84,17 @@ public class FoodStockController {
         return foodService.addMeal(principal.getUid(), mealDto);
     }
 
-    @DeleteMapping("/meals")
+    @DeleteMapping("/meals/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody List<Long> idsArray) {
+    public void deleteMeal(@AuthenticationPrincipal CustomPrincipal principal, @PathVariable String id) {
 
-        foodService.deleteMeal(principal.getUid(), idsArray);
+        foodService.deleteMeal(principal.getUid(), Long.valueOf(id));
     }
     @PostMapping("/meals/eat")
     @ResponseStatus(HttpStatus.OK)
-    public void eatMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody EatFoodDto eatFoodDto) {
+    public NutritionStateDto eatMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody EatFoodDto eatFoodDto) {
 
-        foodService.eatMeal(principal.getUid(), eatFoodDto);
+        return foodService.eatMeal(principal.getUid(), eatFoodDto);
     }
 
 }

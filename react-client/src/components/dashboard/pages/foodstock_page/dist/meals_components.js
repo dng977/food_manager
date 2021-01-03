@@ -43,9 +43,20 @@ exports.AddMealDialog = function (_a) {
     var _e = react_1.useState([null]), ingredientList = _e[0], setIngredientList = _e[1];
     var onPortionChange = function (indexToChange, servingInGrams) {
         console.log("On port change");
+        // ingredientList[indexToChange].mealItemDto.quantity = servingInGrams;
+        // setIngredientList(ingredientList);
         setIngredientList(ingredientList.map(function (ingredient, ind) {
             if (ind === indexToChange)
                 ingredient.mealItemDto.quantity = servingInGrams;
+            return ingredient;
+        }));
+    };
+    var onConditionChange = function (indexToChange, newCondition) {
+        // ingredientList[indexToChange].mealItemDto.cooked = newCondition === "raw" ? false : true;
+        // setIngredientList(ingredientList);
+        setIngredientList(ingredientList.map(function (ingredient, ind) {
+            if (ind === indexToChange)
+                ingredient.mealItemDto.cooked = newCondition === "raw" ? false : true;
             return ingredient;
         }));
     };
@@ -90,6 +101,7 @@ exports.AddMealDialog = function (_a) {
             description: description,
             ingredients: ingredients,
             quantity: totalQuantity,
+            quantityLeft: totalQuantity,
             servings: servings
         };
     };
@@ -123,8 +135,13 @@ exports.AddMealDialog = function (_a) {
                                             react_1["default"].createElement(core_1.Grid, { item: true },
                                                 react_1["default"].createElement(shared_components_1.FoodLookUp, { label: index === (ingredientList.length - 1) ? "Add ingredient" : "#" + (index + 1), initSelectedValue: foodItemDto, width: 200, rowIndex: 0, hasConfirmButton: false, onChange: function (selectedFood) { return updateIngredientList(selectedFood, index); } })),
                                             ingredientTuple === null ? null :
-                                                react_1["default"].createElement(core_1.Grid, { item: true },
-                                                    react_1["default"].createElement(components_1.FoodPortionControl, { maxQuantity: null, servingDesc: foodItemDto.servingDesc, baseServing: foodItemDto.servingSize, onPortionChange: function (servingInGrams) { return onPortionChange(index, servingInGrams); }, quantity: mealItemDto.quantity }))));
+                                                react_1["default"].createElement(react_1["default"].Fragment, null,
+                                                    react_1["default"].createElement(core_1.Grid, { item: true },
+                                                        react_1["default"].createElement(components_1.FoodPortionControl, { maxQuantity: null, servingDesc: foodItemDto.servingDesc, baseServing: foodItemDto.servingSize, onPortionChange: function (servingInGrams) { return onPortionChange(index, servingInGrams); }, quantity: mealItemDto.quantity })),
+                                                    react_1["default"].createElement(core_1.Grid, { item: true },
+                                                        react_1["default"].createElement(core_1.RadioGroup, { "aria-label": "gender", name: "condition", value: mealItemDto.cooked ? "cooked" : "raw", onChange: function (event) { onConditionChange(index, event.target.value); } },
+                                                            react_1["default"].createElement(core_1.FormControlLabel, { value: "raw", disabled: !foodItemDto.hasRaw, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Raw" }),
+                                                            react_1["default"].createElement(core_1.FormControlLabel, { value: "cooked", disabled: !foodItemDto.hasCooked, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Cooked" }))))));
                                     }))),
                                 react_1["default"].createElement(core_1.Divider, null),
                                 react_1["default"].createElement(core_1.Grid, { item: true },
@@ -166,7 +183,8 @@ var MealsTable = /** @class */ (function (_super) {
             print: false,
             viewColumns: false,
             filter: false,
-            sort: false,
+            sort: true,
+            sortOrder: { name: "Quantity", direction: "dsc" },
             selectableRows: "none",
             selectableRowsHeader: false,
             selectToolbarPlacement: 'none',
@@ -183,30 +201,35 @@ var MealsTable = /** @class */ (function (_super) {
         };
         _this.columns = [
             {
-                name: 'Meal Name'
+                name: 'Meal Name',
+                options: {
+                    sort: false
+                }
             },
             {
                 name: '',
                 options: {
+                    sort: false,
                     customBodyRender: function (value) {
-                        return react_1["default"].createElement(exports.EatMealCell, { value: value, onPrepare: function (id) { return console.log("PREPARE " + id); }, onEat: function (eatMealDto) { return _this.props.eatMeal(eatMealDto); } });
+                        return react_1["default"].createElement(exports.EatMealCell, { value: value, onPrepare: function () { return _this.props.editMeal({ id: value.id, quantityLeft: value.quantity }); }, onEat: function (eatMealDto) { return _this.props.eatMeal(eatMealDto); } });
                     }
                 }
             },
             {
                 name: 'Quantity',
                 options: {
+                    sort: true,
                     customBodyRender: function (value, _a) {
                         var _rowIndex = _a._rowIndex;
                         return (react_1["default"].createElement(core_1.Grid, { container: true, alignItems: "center", justify: "center" },
                             react_1["default"].createElement(core_1.Grid, { item: true },
-                                react_1["default"].createElement(components_1.QuantityCell, { hasEditMode: false, foodItem: { quantity: value.quantity } }))));
+                                react_1["default"].createElement(components_1.QuantityCell, { hasEditMode: false, foodItem: { quantity: value.quantityLeft, servingSize: value.quantity / value.servings }, emptyContents: function () { return _this.props.editMeal({ id: value.id, quantityLeft: 0 }); }, mealQuantity: value.quantity }))));
                     },
                     sortCompare: function (order) {
                         return function (obj1, obj2) {
                             console.log(order);
-                            var val1 = obj1.data.quantity;
-                            var val2 = obj2.data.quantity;
+                            var val1 = obj1.data.quantityLeft;
+                            var val2 = obj2.data.quantityLeft;
                             return (val1 - val2) * (order === 'asc' ? 1 : -1);
                         };
                     }
@@ -223,6 +246,7 @@ var MealsTable = /** @class */ (function (_super) {
             {
                 name: 'Info',
                 options: {
+                    sort: false,
                     customBodyRender: function (_a) {
                         var rowIndex = _a.rowIndex;
                         return react_1["default"].createElement(core_1.IconButton, { color: "primary", onClick: function () { _this.props.editMeal(rowIndex); } },
@@ -243,7 +267,8 @@ var MealsTable = /** @class */ (function (_super) {
 exports.MealsTable = MealsTable;
 exports.EatMealCell = function (_a) {
     var value = _a.value, onEat = _a.onEat, onPrepare = _a.onPrepare;
-    var quantityStmt = value.quantity / value.servings;
+    var baseServing = value.quantity / value.servings;
+    var quantityStmt = baseServing <= value.quantityLeft ? baseServing : value.quantityLeft;
     var _b = react_1["default"].useState(quantityStmt), quantity = _b[0], setQuantity = _b[1];
     var onPortionChange = function (servingInGrams) {
         console.log("onport change-serving in grams: ", servingInGrams);
@@ -260,12 +285,16 @@ exports.EatMealCell = function (_a) {
         };
         onEat(eatMealDto);
     };
-    return (value.quantity !== 0 ?
-        react_1["default"].createElement(core_1.Grid, { container: true, wrap: "nowrap", alignItems: "center", justify: "flex-start", spacing: 2 },
+    return (react_1["default"].createElement(core_1.Grid, { container: true, wrap: "nowrap", alignItems: "center", justify: "center", spacing: 2 }, value.quantityLeft !== 0 ?
+        react_1["default"].createElement(react_1["default"].Fragment, null,
             react_1["default"].createElement(core_1.Grid, { item: true },
-                react_1["default"].createElement(components_1.FoodPortionControl, { servingDesc: null, baseServing: value.quantity / value.servings, quantity: quantity, onPortionChange: onPortionChange, maxQuantity: value.quantity })),
+                react_1["default"].createElement(components_1.FoodPortionControl, { servingDesc: null, baseServing: quantityStmt < value.quantityLeft ? quantityStmt : value.quantityLeft, quantity: quantity, onPortionChange: onPortionChange, maxQuantity: value.quantityLeft })),
             react_1["default"].createElement(core_1.Grid, { item: true },
                 react_1["default"].createElement(core_1.Button, { variant: "contained", color: "primary", onClick: handleOnEatClick }, "Eat")))
         :
-            react_1["default"].createElement(core_1.Button, { variant: "contained", color: "secondary", onClick: function () { return onPrepare(value.id); } }, "Prepare"));
+            react_1["default"].createElement(react_1["default"].Fragment, null,
+                react_1["default"].createElement(core_1.Grid, { item: true },
+                    react_1["default"].createElement(core_1.Button, { variant: "contained", color: "secondary", onClick: function () { return onPrepare(); } }, "Prepare")),
+                react_1["default"].createElement(core_1.Grid, { item: true },
+                    react_1["default"].createElement(core_1.Typography, { variant: "body2", noWrap: true }, value.servings + " servings (" + value.quantity + " g)")))));
 };

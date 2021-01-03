@@ -5,7 +5,7 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { styles as muiStyles } from '../../../shared/styles';
 import { withRouter } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
-import { eatFoodStockItem, addFoodStockItem, editFoodStockItem, deleteFoodStockItems, deleteMeals, fetchMeals, editMeal, addMeal } from '../../../../redux_store/food_store/foodActions';
+import { eatFoodStockItem, addFoodStockItem, editFoodStockItem, deleteFoodStockItems, deleteMeal, fetchMeals, editMeal,eatMeal, addMeal } from '../../../../redux_store/food_store/foodActions';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import { compose, bindActionCreators, Dispatch } from 'redux';
 import { ClearMessageAction, CLEAR_MESSAGE } from '../../../../redux_store/feedback_store/feedbackTypes';
@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch: Dispatch<FoodActionTypes | ClearMessageAct
   return {
     clearMessage: () => dispatch({ type: CLEAR_MESSAGE }),
     dispatch,
-    ...bindActionCreators({ editFoodStockItem, deleteFoodStockItems, addFoodItem: addFoodStockItem, eatFoodStockItem, deleteMeals, fetchMeals, editMeal, addMeal }, dispatch)
+    ...bindActionCreators({ editFoodStockItem, deleteFoodStockItems, addFoodItem: addFoodStockItem, eatFoodStockItem, deleteMeal, fetchMeals,eatMeal, editMeal, addMeal }, dispatch)
   }
 }
 const mapStateToProps = (state: RootState) => {
@@ -198,7 +198,7 @@ class FoodStock extends React.Component<PropsFromRedux, FoodStockState> {
                 <MealsTable
                   loading={this.props.loading}
                   paperElevation={this.paperElevation}
-                  eatMeal={() => { }}
+                  eatMeal={this.props.eatMeal}
                   editMeal={mealDto => this.props.editMeal(mealDto, () => {})}
                   meals={this.props.meals}
                   indexToKey={this.props.indexToKeyMeals}
