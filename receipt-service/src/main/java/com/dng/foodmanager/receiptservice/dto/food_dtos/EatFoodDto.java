@@ -14,5 +14,6 @@ public class EatFoodDto {
     private final Integer quantity;
     @Nullable
     private Boolean cooked;
+
 }
 

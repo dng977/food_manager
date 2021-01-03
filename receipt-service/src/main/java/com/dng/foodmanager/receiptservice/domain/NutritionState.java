@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Table(name = "[nutrition_state]")
 @IdClass(NutritionStateId.class)
+@ToString
 public class NutritionState {
 
     @JsonIgnore
@@ -139,9 +140,56 @@ public class NutritionState {
     public NutritionState(String userId, LocalDate date) {
         this.userId = userId;
         this.date = date;
+        this.energy_kcal = 0;
+        this.water_g = BigDecimal.valueOf(0);
+        this.carbohydrates_g = BigDecimal.valueOf(0);
+        this.fiber_g = BigDecimal.valueOf(0);
+        this.fat_g = BigDecimal.valueOf(0);
+        this.satFat_g = BigDecimal.valueOf(0);
+        this.monoFat_g = BigDecimal.valueOf(0);
+        this.polyFat_g = BigDecimal.valueOf(0);
+        this.omega6_g = BigDecimal.valueOf(0);
+        this.omega3_g = BigDecimal.valueOf(0);
+        this.protein_g = BigDecimal.valueOf(0);
+        this.cholesterol_mg = 0;
+        this.sugar_g = BigDecimal.valueOf(0);
+        this.sucrose_g = BigDecimal.valueOf(0);
+        this.vitaminA_mcg = BigDecimal.valueOf(0);
+        this.vitaminC_mg = BigDecimal.valueOf(0);
+        this.vitaminD_mcg = BigDecimal.valueOf(0);
+        this.vitaminE_mg = BigDecimal.valueOf(0);
+        this.vitaminK_mcg = BigDecimal.valueOf(0);
+        this.thiaminB1_mg = BigDecimal.valueOf(0);
+        this.riboflavinB2_mg = BigDecimal.valueOf(0);
+        this.niacinB3_mg = BigDecimal.valueOf(0);
+        this.vitaminB6_mg = BigDecimal.valueOf(0);
+        this.folateB9_mcg = BigDecimal.valueOf(0);
+        this.vitaminB12_mcg = BigDecimal.valueOf(0);
+        this.pantothenicAcidB5_mg = BigDecimal.valueOf(0);
+        this.biotinB7_mcg = BigDecimal.valueOf(0);
+        this.choline_mg = BigDecimal.valueOf(0);
+        this.calcium_mg = 0;
+        this.chromium_mcg = BigDecimal.valueOf(0);
+        this.copper_mcg = BigDecimal.valueOf(0);
+        this.fluoride_mg = BigDecimal.valueOf(0);
+        this.iodine_mcg = BigDecimal.valueOf(0);
+        this.iron_mg = BigDecimal.valueOf(0);
+        this.magnesium_mg = BigDecimal.valueOf(0);
+        this.manganese_mg = BigDecimal.valueOf(0);
+        this.molybdenum_mcg = BigDecimal.valueOf(0);
+        this.phosphorus_mg = 0;
+        this.selenium_mcg = BigDecimal.valueOf(0);
+        this.zinc_mg = BigDecimal.valueOf(0);
+        this.potassium_mg = 0;
+        this.sodium_mg = 0;
+        this.chloride_g = BigDecimal.valueOf(0);
+        this.lycopene_mcg = BigDecimal.valueOf(0);
+        this.lutZea_mcg = BigDecimal.valueOf(0);
     }
 
     public void setNutrients(int amountEaten, boolean update, int energy_kcal, double water_g, double carbohydrates_g, double fiber_g, double fat_g, double satFat_g, double monoFat_g, double polyFat_g, double omega6_g, double omega3_g, double protein_g, int cholesterol_mg, double sugar_g, double sucrose_g, double vitaminA_mcg, double vitaminC_mg, double vitaminD_mcg, double vitaminE_mg, double vitaminK_mcg, double thiaminB1_mg, double riboflavinB2_mg, double niacinB3_mg, double vitaminB6_mg, double folateB9_mcg, double vitaminB12_mcg, double pantothenicAcidB5_mg, double biotinB7_mcg, double choline_mg, int calcium_mg, double chromium_mcg, double copper_mcg, double fluoride_mg, double iodine_mcg, double iron_mg, double magnesium_mg, double manganese_mg, double molybdenum_mcg, int phosphorus_mg, double selenium_mcg, double zinc_mg, int potassium_mg, int sodium_mg, double chloride_g, double lycopene_mcg, double lutZea_mcg) {
+        // /100 since nutrition is calculated per 100g
+        System.out.println("SET NUTRIENTS METHOD");
         if (update) {
             this.energy_kcal += amountEaten * energy_kcal / 100;
             this.water_g = BigDecimal.valueOf(this.water_g.floatValue() + amountEaten * water_g / 100);

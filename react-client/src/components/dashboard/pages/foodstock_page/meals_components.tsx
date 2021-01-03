@@ -1,4 +1,4 @@
-import { Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, ThemeProvider, TextField, Divider, Tooltip, IconButton, Select, Input, MenuItem, FormControl, InputLabel, } from '@material-ui/core';
+import { Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, ThemeProvider, TextField, Divider, Tooltip, IconButton, Select, Input, MenuItem, FormControl, InputLabel, RadioGroup, FormControlLabel, Radio, } from '@material-ui/core';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
@@ -33,12 +33,22 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
   const [ servings, setServings ] = useState(null);
   const [ ingredientList, setIngredientList ] = useState<Array<{ mealItemDto: MealItemDto, foodItemDto: FoodItemDto }>>([ null ]);
 
-  const onPortionChange = (indexToChange, servingInGrams) => {
+  const onPortionChange = (indexToChange: number, servingInGrams: number) => {
     console.log("On port change");
-
+    // ingredientList[indexToChange].mealItemDto.quantity = servingInGrams;
+    // setIngredientList(ingredientList);
     setIngredientList(ingredientList.map((ingredient, ind) => {
       if (ind === indexToChange)
         ingredient.mealItemDto.quantity = servingInGrams;
+      return ingredient;
+    }));
+  }
+  const onConditionChange = (indexToChange: number, newCondition: string) => {
+    // ingredientList[indexToChange].mealItemDto.cooked = newCondition === "raw" ? false : true;
+    // setIngredientList(ingredientList);
+    setIngredientList(ingredientList.map((ingredient, ind) => {
+      if (ind === indexToChange)
+        ingredient.mealItemDto.cooked = newCondition === "raw" ? false : true;
       return ingredient;
     }));
   }
@@ -87,6 +97,7 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
       description: description,
       ingredients: ingredients,
       quantity: totalQuantity,
+      quantityLeft: totalQuantity,
       servings: servings
     };
   }
@@ -142,8 +153,8 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
                         <Grid container direction="column" alignItems="flex-start" justify="flex-start" spacing={1}>
                           {ingredientList.map((ingredientTuple, index) => {
                             console.log("ingredientTuple: ", ingredientTuple);
-                            let mealItemDto = null;
-                            let foodItemDto = null;
+                            let mealItemDto: MealItemDto = null;
+                            let foodItemDto: FoodItemDto = null;
                             if (ingredientTuple !== null) {
                               mealItemDto = ingredientTuple.mealItemDto;
                               foodItemDto = ingredientTuple.foodItemDto;
@@ -161,15 +172,23 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
                                   />
                                 </Grid>
                                 {ingredientTuple === null ? null :
-                                  <Grid item>
-                                    <FoodPortionControl
-                                      maxQuantity={null}
-                                      servingDesc={foodItemDto.servingDesc}
-                                      baseServing={foodItemDto.servingSize}
-                                      onPortionChange={servingInGrams => onPortionChange(index, servingInGrams)}
-                                      quantity={mealItemDto.quantity}
-                                    />
-                                  </Grid>
+                                  <>
+                                    <Grid item>
+                                      <FoodPortionControl
+                                        maxQuantity={null}
+                                        servingDesc={foodItemDto.servingDesc}
+                                        baseServing={foodItemDto.servingSize}
+                                        onPortionChange={servingInGrams => onPortionChange(index, servingInGrams)}
+                                        quantity={mealItemDto.quantity}
+                                      />
+                                    </Grid>
+                                    <Grid item>
+                                      <RadioGroup aria-label="gender" name="condition" value={mealItemDto.cooked ? "cooked" : "raw"} onChange={event => { onConditionChange(index, event.target.value) }}>
+                                        <FormControlLabel value="raw" disabled={!foodItemDto.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
+                                        <FormControlLabel value="cooked" disabled={!foodItemDto.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
+                                      </RadioGroup>
+                                    </Grid>
+                                  </>
                                 }
                               </Grid>
                             );
@@ -273,7 +292,8 @@ export class MealsTable extends React.Component<MealTableProps> {
     print: false,
     viewColumns: false,
     filter: false,
-    sort: false,
+    sort: true,
+    sortOrder: { name: "Quantity", direction: "dsc" },
     selectableRows: "none",
     selectableRowsHeader: false,
     selectToolbarPlacement: 'none',
@@ -295,35 +315,47 @@ export class MealsTable extends React.Component<MealTableProps> {
 
     {
       name: 'Meal Name',
+      options: {
+        sort: false
+      }
     },
     {
       name: '',
       options: {
+        sort: false,
         customBodyRender: (value: MealDto) => {
-          return <EatMealCell value={value} onPrepare={(id) => console.log("PREPARE " + id)} onEat={(eatMealDto) => this.props.eatMeal(eatMealDto)} />;
+          return <EatMealCell
+            value={value}
+            onPrepare={() => this.props.editMeal({ id: value.id, quantityLeft: value.quantity })}
+            onEat={(eatMealDto) => this.props.eatMeal(eatMealDto)}
+
+          />;
         }
       }
     },
     {
       name: 'Quantity',
       options: {
+        sort: true,
         customBodyRender: (value: MealDto, { _rowIndex }) => {
           return (
             <Grid container alignItems="center" justify="center">
               <Grid item>
                 <QuantityCell
                   hasEditMode={false}
-                  foodItem={{ quantity: value.quantity }}
+                  foodItem={{ quantity: value.quantityLeft, servingSize: value.quantity / value.servings }}
+                  emptyContents={() => this.props.editMeal({ id: value.id, quantityLeft: 0 })}
+                  mealQuantity={value.quantity}
                 />
               </Grid>
 
             </Grid>);
         },
         sortCompare: (order) => {
-          return (obj1, obj2) => {
+          return (obj1: { data: MealDto }, obj2: { data: MealDto }) => {
             console.log(order);
-            let val1 = obj1.data.quantity;
-            let val2 = obj2.data.quantity;
+            let val1 = obj1.data.quantityLeft;
+            let val2 = obj2.data.quantityLeft;
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
           }
         }
@@ -340,6 +372,7 @@ export class MealsTable extends React.Component<MealTableProps> {
     {
       name: 'Info',
       options: {
+        sort: false,
         customBodyRender: ({ rowIndex }) => {
           return <IconButton color="primary" onClick={() => { this.props.editMeal(rowIndex) }} >
             <KeyboardArrowRightRoundedIcon />
@@ -371,10 +404,11 @@ export class MealsTable extends React.Component<MealTableProps> {
 type EatMealCellProps = {
   value: MealDto;
   onEat: (arg0: EatFoodDto) => any;
-  onPrepare?: (arg0: number) => any;
+  onPrepare?: () => any;
 }
 export const EatMealCell = ({ value, onEat, onPrepare }: EatMealCellProps) => {
-  const quantityStmt = value.quantity / value.servings;
+  const baseServing = value.quantity / value.servings;
+  const quantityStmt = baseServing <= value.quantityLeft ? baseServing : value.quantityLeft;
   const [ quantity, setQuantity ] = React.useState(quantityStmt)
   const onPortionChange = (servingInGrams) => {
     console.log("onport change-serving in grams: ", servingInGrams);
@@ -394,21 +428,36 @@ export const EatMealCell = ({ value, onEat, onPrepare }: EatMealCellProps) => {
   }
 
   return (
-    value.quantity !== 0 ?
-      <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
-        <Grid item>
-          <FoodPortionControl servingDesc={null} baseServing={value.quantity / value.servings} quantity={quantity} onPortionChange={onPortionChange} maxQuantity={value.quantity} />
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary" onClick={handleOnEatClick}>
-            Eat
+    <Grid container wrap="nowrap" alignItems="center" justify="center" spacing={2}>
+      {        value.quantityLeft !== 0 ?
+        <>
+          <Grid item>
+            <FoodPortionControl servingDesc={null} baseServing={quantityStmt < value.quantityLeft ? quantityStmt : value.quantityLeft} quantity={quantity} onPortionChange={onPortionChange} maxQuantity={value.quantityLeft} />
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" onClick={handleOnEatClick}>
+              Eat
           	</Button>
-        </Grid>
-      </Grid>
-      :
-      <Button variant="contained" color="secondary" onClick={() => onPrepare(value.id)}>
-        Prepare
-    </Button>
+          </Grid>
+        </>
+        :
+        <>
+          <Grid item>
+            <Button variant="contained" color="secondary" onClick={() => onPrepare()}>
+              Prepare
+            </Button>
+          </Grid>
+          <Grid item>
+            <Typography variant="body2" noWrap>
+              {`${value.servings} servings (${value.quantity} g)`}
+            </Typography>
+          </Grid>
+
+
+        </>
+      }
+    </Grid>
+
   );
 
 

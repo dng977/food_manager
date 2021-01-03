@@ -46,7 +46,10 @@ public class DtoConverter {
                 foodItem.getDefaultQuantity(),
                 foodItem.getServingSize(),
                 foodItem.getServingDesc(),
-                null);
+                null,
+                foodItem.getNutritionRaw().isPresent(),
+                foodItem.getNutritionCooked().isPresent()
+                );
         //TODO get nutrition as well
     }
 //

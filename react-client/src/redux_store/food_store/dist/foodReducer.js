@@ -40,8 +40,8 @@ exports["default"] = (function (state, action) {
         case foodTypes_1.FETCH_MEALS:
             return __assign(__assign({}, state), { meals: __assign({}, (lodash_1["default"].mapKeys(action.payload, 'id'))), searchedItems: {} });
         case foodTypes_1.EDIT_MEAL:
-            return __assign(__assign({}, state), { meals: __assign(__assign({}, state.meals), (_b = {}, _b[action.payload.id] = action.payload, _b)) });
-        case foodTypes_1.DELETE_MEALS:
+            return __assign(__assign({}, state), { meals: __assign(__assign({}, state.meals), (_b = {}, _b[action.payload.id] = __assign(__assign({}, state.meals[action.payload.id]), action.payload), _b)) });
+        case foodTypes_1.DELETE_MEAL:
             return __assign(__assign({}, state), { meals: lodash_1["default"].omit(state.meals, action.payload) });
         default:
             return state;

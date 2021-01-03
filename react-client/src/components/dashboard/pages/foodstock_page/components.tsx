@@ -311,11 +311,12 @@ type QuantityCellPropTypes = {
   hasEditMode?: boolean;
   submitEdit?: (quantity: number) => any;
   foodItem: {quantity: number, servingSize?: number, servingDesc?: string };
-  emptyContents?: () => any;
+  emptyContents?: () => (mealDto: MealDto) => any;
+  mealQuantity?: number
 }
 
 // export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
-export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyContents }: QuantityCellPropTypes) => {
+export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyContents, mealQuantity }: QuantityCellPropTypes) => {
 
   //console.log("before", currentQuantity);
 
@@ -385,10 +386,9 @@ export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyCont
               </Grid>
               :
               currentQuantity.grams !== 0 ?
-
                 <Grid item>
                   <Tooltip title="Empty">
-                    <IconButton onClick={emptyContents} color="primary">
+                    <IconButton onClick={() => emptyContents()} color="primary">
                       <DeleteOutlineRoundedIcon />
                     </IconButton>
                   </Tooltip>
@@ -415,7 +415,12 @@ export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyCont
 const getServingInUnits = (quantity: number, baseServing: number) => {
   if (baseServing === 0)
     return new Fraction(0, 1);
-  return new Fraction(quantity, baseServing);
+  let quotient = quantity/baseServing;
+  if(quotient >= 1){
+    return Math.round(quotient)
+  }else{
+    return new Fraction(Math.ceil(quantity), Math.ceil(baseServing));
+  }
 }
 
 type FoodPortionControlType = {
@@ -489,7 +494,7 @@ export const FoodPortionControl = ({ servingDesc, baseServing, quantity, onPorti
         </Grid>
         <Grid item>
           <Typography noWrap >{
-            `${getServingInUnits(quantity, baseServing)} (${quantity} g)`}
+            `${getServingInUnits(quantity, baseServing)} (${Math.ceil(quantity)} g)`}
           </Typography>
         </Grid>
         <Grid item>

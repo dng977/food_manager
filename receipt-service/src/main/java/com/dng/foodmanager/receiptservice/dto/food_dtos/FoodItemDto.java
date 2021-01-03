@@ -28,5 +28,9 @@ public class FoodItemDto {
 //    private ServingUnit servingUnit;
     @Nullable
     private FoodNutrition nutrition;
+    @Nullable
+    private Boolean hasRaw;
+    @Nullable
+    private Boolean hasCooked;
 
 }

@@ -13,7 +13,6 @@ public interface FoodService {
 //    List<FoodItemReceiptDto> getPlainFoodItemsByName(String name);
     List<FoodItemDto> getFoodItemsByName(String name);
 
-
     void editFoodStockItem(String uid, FoodStockDto foodStockDto) throws SQLDataException;
 
     List<FoodStockDto> getFoodStock(String uid);
@@ -28,7 +27,7 @@ public interface FoodService {
 
     List<MealDto> addMeal(String userId, MealDto mealDto);
 
-    void deleteMeal(String uid, List<Long> idsArray);
+    void deleteMeal(String uid, Long mealId);
 
     List<MealDto> fetchMeals(String uid);
 

@@ -236,7 +236,7 @@ exports.EatCell = function (_a) {
 // export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
 exports.QuantityCell = function (_a) {
     //console.log("before", currentQuantity);
-    var submitEdit = _a.submitEdit, foodItem = _a.foodItem, _b = _a.hasEditMode, hasEditMode = _b === void 0 ? true : _b, emptyContents = _a.emptyContents;
+    var submitEdit = _a.submitEdit, foodItem = _a.foodItem, _b = _a.hasEditMode, hasEditMode = _b === void 0 ? true : _b, emptyContents = _a.emptyContents, mealQuantity = _a.mealQuantity;
     var _c = react_1.useState({ grams: foodItem.quantity, units: new fractional_1.Fraction(foodItem.quantity, foodItem.servingSize) }), currentQuantity = _c[0], setCurrentQuantity = _c[1];
     var _d = react_1.useState(false), editMode = _d[0], setEditMode = _d[1];
     var _e = react_1.useState(currentQuantity.grams === null || currentQuantity.grams === 0 ? foodItem.servingSize : currentQuantity.grams), quantityInGrams = _e[0], setQuantityInGrams = _e[1];
@@ -284,7 +284,7 @@ exports.QuantityCell = function (_a) {
                             currentQuantity.grams !== 0 ?
                                 react_1["default"].createElement(core_1.Grid, { item: true },
                                     react_1["default"].createElement(core_1.Tooltip, { title: "Empty" },
-                                        react_1["default"].createElement(core_1.IconButton, { onClick: emptyContents, color: "primary" },
+                                        react_1["default"].createElement(core_1.IconButton, { onClick: function () { return emptyContents(); }, color: "primary" },
                                             react_1["default"].createElement(DeleteOutlineRounded_1["default"], null))))
                                 :
                                     null),
@@ -297,7 +297,13 @@ exports.QuantityCell = function (_a) {
 var getServingInUnits = function (quantity, baseServing) {
     if (baseServing === 0)
         return new fractional_1.Fraction(0, 1);
-    return new fractional_1.Fraction(quantity, baseServing);
+    var quotient = quantity / baseServing;
+    if (quotient >= 1) {
+        return Math.round(quotient);
+    }
+    else {
+        return new fractional_1.Fraction(Math.ceil(quantity), Math.ceil(baseServing));
+    }
 };
 exports.FoodPortionControl = function (_a) {
     var servingDesc = _a.servingDesc, baseServing = _a.baseServing, quantity = _a.quantity, onPortionChange = _a.onPortionChange, maxQuantity = _a.maxQuantity;
@@ -357,7 +363,7 @@ exports.FoodPortionControl = function (_a) {
                 react_1["default"].createElement(core_1.IconButton, { size: "small", disabled: minusDisabled, color: "primary", onClick: function () { return changeServing(false); } },
                     react_1["default"].createElement(RemoveRounded_1["default"], null))),
             react_1["default"].createElement(core_1.Grid, { item: true },
-                react_1["default"].createElement(core_1.Typography, { noWrap: true }, getServingInUnits(quantity, baseServing) + " (" + quantity + " g)")),
+                react_1["default"].createElement(core_1.Typography, { noWrap: true }, getServingInUnits(quantity, baseServing) + " (" + Math.ceil(quantity) + " g)")),
             react_1["default"].createElement(core_1.Grid, { item: true },
                 react_1["default"].createElement(core_1.IconButton, { size: "small", disabled: plusDisabled, color: "primary", onClick: function () { return changeServing(true); } },
                     react_1["default"].createElement(AddRounded_1["default"], null)))),
