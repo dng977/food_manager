@@ -201,7 +201,7 @@ exports.addMeal = function (mealDto, callBackOnSuccess) { return function (dispa
                 callBackOnSuccess();
             },
             onError: function () {
-                callBackOnSuccess();
+                dispatch({ type: feedbackTypes_1.CLEAR_MESSAGE });
             }
         });
         return [2 /*return*/];
@@ -221,6 +221,8 @@ exports.editMeal = function (mealDto, callBackOnSuccess) { return function (disp
             onSuccess: function () {
                 dispatch({ type: foodTypes_1.EDIT_MEAL, payload: mealDto });
                 callBackOnSuccess();
+            },
+            onError: function () {
             }
         });
         return [2 /*return*/];

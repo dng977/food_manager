@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Grid, Tooltip, Snackbar } from '@material-ui/core';
+import { Button, Grid, Tooltip } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import MUIDataTable, {  } from 'mui-datatables';
@@ -12,7 +12,6 @@ import { uploadReceipt, fetchReceiptItems } from '../../../../redux_store/receip
 import { EmptyTable } from '../shared_components';
 import { getReceipts } from '../selectors';
 import { useRef } from 'react';
-import { CLEAR_MESSAGE } from '../../../../redux_store/sharedTypes';
 import { bindActionCreators } from 'redux';
 import loadImage from 'blueimp-load-image';
 

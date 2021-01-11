@@ -1,13 +1,11 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import {
-  PieChart, Pie, Sector, Cell, Label, LabelList, Legend, Tooltip, BarChart, CartesianGrid, YAxis, Bar, XAxis, ReferenceLine, CartesianAxis,
+  PieChart, Pie, Cell, Label, LabelList, Tooltip, BarChart, YAxis, Bar, XAxis, ReferenceLine, CartesianAxis,
 } from 'recharts';
 import { macronutrient, MacroNutrient, MicroNutrient } from './objects';
 import _ from 'lodash';
-import { Box, Divider, Grid, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, ListSubheader, makeStyles, Paper, Typography, withStyles } from '@material-ui/core';
+import { Divider, Grid, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import StopRoundedIcon from '@material-ui/icons/StopRounded';
 import PieChartRoundedIcon from '@material-ui/icons/PieChartRounded';
 
 export default class NutritionPieChart extends React.Component {
@@ -147,7 +145,7 @@ export default class NutritionPieChart extends React.Component {
   }
 
 
-  calculateAngles = (data, start, start2, energyConsumed) => {
+  calculateAngles = (data, start, start2) => {
     const [ secondSectorCalsEaten, secondSectorTotalCals ] = this.calculateSecondSectorCals(data);
     //CHECK IF SECOND SECTOR IS FULL
     if (secondSectorCalsEaten > secondSectorTotalCals) {
@@ -284,7 +282,7 @@ export default class NutritionPieChart extends React.Component {
 
   }
 
-  renderToolTip = ({ active, payload, label }) => {
+  renderToolTip = ({ active, payload }) => {
     if (payload.length) {
       let nutrient = payload[ 0 ].payload;
       if (active) {
@@ -394,7 +392,7 @@ export class NutritionBarChart extends React.PureComponent {
     return <text textAnchor="middle" x={props.viewBox.x} y={props.viewBox.y - 10}>{labelName}</text>;
   }
 
-  renderToolTip = ({ active, payload, label }) => {
+  renderToolTip = ({ active, payload }) => {
     if (payload.length) {
       let nutrient = payload[ 0 ].payload;
       if (active) {

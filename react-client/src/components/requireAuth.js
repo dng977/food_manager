@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isLoaded, isEmpty } from 'react-redux-firebase'
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 export default ChildComponent => {
   class ComposedComponent extends Component {

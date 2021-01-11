@@ -79,7 +79,7 @@ public class FoodStockController {
 
     @PostMapping("/meals")
     @ResponseStatus(HttpStatus.OK)
-    public List<MealDto> addMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody MealDto mealDto) {
+    public List<MealDto> addMeal(@AuthenticationPrincipal CustomPrincipal principal, @RequestBody MealDto mealDto) throws NoSuchFieldException {
 
         return foodService.addMeal(principal.getUid(), mealDto);
     }

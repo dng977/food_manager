@@ -1,7 +1,6 @@
-import { ExtendedFirebaseInstance, ExtendedFirestoreInstance } from "react-redux-firebase";
+import { ExtendedFirebaseInstance } from "react-redux-firebase";
 import { Action, AnyAction } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import { ReceiptDto } from "../apis/dtos/serverDtos";
 import { RootState } from "./rootReducer";
 
 

@@ -16,7 +16,7 @@ export default (state = initState, action: FeedbackActions) : FeedbackState => {
     case MESSAGE:
       return { ...state, message: action.payload, loading: false }
     case CLEAR_MESSAGE:
-      return { ...state, message: '', loading: false}
+      return { ...state, message: '', loading: false, dialogLoading: false}
     case PUSH_LOADING:
       newNumberLoading = state.numberLoading + 1;
       return{...state, numberLoading: newNumberLoading, loading: true}

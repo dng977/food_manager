@@ -16,7 +16,7 @@ const initState: FoodState = {
   food_loading: false,
   meals: {},
 }
-export default (state = initState, action: FoodActionTypes | EditReceiptItemAction): FoodState => {
+const reducer = (state = initState, action: FoodActionTypes | EditReceiptItemAction): FoodState => {
   console.log("DISPATCH: ", action.type);
   switch (action.type) {
     case FETCH_FOOD_ITEMS:
@@ -42,3 +42,5 @@ export default (state = initState, action: FoodActionTypes | EditReceiptItemActi
       return state;
   }
 }
+
+export default reducer;

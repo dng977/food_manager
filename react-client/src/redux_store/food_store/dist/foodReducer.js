@@ -20,7 +20,7 @@ var initState = {
     food_loading: false,
     meals: {}
 };
-exports["default"] = (function (state, action) {
+var reducer = function (state, action) {
     var _a, _b;
     if (state === void 0) { state = initState; }
     console.log("DISPATCH: ", action.type);
@@ -46,4 +46,5 @@ exports["default"] = (function (state, action) {
         default:
             return state;
     }
-});
+};
+exports["default"] = reducer;

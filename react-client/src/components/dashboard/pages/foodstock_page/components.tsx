@@ -1,6 +1,6 @@
-import { IconButton, Tooltip, Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, createMuiTheme, ThemeProvider, RadioGroup, FormControlLabel, Radio, Box, DialogContentText, TextField, Paper, Divider, } from '@material-ui/core';
+import { IconButton, Tooltip, Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, createMuiTheme, ThemeProvider, RadioGroup, FormControlLabel, Radio, } from '@material-ui/core';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
@@ -8,7 +8,7 @@ import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Fraction } from 'fractional';
 import PropTypes from 'prop-types';
 import { EmptyTable, FoodLookUp } from "../shared_components";
@@ -142,10 +142,6 @@ interface FoodTableProps {
   loading: boolean;
 }
 export class FoodTable extends React.Component<FoodTableProps> {
-  constructor(props: FoodTableProps) {
-    super(props);
-  }
-
   options = {
     rowHover: true,
     elevation: this.props.paperElevation,
@@ -253,7 +249,7 @@ export class FoodTable extends React.Component<FoodTableProps> {
     onEat: (arg0: EatFoodDto) => any;
   }
   export const EatCell = ({ value, onEat }: EatCellProps) => {
-    const cQstatement = value.quantity <= value.foodItemDto.servingSize ? value.quantity : value.foodItemDto.servingSize;
+    const cQstatement = useMemo(() => value.quantity <= value.foodItemDto.servingSize ? value.quantity : value.foodItemDto.servingSize, [value]);
     const [ currentQuantity, setCurrentQuantity ] = React.useState(cQstatement)
     const [ condition, setCondition ] = React.useState(value.hasRaw ? "raw" : "cooked");
     //eval(servingUnits)
@@ -264,7 +260,7 @@ export class FoodTable extends React.Component<FoodTableProps> {
     useEffect(() => {
       setCurrentQuantity(cQstatement);
       setCondition(value.hasRaw ? "raw" : "cooked");
-    }, [ value ])
+    }, [ value, cQstatement ])
     const handleOnEatClick = () => {
       let eatFoodStockDto: EatFoodDto = {
         foodId: value.foodItemDto.id,
@@ -316,19 +312,19 @@ type QuantityCellPropTypes = {
 }
 
 // export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
-export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyContents, mealQuantity }: QuantityCellPropTypes) => {
+export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyContents }: QuantityCellPropTypes) => {
 
   //console.log("before", currentQuantity);
 
-  const [ currentQuantity, setCurrentQuantity ] = useState({ grams: foodItem.quantity, units: new Fraction(foodItem.quantity, foodItem.servingSize) });
+  const [ currentQuantity, setCurrentQuantity ] = useState({ grams: foodItem.quantity, units: getServingInUnits(foodItem.quantity, foodItem.servingSize) });
 
   const [ editMode, setEditMode ] = useState(false)
   const [ quantityInGrams, setQuantityInGrams ] = useState(currentQuantity.grams === null || currentQuantity.grams === 0 ? foodItem.servingSize : currentQuantity.grams)
 
   useEffect(() => {
     if (foodItem.quantity !== currentQuantity.grams) {
-      let grams = foodItem.quantity;
-      let units = new Fraction(foodItem.quantity, foodItem.servingSize);
+      let grams = Math.ceil(foodItem.quantity);
+      let units = getServingInUnits(foodItem.quantity, foodItem.servingSize);
       setCurrentQuantity({ grams, units });
       setQuantityInGrams(grams === null || grams === 0 ? foodItem.servingSize : grams);
     }
@@ -340,7 +336,7 @@ export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyCont
   }
   const handleSubmit = (_event) => {
     setEditMode(false);
-    setCurrentQuantity({ units: getServingInUnits(quantityInGrams, foodItem.servingSize), grams: quantityInGrams })
+    setCurrentQuantity({ units: getServingInUnits(quantityInGrams, foodItem.servingSize), grams: Math.ceil(quantityInGrams) })
     submitEdit(quantityInGrams)
   }
   const handleCancel = _event => {

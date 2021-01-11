@@ -27,10 +27,6 @@ import styles from './Dashboard.styles';
 import PersonIcon from '@material-ui/icons/Person';
 import { Copyright } from '../shared/renderMaterial';
 import { ListItemLink } from '../shared/ListItemLink';
-import FastfoodIcon from '@material-ui/icons/Fastfood';
-import ReceiptIcon from '@material-ui/icons/Receipt';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import SettingsIcon from '@material-ui/icons/Settings';
 import { fetchReceipts } from '../../redux_store/receipt_store/receiptsActions';
 import { fetchFoodStock, fetchMeals } from '../../redux_store/food_store/foodActions';
 import { getPathRegex, dashboardRoutes } from '../../routes';
@@ -40,7 +36,7 @@ import { CLEAR_MESSAGE } from '../../redux_store/feedback_store/dist/feedbackTyp
 
 class Dashboard extends React.PureComponent {
 
-  constructor(props) {
+  constructor() {
     super();
     this.state = { anchorEl: null, open: true, init: true };
     this.dashboardRoutes = dashboardRoutes.slice(0, 4);

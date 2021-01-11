@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { reduxForm, Field, SubmissionError } from 'redux-form';
+import React from 'react';
+import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { signIn } from '../../redux_store/auth_store/authActions'
@@ -20,8 +20,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { renderTextField, Copyright } from '../shared/renderMaterial';
-import { FormControl, FormHelperText, FormLabel } from '@material-ui/core';
-import { email, minLength } from './validators';
+import { email } from './validators';
 
 const useStyles = makeStyles(styles);
 const formName = 'signin';
@@ -29,7 +28,7 @@ const Signin = (props) => {
 
   const classes = useStyles();
 
-  const { handleSubmit, auth, authError } = props;
+  const { handleSubmit, auth } = props;
 
 if (!auth.isEmpty) return <Redirect to="/dashboard" />;
 return (

@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.dng.foodmanager.receiptservice.services.exceptions.ResourceNotFoundException;
 import com.google.cloud.storage.StorageException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.interceptor.NameMatchCacheOperationSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,15 +43,15 @@ public class RestResponseEntityExceptionHandler {
 
     }
     @ExceptionHandler({NullPointerException.class})
-    public ResponseEntity<Object> handleNullPointerException(Exception exception, WebRequest request){
+    public ResponseEntity<Object> handleNullPointerException(NullPointerException exception, WebRequest request){
         log.debug("NullPointerException..");
         exception.printStackTrace();
         return new ResponseEntity<Object>("Exception: " + exception.getMessage(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity<Object> handleIllegalArgumentException(Exception exception, WebRequest request){
-        log.debug("IllegalArgumentException..");
-        return new ResponseEntity<Object>("Exception: " + exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException exception, WebRequest request){
+        log.debug(exception.getMessage());
+        return new ResponseEntity<Object>("Exception: " + exception.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
 
     }
     @ExceptionHandler({Exception.class})

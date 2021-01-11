@@ -1,7 +1,5 @@
-import { FoodStockDto, FoodItemDto, MealDto, NutritionStateDto } from "../../apis/dtos/serverDtos";
-import { DIALOG_LOADING } from "../feedback_store/feedbackTypes";
-import { FETCH_NUTRITION_STATE } from "../nutrition_store/dist/nutritionTypes";
-import { EditReceiptItemAction } from "../receipt_store/receiptTypes";
+import { FoodStockDto, FoodItemDto, MealDto } from "../../apis/dtos/serverDtos";
+import { ClearMessageAction, DIALOG_LOADING } from "../feedback_store/feedbackTypes";
 import {IdMap} from '../sharedTypes';
 //TYPE CONSTANTS
 export const FOOD_LOADING = "FOOD_LOADING";
@@ -61,7 +59,7 @@ interface DeleteMealsAction {
   payload: number;
 }
 
-export type MealsActions = DeleteMealsAction | EditMealAction | FetchMealsAction | FoodLoadingAction;
+export type MealsActions = DeleteMealsAction | EditMealAction | FetchMealsAction | FoodLoadingAction | ClearMessageAction;
 
 //FOOD
 export type FoodActionTypes = FoodStockActions | MealsActions | FetchFoodItemsAction;

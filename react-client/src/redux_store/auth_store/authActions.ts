@@ -1,5 +1,5 @@
-import { startSubmit, stopSubmit, SubmissionError } from 'redux-form';
-import apiRequest, {api} from '../../apis/v1';
+import { SubmissionError } from 'redux-form';
+import {api} from '../../apis/v1';
 
 export const signIn = (credentials) => async (dispatch, getState, getFirebase) => {
     return new Promise((resolve,reject) => {

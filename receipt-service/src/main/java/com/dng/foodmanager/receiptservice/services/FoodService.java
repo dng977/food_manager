@@ -6,6 +6,7 @@ import com.dng.foodmanager.receiptservice.dto.nutrition_dtos.NutritionStateDto;
 
 import java.sql.SQLDataException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public interface FoodService {
@@ -25,7 +26,7 @@ public interface FoodService {
 
     void editMeal(String userId, MealDto mealDto);
 
-    List<MealDto> addMeal(String userId, MealDto mealDto);
+    List<MealDto> addMeal(String userId, MealDto mealDto) throws IllegalArgumentException;
 
     void deleteMeal(String uid, Long mealId);
 

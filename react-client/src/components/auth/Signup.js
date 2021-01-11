@@ -3,7 +3,7 @@ import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { signUp } from '../../redux_store/auth_store/authActions';
-import { Redirect, useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import styles from './Signup.styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -26,7 +26,7 @@ const useStyles = makeStyles(styles);
 const Signup = (props) => {
   const history = useHistory();
   const location = useLocation();
-  const { handleSubmit, auth, error, submitFailed, submitSucceeded, clearAsyncError } = props;
+  const { handleSubmit, auth, error, submitSucceeded, clearAsyncError } = props;
   useEffect(() => {
     console.log(error);
     if (!error && !auth.isEmpty) {

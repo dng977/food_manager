@@ -206,7 +206,7 @@ public class FoodServiceImpl implements FoodService {
         if (mealDto.getQuantityLeft().isPresent()) meal.setQuantityLeft(mealDto.getQuantityLeft().get());
         if (mealDto.getServings().isPresent()) meal.setServings(mealDto.getServings().get());
         if (mealDto.getIngredients().isPresent()) meal.setIngredients(mealDto.getIngredients().get().stream().map(mealItemDto ->
-                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(),mealItemDto.isCooked(), mealItemDto.getQuantity())).collect(Collectors.toList()));
+                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).orElseThrow(),mealItemDto.isCooked(), mealItemDto.getQuantity())).collect(Collectors.toList()));
         mealRepository.save(meal);
 
     }
@@ -216,13 +216,14 @@ public class FoodServiceImpl implements FoodService {
         User user = userRepository.findById(userId).orElseThrow();
         Meal meal = new Meal();
         meal.setUser(user);
-        meal.setName(mealDto.getName().get());
-        meal.setDescription(mealDto.getDescription().get());
-        meal.setQuantity(mealDto.getQuantity().get());
-        meal.setQuantityLeft(mealDto.getQuantityLeft().get());
-        meal.setServings(mealDto.getServings().get());
-        meal.setIngredients(mealDto.getIngredients().get().stream().map(mealItemDto ->
-                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).get(),mealItemDto.isCooked(),  mealItemDto.getQuantity())).collect(Collectors.toList()));
+        meal.setName(mealDto.getName().orElse("-"));
+        meal.setDescription(mealDto.getDescription().orElse("-"));
+        int quantity = mealDto.getQuantity().orElseThrow(() -> new IllegalArgumentException("No quantity provided"));
+        meal.setQuantity(quantity);
+        meal.setQuantityLeft(quantity);
+        meal.setServings(mealDto.getServings().orElseThrow(() -> new IllegalArgumentException("No servings provided")));
+        meal.setIngredients(mealDto.getIngredients().orElse(List.of()).stream().map(mealItemDto ->
+                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).orElseThrow(),mealItemDto.isCooked(),  mealItemDto.getQuantity())).collect(Collectors.toList()));
         mealRepository.save(meal);
 
         return mealRepository.findByUserId(userId).stream().map(Meal::toDto).collect(Collectors.toList());

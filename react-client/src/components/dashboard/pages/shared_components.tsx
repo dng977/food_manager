@@ -1,4 +1,4 @@
-import { TableBody, TableRow, TableCell, Button, Grid, Dialog, DialogTitle, DialogActions, Tabs, Tab, Paper } from '@material-ui/core';
+import { TableBody, TableRow, TableCell, Button, Grid, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { IconButton, TextField, Tooltip } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
@@ -9,7 +9,6 @@ import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { fetchFoodItems } from '../../../redux_store/food_store/foodActions';
 import { RootState } from '../../../redux_store/rootReducer';
 import { FoodItemDto } from '../../../apis/dtos/serverDtos';
-import { AutocompleteFreeSoloValueMapping } from '@material-ui/lab/useAutocomplete';
 
 export const EmptyTable = (props) => {
   return (
@@ -94,11 +93,12 @@ type FoodLookUpProps = PropsFromRedux & {
   initSelectedValue?: FoodItemDto;
   label?: string;
   width?: number;
+  required?: boolean;
 }
 
 export const FoodLookUp = reduxConnector((props: FoodLookUpProps) => {
   //Default props
-  props = { label: "Search", editMode: false, hasConfirmButton: true, width: 180, ...props };
+  props = { label: "Search", editMode: false, hasConfirmButton: true, width: 180, required: true, ...props };
 
   // console.log("lookupfield", props)
   const [ selectedValue, setSelectedValue ] = useState<FoodItemDto>(props.initSelectedValue ? props.initSelectedValue : null);
@@ -154,7 +154,9 @@ export const FoodLookUp = reduxConnector((props: FoodLookUpProps) => {
               variant="outlined"
               {...params}
               label={props.label}
-              size="small"></TextField>
+              size="small"
+              required={props.required}
+              />
           )}
         />
       </Grid>

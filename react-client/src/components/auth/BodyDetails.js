@@ -1,24 +1,18 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { fetchActivityFactors, sendUserData } from '../../redux_store/nutrition_store/nutritionActions';
 import { Redirect, useHistory } from 'react-router-dom';
 import styles from './BodyDetails.styles';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { renderTextField, renderRadioGroup, renderSelect, Copyright } from '../shared/renderMaterial';
-import { Link as RouterLink } from 'react-router-dom';
+import { renderRadioGroup, renderSelect } from '../shared/renderMaterial';
 import { getActivityFactors } from '../dashboard/pages/selectors';
 import { Radio } from '@material-ui/core';
 
@@ -26,17 +20,12 @@ const useStyles = makeStyles(styles);
 const range = (start, stop) => Array.from({ length: (stop - start) + 1 }, (_, i) => start + i);
 
 const BodyDetails = (props) => {
-  const onSubmit = formProps => {
-    //TODO
-  };
-  useEffect(() => {
-    props.fetchActivityFactors();
-  }, []);
+  props.fetchActivityFactors();
   
   const history = useHistory();
 
   const classes = useStyles();
-  const { handleSubmit, userDetails, sendUserData } = props;
+  const { handleSubmit, sendUserData } = props;
 
   if (props.userDetails) {
     let previousState = history.location.state ? history.location.state.from : '/dashboard';

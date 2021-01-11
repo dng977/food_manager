@@ -1,13 +1,9 @@
 import { EatFoodDto, FoodItemDto, FoodStockDto, MealDto, NutritionStateDto } from '../../apis/dtos/serverDtos';
 import apiRequest from '../../apis/v1';
-import {ThunkAction} from 'redux-thunk';
-import { RootState } from '../rootReducer';
-import { ExtendedFirebaseInstance } from 'react-redux-firebase';
-import { DIALOG_LOADING } from '../feedback_store/feedbackTypes';
+import { CLEAR_MESSAGE, DIALOG_LOADING } from '../feedback_store/feedbackTypes';
 import { FetchNutritionStateAction, FETCH_NUTRITION_STATE } from '../nutrition_store/nutritionTypes';
 import { FoodItemsActions, FOOD_LOADING, FETCH_FOOD_ITEMS, FoodStockActions, FETCH_FOODSTOCK, EDIT_FOODSTOCK, DELETE_FOODSTOCK, MealsActions, FETCH_MEALS, EDIT_MEAL, DELETE_MEAL } from './foodTypes';
-import { AppThunk, AppThunkDispatch } from '../sharedTypes';
-import { getHeapStatistics } from 'v8';
+import { AppThunk } from '../sharedTypes';
 export const fetchFoodItems = (foodName, rowIndex) : AppThunk<FoodItemsActions> => async (dispatch, _getState, getFirebase) => {
   dispatch({ type: FOOD_LOADING });
   apiRequest({
@@ -140,7 +136,7 @@ export const addMeal = (mealDto: MealDto, callBackOnSuccess: () => void ) : AppT
       callBackOnSuccess();
     },
     onError: () => {
-      callBackOnSuccess();
+      dispatch({type: CLEAR_MESSAGE});
     }
   });
 };
@@ -159,6 +155,9 @@ export const editMeal = (mealDto: MealDto, callBackOnSuccess: () => void) : AppT
     onSuccess: () => {
       dispatch({ type: EDIT_MEAL, payload: mealDto });
       callBackOnSuccess();
+    },
+    onError: () => {
+      
     }
   });
 };

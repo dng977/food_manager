@@ -117,52 +117,53 @@ exports.AddMealDialog = function (_a) {
                 : openDialog ?
                     react_1["default"].createElement(react_1["default"].Fragment, null,
                         react_1["default"].createElement(core_1.DialogTitle, { id: "alert-dialog-title" }, "Add a new Meal"),
-                        react_1["default"].createElement(core_1.DialogContent, { dividers: true },
-                            react_1["default"].createElement(core_1.Grid, { container: true, direction: "column", alignItems: "stretch", justify: "flex-start", spacing: 3 },
-                                react_1["default"].createElement(core_1.Grid, { item: true },
-                                    react_1["default"].createElement(core_1.TextField, { onChange: function (event) { return setName(event.target.value); }, label: "Name", autoFocus: true, id: "name", fullWidth: true, variant: "outlined", size: "small", required: true })),
-                                react_1["default"].createElement(core_1.Divider, { light: true }),
-                                react_1["default"].createElement(core_1.Grid, { item: true },
-                                    react_1["default"].createElement(core_1.Grid, { container: true, direction: "column", alignItems: "flex-start", justify: "flex-start", spacing: 1 }, ingredientList.map(function (ingredientTuple, index) {
-                                        console.log("ingredientTuple: ", ingredientTuple);
-                                        var mealItemDto = null;
-                                        var foodItemDto = null;
-                                        if (ingredientTuple !== null) {
-                                            mealItemDto = ingredientTuple.mealItemDto;
-                                            foodItemDto = ingredientTuple.foodItemDto;
-                                        }
-                                        return (react_1["default"].createElement(core_1.Grid, { item: true, container: true, alignItems: "center", justify: "flex-start", spacing: 3, key: index },
-                                            react_1["default"].createElement(core_1.Grid, { item: true },
-                                                react_1["default"].createElement(shared_components_1.FoodLookUp, { label: index === (ingredientList.length - 1) ? "Add ingredient" : "#" + (index + 1), initSelectedValue: foodItemDto, width: 200, rowIndex: 0, hasConfirmButton: false, onChange: function (selectedFood) { return updateIngredientList(selectedFood, index); } })),
-                                            ingredientTuple === null ? null :
-                                                react_1["default"].createElement(react_1["default"].Fragment, null,
-                                                    react_1["default"].createElement(core_1.Grid, { item: true },
-                                                        react_1["default"].createElement(components_1.FoodPortionControl, { maxQuantity: null, servingDesc: foodItemDto.servingDesc, baseServing: foodItemDto.servingSize, onPortionChange: function (servingInGrams) { return onPortionChange(index, servingInGrams); }, quantity: mealItemDto.quantity })),
-                                                    react_1["default"].createElement(core_1.Grid, { item: true },
-                                                        react_1["default"].createElement(core_1.RadioGroup, { "aria-label": "gender", name: "condition", value: mealItemDto.cooked ? "cooked" : "raw", onChange: function (event) { onConditionChange(index, event.target.value); } },
-                                                            react_1["default"].createElement(core_1.FormControlLabel, { value: "raw", disabled: !foodItemDto.hasRaw, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Raw" }),
-                                                            react_1["default"].createElement(core_1.FormControlLabel, { value: "cooked", disabled: !foodItemDto.hasCooked, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Cooked" }))))));
-                                    }))),
-                                react_1["default"].createElement(core_1.Divider, null),
-                                react_1["default"].createElement(core_1.Grid, { item: true },
-                                    react_1["default"].createElement(core_1.FormControl, { size: "small", variant: "outlined", style: { width: 120 } },
-                                        react_1["default"].createElement(core_1.InputLabel, { id: "servings-select-label" }, "Servings"),
-                                        react_1["default"].createElement(core_1.Select, { MenuProps: {
-                                                PaperProps: {
-                                                    style: {
-                                                        maxHeight: 200
+                        react_1["default"].createElement("form", { onSubmit: function () { onConfirm(createMealDto()); setIngredientList([null]); } },
+                            react_1["default"].createElement(core_1.DialogContent, { dividers: true },
+                                react_1["default"].createElement(core_1.Grid, { container: true, direction: "column", alignItems: "stretch", justify: "flex-start", spacing: 3 },
+                                    react_1["default"].createElement(core_1.Grid, { item: true },
+                                        react_1["default"].createElement(core_1.TextField, { onChange: function (event) { return setName(event.target.value); }, label: "Name", autoFocus: true, id: "name", fullWidth: true, variant: "outlined", size: "small", required: true })),
+                                    react_1["default"].createElement(core_1.Divider, { light: true }),
+                                    react_1["default"].createElement(core_1.Grid, { item: true },
+                                        react_1["default"].createElement(core_1.Grid, { container: true, direction: "column", alignItems: "flex-start", justify: "flex-start", spacing: 1 }, ingredientList.map(function (ingredientTuple, index) {
+                                            console.log("ingredientTuple: ", ingredientTuple);
+                                            var mealItemDto = null;
+                                            var foodItemDto = null;
+                                            if (ingredientTuple !== null) {
+                                                mealItemDto = ingredientTuple.mealItemDto;
+                                                foodItemDto = ingredientTuple.foodItemDto;
+                                            }
+                                            return (react_1["default"].createElement(core_1.Grid, { item: true, container: true, alignItems: "center", justify: "flex-start", spacing: 3, key: index },
+                                                react_1["default"].createElement(core_1.Grid, { item: true },
+                                                    react_1["default"].createElement(shared_components_1.FoodLookUp, { label: index === (ingredientList.length - 1) ? "Add ingredient" : "#" + (index + 1), initSelectedValue: foodItemDto, width: 200, rowIndex: 0, hasConfirmButton: false, onChange: function (selectedFood) { return updateIngredientList(selectedFood, index); }, required: ingredientList.length <= 1 })),
+                                                ingredientTuple === null ? null :
+                                                    react_1["default"].createElement(react_1["default"].Fragment, null,
+                                                        react_1["default"].createElement(core_1.Grid, { item: true },
+                                                            react_1["default"].createElement(components_1.FoodPortionControl, { maxQuantity: null, servingDesc: foodItemDto.servingDesc, baseServing: foodItemDto.servingSize, onPortionChange: function (servingInGrams) { return onPortionChange(index, servingInGrams); }, quantity: mealItemDto.quantity })),
+                                                        react_1["default"].createElement(core_1.Grid, { item: true },
+                                                            react_1["default"].createElement(core_1.RadioGroup, { "aria-label": "gender", name: "condition", value: mealItemDto.cooked ? "cooked" : "raw", onChange: function (event) { onConditionChange(index, event.target.value); } },
+                                                                react_1["default"].createElement(core_1.FormControlLabel, { value: "raw", disabled: !foodItemDto.hasRaw, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Raw" }),
+                                                                react_1["default"].createElement(core_1.FormControlLabel, { value: "cooked", disabled: !foodItemDto.hasCooked, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Cooked" }))))));
+                                        }))),
+                                    react_1["default"].createElement(core_1.Divider, null),
+                                    react_1["default"].createElement(core_1.Grid, { item: true },
+                                        react_1["default"].createElement(core_1.FormControl, { size: "small", variant: "outlined", style: { width: 120 } },
+                                            react_1["default"].createElement(core_1.InputLabel, { id: "servings-select-label" }, "Servings"),
+                                            react_1["default"].createElement(core_1.Select, { MenuProps: {
+                                                    PaperProps: {
+                                                        style: {
+                                                            maxHeight: 200
+                                                        }
                                                     }
-                                                }
-                                            }, labelId: "servings-select-label", id: "servings-select", label: "Servings LABEL", value: servings, onChange: function (_a) {
-                                                var target = _a.target;
-                                                return setServings(target.value);
-                                            } }, lodash_1["default"].range(1, 20, 1).map(function (number) { return (react_1["default"].createElement(core_1.MenuItem, { key: number, value: number }, number)); })))),
-                                react_1["default"].createElement(core_1.Divider, null),
-                                react_1["default"].createElement(core_1.Grid, { item: true },
-                                    react_1["default"].createElement(core_1.TextField, { onChange: function (event) { return setDescription(event.target.value); }, id: "desc", label: "Description", multiline: true, rows: 5, rowsMax: 15, variant: "outlined", fullWidth: true })))),
-                        react_1["default"].createElement(core_1.DialogActions, null,
-                            react_1["default"].createElement(core_1.Button, { fullWidth: true, variant: "outlined", onClick: onClose, color: "primary" }, "Cancel"),
-                            react_1["default"].createElement(core_1.Button, { fullWidth: true, disabled: !name.length, variant: "contained", onClick: function () { onConfirm(createMealDto()); setIngredientList([null]); }, color: "primary" }, "Add"))) : react_1["default"].createElement(react_1["default"].Fragment, null))));
+                                                }, labelId: "servings-select-label", id: "servings-select", label: "Servings LABEL", value: servings, required: true, onChange: function (_a) {
+                                                    var target = _a.target;
+                                                    return setServings(target.value);
+                                                } }, lodash_1["default"].range(1, 20, 1).map(function (number) { return (react_1["default"].createElement(core_1.MenuItem, { key: number, value: number }, number)); })))),
+                                    react_1["default"].createElement(core_1.Divider, null),
+                                    react_1["default"].createElement(core_1.Grid, { item: true },
+                                        react_1["default"].createElement(core_1.TextField, { onChange: function (event) { return setDescription(event.target.value); }, id: "desc", label: "Description", multiline: true, rows: 5, rowsMax: 15, variant: "outlined", fullWidth: true })))),
+                            react_1["default"].createElement(core_1.DialogActions, null,
+                                react_1["default"].createElement(core_1.Button, { fullWidth: true, variant: "outlined", onClick: onClose, color: "primary" }, "Cancel"),
+                                react_1["default"].createElement(core_1.Button, { fullWidth: true, type: "submit", variant: "contained", color: "primary" }, "Add")))) : react_1["default"].createElement(react_1["default"].Fragment, null))));
 };
 var MealsTable = /** @class */ (function (_super) {
     __extends(MealsTable, _super);
@@ -184,7 +185,7 @@ var MealsTable = /** @class */ (function (_super) {
             viewColumns: false,
             filter: false,
             sort: true,
-            sortOrder: { name: "Quantity", direction: "dsc" },
+            sortOrder: { name: "Quantity", direction: "desc" },
             selectableRows: "none",
             selectableRowsHeader: false,
             selectToolbarPlacement: 'none',
@@ -220,7 +221,6 @@ var MealsTable = /** @class */ (function (_super) {
                 options: {
                     sort: true,
                     customBodyRender: function (value, _a) {
-                        var _rowIndex = _a._rowIndex;
                         return (react_1["default"].createElement(core_1.Grid, { container: true, alignItems: "center", justify: "center" },
                             react_1["default"].createElement(core_1.Grid, { item: true },
                                 react_1["default"].createElement(components_1.QuantityCell, { hasEditMode: false, foodItem: { quantity: value.quantityLeft, servingSize: value.quantity / value.servings }, emptyContents: function () { return _this.props.editMeal({ id: value.id, quantityLeft: 0 }); }, mealQuantity: value.quantity }))));

@@ -1,21 +1,17 @@
-import { Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, ThemeProvider, TextField, Divider, Tooltip, IconButton, Select, Input, MenuItem, FormControl, InputLabel, RadioGroup, FormControlLabel, Radio, } from '@material-ui/core';
-import EditRoundedIcon from '@material-ui/icons/EditRounded';
-import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
-import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
+import { Typography, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, ThemeProvider, TextField, Divider, IconButton, Select, MenuItem, FormControl, InputLabel, RadioGroup, FormControlLabel, Radio, } from '@material-ui/core';
 import KeyboardArrowRightRoundedIcon from '@material-ui/icons/KeyboardArrowRightRounded';
-import LaunchRoundedIcon from '@material-ui/icons/LaunchRounded';
 import React, { useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 
-import PropTypes from 'prop-types';
 import { EmptyTable, FoodLookUp } from "../shared_components";
 import _ from 'lodash';
-import { dialogTheme, EatCell, FoodPortionControl, QuantityCell } from './components';
+import { dialogTheme, FoodPortionControl, QuantityCell } from './components';
 import MUIDataTable from 'mui-datatables';
 import { MealsListType } from '../selectors';
 import { EatFoodDto, FoodItemDto, MealDto, MealItemDto } from '../../../../apis/dtos/serverDtos';
 import { RootState } from '../../../../redux_store/rootReducer';
+
 
 
 
@@ -85,6 +81,7 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
     onCancel();
   }
 
+
   const createMealDto = (): MealDto => {
     let totalQuantity = 0;
     let ingredients = ingredientList.filter(ing => ing !== null).map(ingredient => {
@@ -127,131 +124,137 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
               : openDialog ?
                 <>
                   <DialogTitle id="alert-dialog-title">Add a new Meal</DialogTitle>
-                  <DialogContent dividers>
-                    <Grid container direction="column" alignItems="stretch" justify="flex-start" spacing={3}>
-                      {/* <Grid item>
+                  <form onSubmit={() => { onConfirm(createMealDto()); setIngredientList([ null ]); }}>
+                    <DialogContent dividers>
+                      <Grid container direction="column" alignItems="stretch" justify="flex-start" spacing={3}>
+                        {/* <Grid item>
                         <Typography>Name</Typography>
                       </Grid> */}
-                      <Grid item>
-                        <TextField
-                          onChange={(event) => setName(event.target.value)}
-                          label="Name"
-                          autoFocus
-                          id="name"
-                          fullWidth
-                          variant="outlined"
-                          size="small"
-                          required
-                        />
-                      </Grid>
-                      <Divider light />
+                        <Grid item>
+                          <TextField
+                            onChange={(event) => setName(event.target.value)}
+                            label="Name"
+                            autoFocus
+                            id="name"
+                            fullWidth
+                            variant="outlined"
+                            size="small"
+                            required
+                          />
+                        </Grid>
+                        <Divider light />
 
-                      {/* <Grid item>
+                        {/* <Grid item>
                           <Typography>Ingredients</Typography>
                         </Grid> */}
-                      <Grid item>
-                        <Grid container direction="column" alignItems="flex-start" justify="flex-start" spacing={1}>
-                          {ingredientList.map((ingredientTuple, index) => {
-                            console.log("ingredientTuple: ", ingredientTuple);
-                            let mealItemDto: MealItemDto = null;
-                            let foodItemDto: FoodItemDto = null;
-                            if (ingredientTuple !== null) {
-                              mealItemDto = ingredientTuple.mealItemDto;
-                              foodItemDto = ingredientTuple.foodItemDto;
-                            }
-                            return (
-                              <Grid item container alignItems="center" justify="flex-start" spacing={3} key={index} >
-                                <Grid item>
-                                  <FoodLookUp
-                                    label={index === (ingredientList.length - 1) ? "Add ingredient" : "#" + (index + 1)}
-                                    initSelectedValue={foodItemDto}
-                                    width={200}
-                                    rowIndex={0}
-                                    hasConfirmButton={false}
-                                    onChange={selectedFood => updateIngredientList(selectedFood, index)}
-                                  />
+                        <Grid item>
+                          <Grid container direction="column" alignItems="flex-start" justify="flex-start" spacing={1}>
+                            {ingredientList.map((ingredientTuple, index) => {
+                              console.log("ingredientTuple: ", ingredientTuple);
+                              let mealItemDto: MealItemDto = null;
+                              let foodItemDto: FoodItemDto = null;
+                              if (ingredientTuple !== null) {
+                                mealItemDto = ingredientTuple.mealItemDto;
+                                foodItemDto = ingredientTuple.foodItemDto;
+                              }
+                              return (
+                                <Grid item container alignItems="center" justify="flex-start" spacing={3} key={index} >
+                                  <Grid item>
+                                    <FoodLookUp
+                                      label={index === (ingredientList.length - 1) ? "Add ingredient" : "#" + (index + 1)}
+                                      initSelectedValue={foodItemDto}
+                                      width={200}
+                                      rowIndex={0}
+                                      hasConfirmButton={false}
+                                      onChange={selectedFood => updateIngredientList(selectedFood, index)}
+                                      required={ingredientList.length <= 1}
+                                    />
+                                  </Grid>
+                                  {ingredientTuple === null ? null :
+                                    <>
+                                      <Grid item>
+                                        <FoodPortionControl
+                                          maxQuantity={null}
+                                          servingDesc={foodItemDto.servingDesc}
+                                          baseServing={foodItemDto.servingSize}
+                                          onPortionChange={servingInGrams => onPortionChange(index, servingInGrams)}
+                                          quantity={mealItemDto.quantity}
+                                        />
+                                      </Grid>
+                                      <Grid item>
+                                        <RadioGroup aria-label="gender" name="condition" value={mealItemDto.cooked ? "cooked" : "raw"} onChange={event => { onConditionChange(index, event.target.value) }}>
+                                          <FormControlLabel value="raw" disabled={!foodItemDto.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
+                                          <FormControlLabel value="cooked" disabled={!foodItemDto.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
+                                        </RadioGroup>
+                                      </Grid>
+                                    </>
+                                  }
                                 </Grid>
-                                {ingredientTuple === null ? null :
-                                  <>
-                                    <Grid item>
-                                      <FoodPortionControl
-                                        maxQuantity={null}
-                                        servingDesc={foodItemDto.servingDesc}
-                                        baseServing={foodItemDto.servingSize}
-                                        onPortionChange={servingInGrams => onPortionChange(index, servingInGrams)}
-                                        quantity={mealItemDto.quantity}
-                                      />
-                                    </Grid>
-                                    <Grid item>
-                                      <RadioGroup aria-label="gender" name="condition" value={mealItemDto.cooked ? "cooked" : "raw"} onChange={event => { onConditionChange(index, event.target.value) }}>
-                                        <FormControlLabel value="raw" disabled={!foodItemDto.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
-                                        <FormControlLabel value="cooked" disabled={!foodItemDto.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
-                                      </RadioGroup>
-                                    </Grid>
-                                  </>
-                                }
-                              </Grid>
-                            );
-                          })
-                          }
+                              );
+                            })
+                            }
+                          </Grid>
                         </Grid>
-                      </Grid>
-                      <Divider />
-                      <Grid item>
-                        <FormControl size="small" variant="outlined" style={{ width: 120 }}>
-                          <InputLabel id="servings-select-label">Servings</InputLabel>
-                          <Select
-                            MenuProps={
-                              {
-                                PaperProps: {
-                                  style: {
-                                    maxHeight: 200,
+                        <Divider />
+                        <Grid item>
+                          <FormControl size="small" variant="outlined" style={{ width: 120 }}>
+                            <InputLabel id="servings-select-label">Servings</InputLabel>
+                            <Select
+                              MenuProps={
+                                {
+                                  PaperProps: {
+                                    style: {
+                                      maxHeight: 200,
+                                    }
                                   }
                                 }
                               }
-                            }
-                            labelId="servings-select-label"
-                            id="servings-select"
-                            label="Servings LABEL"
-                            value={servings}
-                            onChange={({ target }) => setServings(target.value as number)}
-                          >
-                            {
-                              _.range(1, 20, 1).map(number => (
-                                <MenuItem key={number} value={number} >
-                                  {number}
-                                </MenuItem>
-                              ))
-                            }
-                          </Select>
-                        </FormControl>
+                              labelId="servings-select-label"
+                              id="servings-select"
+                              label="Servings LABEL"
+                              value={servings}
+                              required
+                              onChange={({ target }) => setServings(target.value as number)}
+                            >
+                              {
+                                _.range(1, 20, 1).map(number => (
+                                  <MenuItem key={number} value={number} >
+                                    {number}
+                                  </MenuItem>
+                                ))
+                              }
+                            </Select>
+                          </FormControl>
 
+                        </Grid>
+                        <Divider />
+                        <Grid item >
+                          <TextField
+                            onChange={(event) => setDescription(event.target.value)}
+                            id="desc"
+                            label="Description"
+                            multiline
+                            rows={5}
+                            rowsMax={15}
+                            variant="outlined"
+                            fullWidth
+                          >
+                          </TextField>
+                        </Grid>
                       </Grid>
-                      <Divider />
-                      <Grid item >
-                        <TextField
-                          onChange={(event) => setDescription(event.target.value)}
-                          id="desc"
-                          label="Description"
-                          multiline
-                          rows={5}
-                          rowsMax={15}
-                          variant="outlined"
-                          fullWidth
-                        >
-                        </TextField>
-                      </Grid>
-                    </Grid>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button fullWidth variant="outlined" onClick={onClose} color="primary">
-                      Cancel
+                    </DialogContent>
+                    <DialogActions>
+                      <Button fullWidth variant="outlined" onClick={onClose} color="primary">
+                        Cancel
                   </Button>
-                    <Button fullWidth disabled={!name.length} variant="contained" onClick={() => { onConfirm(createMealDto()); setIngredientList([ null ]); }} color="primary">
-                      Add
+                      <Button fullWidth type="submit" variant="contained"  color="primary">
+                        Add
                   </Button>
-                  </DialogActions>
+                    </DialogActions>
+                  </form>
+
                 </> : <></>
+
         }
       </Dialog>
     </ThemeProvider>
@@ -293,7 +296,7 @@ export class MealsTable extends React.Component<MealTableProps> {
     viewColumns: false,
     filter: false,
     sort: true,
-    sortOrder: { name: "Quantity", direction: "dsc" },
+    sortOrder: { name: "Quantity", direction: "desc" },
     selectableRows: "none",
     selectableRowsHeader: false,
     selectToolbarPlacement: 'none',
@@ -337,7 +340,7 @@ export class MealsTable extends React.Component<MealTableProps> {
       name: 'Quantity',
       options: {
         sort: true,
-        customBodyRender: (value: MealDto, { _rowIndex }) => {
+        customBodyRender: (value: MealDto, { }) => {
           return (
             <Grid container alignItems="center" justify="center">
               <Grid item>

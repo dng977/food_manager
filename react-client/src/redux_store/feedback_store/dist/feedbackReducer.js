@@ -28,7 +28,7 @@ exports["default"] = (function (state, action) {
         case feedbackTypes_1.MESSAGE:
             return __assign(__assign({}, state), { message: action.payload, loading: false });
         case feedbackTypes_1.CLEAR_MESSAGE:
-            return __assign(__assign({}, state), { message: '', loading: false });
+            return __assign(__assign({}, state), { message: '', loading: false, dialogLoading: false });
         case feedbackTypes_1.PUSH_LOADING:
             newNumberLoading = state.numberLoading + 1;
             return __assign(__assign({}, state), { numberLoading: newNumberLoading, loading: true });

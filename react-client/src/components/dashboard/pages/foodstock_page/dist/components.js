@@ -105,8 +105,8 @@ exports.AddNewFoodDialog.propTypes = {
 };
 var FoodTable = /** @class */ (function (_super) {
     __extends(FoodTable, _super);
-    function FoodTable(props) {
-        var _this = _super.call(this, props) || this;
+    function FoodTable() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.options = {
             rowHover: true,
             elevation: _this.props.paperElevation,
@@ -197,7 +197,7 @@ var FoodTable = /** @class */ (function (_super) {
 exports.FoodTable = FoodTable;
 exports.EatCell = function (_a) {
     var value = _a.value, onEat = _a.onEat;
-    var cQstatement = value.quantity <= value.foodItemDto.servingSize ? value.quantity : value.foodItemDto.servingSize;
+    var cQstatement = react_1.useMemo(function () { return value.quantity <= value.foodItemDto.servingSize ? value.quantity : value.foodItemDto.servingSize; }, [value]);
     var _b = react_1["default"].useState(cQstatement), currentQuantity = _b[0], setCurrentQuantity = _b[1];
     var _c = react_1["default"].useState(value.hasRaw ? "raw" : "cooked"), condition = _c[0], setCondition = _c[1];
     //eval(servingUnits)
@@ -207,7 +207,7 @@ exports.EatCell = function (_a) {
     react_1.useEffect(function () {
         setCurrentQuantity(cQstatement);
         setCondition(value.hasRaw ? "raw" : "cooked");
-    }, [value]);
+    }, [value, cQstatement]);
     var handleOnEatClick = function () {
         var eatFoodStockDto = {
             foodId: value.foodItemDto.id,
@@ -236,14 +236,14 @@ exports.EatCell = function (_a) {
 // export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
 exports.QuantityCell = function (_a) {
     //console.log("before", currentQuantity);
-    var submitEdit = _a.submitEdit, foodItem = _a.foodItem, _b = _a.hasEditMode, hasEditMode = _b === void 0 ? true : _b, emptyContents = _a.emptyContents, mealQuantity = _a.mealQuantity;
-    var _c = react_1.useState({ grams: foodItem.quantity, units: new fractional_1.Fraction(foodItem.quantity, foodItem.servingSize) }), currentQuantity = _c[0], setCurrentQuantity = _c[1];
+    var submitEdit = _a.submitEdit, foodItem = _a.foodItem, _b = _a.hasEditMode, hasEditMode = _b === void 0 ? true : _b, emptyContents = _a.emptyContents;
+    var _c = react_1.useState({ grams: foodItem.quantity, units: getServingInUnits(foodItem.quantity, foodItem.servingSize) }), currentQuantity = _c[0], setCurrentQuantity = _c[1];
     var _d = react_1.useState(false), editMode = _d[0], setEditMode = _d[1];
     var _e = react_1.useState(currentQuantity.grams === null || currentQuantity.grams === 0 ? foodItem.servingSize : currentQuantity.grams), quantityInGrams = _e[0], setQuantityInGrams = _e[1];
     react_1.useEffect(function () {
         if (foodItem.quantity !== currentQuantity.grams) {
-            var grams = foodItem.quantity;
-            var units = new fractional_1.Fraction(foodItem.quantity, foodItem.servingSize);
+            var grams = Math.ceil(foodItem.quantity);
+            var units = getServingInUnits(foodItem.quantity, foodItem.servingSize);
             setCurrentQuantity({ grams: grams, units: units });
             setQuantityInGrams(grams === null || grams === 0 ? foodItem.servingSize : grams);
         }
@@ -253,7 +253,7 @@ exports.QuantityCell = function (_a) {
     };
     var handleSubmit = function (_event) {
         setEditMode(false);
-        setCurrentQuantity({ units: getServingInUnits(quantityInGrams, foodItem.servingSize), grams: quantityInGrams });
+        setCurrentQuantity({ units: getServingInUnits(quantityInGrams, foodItem.servingSize), grams: Math.ceil(quantityInGrams) });
         submitEdit(quantityInGrams);
     };
     var handleCancel = function (_event) {

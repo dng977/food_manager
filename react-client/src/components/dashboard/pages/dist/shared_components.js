@@ -62,7 +62,7 @@ var mapStateToProps = function (state) {
 var reduxConnector = react_redux_1.connect(mapStateToProps, { fetchFoodItems: foodActions_1.fetchFoodItems });
 exports.FoodLookUp = reduxConnector(function (props) {
     //Default props
-    props = __assign({ label: "Search", editMode: false, hasConfirmButton: true, width: 180 }, props);
+    props = __assign({ label: "Search", editMode: false, hasConfirmButton: true, width: 180, required: true }, props);
     // console.log("lookupfield", props)
     var _a = react_1.useState(props.initSelectedValue ? props.initSelectedValue : null), selectedValue = _a[0], setSelectedValue = _a[1];
     var _b = react_1.useState(''), input = _b[0], setInput = _b[1];
@@ -93,7 +93,7 @@ exports.FoodLookUp = reduxConnector(function (props) {
                         props.onChange(newValue);
                 }, onInputChange: function (event, newValue) {
                     setInput(newValue);
-                }, options: foodItems, getOptionSelected: function (option, value) { return option.name === value.name; }, getOptionLabel: function (option) { return option.name; }, renderInput: function (params) { return (react_1["default"].createElement(core_2.TextField, __assign({ variant: "outlined" }, params, { label: props.label, size: "small" }))); } })),
+                }, options: foodItems, getOptionSelected: function (option, value) { return option.name === value.name; }, getOptionLabel: function (option) { return option.name; }, renderInput: function (params) { return (react_1["default"].createElement(core_2.TextField, __assign({ variant: "outlined" }, params, { label: props.label, size: "small", required: props.required }))); } })),
         props.editMode ?
             react_1["default"].createElement(core_1.Grid, { item: true },
                 react_1["default"].createElement(core_2.IconButton, { onClick: function () { return props.closeEditMode(); }, size: 'small' },
