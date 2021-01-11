@@ -197,7 +197,8 @@ var MealsTable = /** @class */ (function (_super) {
             // },
             expandableRowsOnClick: true,
             onRowClick: function (rowData, _a) {
-                // history.push(`${url}/${dataIndex}`);
+                var dataIndex = _a.dataIndex;
+                _this.props.history.push(_this.props.locationPath + "/meal/" + dataIndex);
             }
         };
         _this.columns = [

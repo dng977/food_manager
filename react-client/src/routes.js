@@ -13,6 +13,7 @@ import NutritionState from './components/dashboard/pages/nutritionstate_page/Nut
 import Settings from './components/dashboard/pages/settings_page/Settings';
 import ReceiptPage from './components/dashboard/pages/receipt_page/ReceiptPage';
 import BodyDetails from './components/auth/BodyDetails';
+import MealPage from './components/dashboard/pages/foodstock_page/MealPage';
 
 
 const dashboardPath = '/dashboard';
@@ -21,7 +22,8 @@ export const dashboardRoutes = [
     path: dashboardPath + "/foodstock",
     component: FoodStock,
     Icon: FastfoodIcon,
-    title: 'Food Stock'
+    title: 'Food Stock',
+    exact: true
   },
   {
     path: dashboardPath + "/receipts", 
@@ -50,6 +52,14 @@ export const dashboardRoutes = [
     title: 'Receipts',
     exact: true
   },
+  {
+    path: dashboardPath + "/foodstock/meal" + "/:id",
+    component: MealPage,
+    Icon: FastfoodIcon,
+    title: 'Food Stock',
+    exact: true
+
+  }
 ]
 
 export const routes = [

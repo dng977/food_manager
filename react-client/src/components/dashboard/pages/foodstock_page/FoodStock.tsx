@@ -3,7 +3,7 @@ import { Button, Grid, Tabs, Tab, Paper } from '@material-ui/core';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { styles as muiStyles } from '../../../shared/styles';
-import { withRouter } from 'react-router-dom';
+import { RouteChildrenProps, RouteComponentProps, withRouter } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
 import { eatFoodStockItem, addFoodStockItem, editFoodStockItem, deleteFoodStockItems, deleteMeal, fetchMeals, editMeal,eatMeal, addMeal } from '../../../../redux_store/food_store/foodActions';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
@@ -39,7 +39,12 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const reduxConnector = connect(mapStateToProps, mapDispatchToProps);
+interface MatchParams {
+  name: string;
+}
 type PropsFromRedux = ConnectedProps<typeof reduxConnector>
+type FoodStockProps = PropsFromRedux & RouteComponentProps;
+
 type FoodStockState = {
     openDeleteDialog: boolean;
     openAddFoodDialog: boolean;
@@ -47,12 +52,12 @@ type FoodStockState = {
     rowsSelected: number[];
     tableNumber: number;
 }
-class FoodStock extends React.Component<PropsFromRedux, FoodStockState> {
+class FoodStock extends React.Component<FoodStockProps, FoodStockState> {
   getMuiTheme: any;
   paperElevation: number;
   onViewImageClose: any;
 
-  constructor(props: PropsFromRedux) {
+  constructor(props: FoodStockProps) {
     super(props);
     this.state = {
       openDeleteDialog: false,
@@ -196,6 +201,8 @@ class FoodStock extends React.Component<PropsFromRedux, FoodStockState> {
               :
               <Grid item>
                 <MealsTable
+                  history={this.props.history}
+                  locationPath={this.props.location.pathname}
                   loading={this.props.loading}
                   paperElevation={this.paperElevation}
                   eatMeal={this.props.eatMeal}

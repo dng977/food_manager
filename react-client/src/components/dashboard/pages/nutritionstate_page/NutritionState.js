@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, useHistory, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import NutritionPieChart, { NutritionBarChart } from './components';
-import { Grid, Paper, Tab, Tabs, Typography } from '@material-ui/core';
+import { Grid, Paper, Tab, Tabs } from '@material-ui/core';
 import { compose } from 'redux';
 
 

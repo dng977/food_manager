@@ -11,7 +11,7 @@ import MUIDataTable from 'mui-datatables';
 import { MealsListType } from '../selectors';
 import { EatFoodDto, FoodItemDto, MealDto, MealItemDto } from '../../../../apis/dtos/serverDtos';
 import { RootState } from '../../../../redux_store/rootReducer';
-
+import {History} from 'history'
 
 
 
@@ -273,6 +273,8 @@ type MealTableProps = {
   eatMeal: (eatMealDto: EatFoodDto) => any;
   paperElevation: number;
   loading: boolean;
+  history: History;
+  locationPath: String;
 }
 export class MealsTable extends React.Component<MealTableProps> {
   constructor(props: MealTableProps) {
@@ -308,8 +310,8 @@ export class MealsTable extends React.Component<MealTableProps> {
 
     // },
     expandableRowsOnClick: true,
-    onRowClick: (rowData, { }) => {
-      // history.push(`${url}/${dataIndex}`);
+    onRowClick: (rowData, { dataIndex }) => {
+      this.props.history.push(`${this.props.locationPath}/meal/${dataIndex}`);
     },
 
   };
