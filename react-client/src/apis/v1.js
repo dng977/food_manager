@@ -2,7 +2,7 @@ import axios from 'axios';
 import { PUSH_LOADING, MESSAGE, POP_LOADING } from '../redux_store/feedback_store/feedbackTypes';
 
 export const api = axios.create({
-  baseURL: 'http://localhost:9090/api/v1/',
+  baseURL: 'http://192.168.0.154:9090/api/v1/',
 });
 
 const apiRequest = ({loading=false, dispatch, getFirebase,request:{method, url, payload = {}, otherHeaders = {}} ,onSuccess, 

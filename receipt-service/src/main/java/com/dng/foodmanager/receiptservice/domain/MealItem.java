@@ -29,6 +29,11 @@ public class MealItem extends BaseEntity {
     private Integer quantity;
 
     public MealItemDto toDto() {
-        return new MealItemDto(this.foodItem.getId(),this.quantity, this.cooked);
+        return new MealItemDto(this.foodItem.toDto(),this.quantity, this.cooked);
+    }
+
+    public void updateMealItem(boolean cooked, Integer quantity){
+        this.cooked = cooked;
+        this.quantity = quantity;
     }
 }

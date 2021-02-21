@@ -56,7 +56,6 @@ exports.dialogTheme = core_1.createMuiTheme({
 });
 exports.AddNewFoodDialog = function (_a) {
     var dialogTitle = _a.dialogTitle, onCancel = _a.onCancel, onConfirm = _a.onConfirm, error = _a.error, openDialog = _a.openDialog;
-    console.log("render add dialog: ", openDialog);
     var loading = react_redux_1.useSelector(function (state) { return state.feedback.dialogLoading; });
     var _b = react_1.useState(null), selectedFood = _b[0], setSelectedFood = _b[1];
     var _c = react_1["default"].useState(0), servingInGrams = _c[0], setServingInGrams = _c[1];
@@ -113,7 +112,7 @@ var FoodTable = /** @class */ (function (_super) {
             rowsPerPage: 5,
             rowsPerPageOptions: [],
             filterType: "dropdown",
-            responsive: "standard",
+            responsive: "simple",
             // tableBodyHeight: "600px",
             tableBodyMaxHeight: "800px",
             selectableRows: "multiple",
@@ -128,7 +127,6 @@ var FoodTable = /** @class */ (function (_super) {
             sort: false,
             rowsSelected: [],
             onRowSelectionChange: function (_currentRowsSelected, _allRowsSelected, rowsSelected) {
-                console.log(rowsSelected);
                 _this.props.setRowsSelected(rowsSelected);
                 //setRowsSelected(rowsSelected)
             },
@@ -160,7 +158,6 @@ var FoodTable = /** @class */ (function (_super) {
                     },
                     sortCompare: function (order) {
                         return function (obj1, obj2) {
-                            console.log(order);
                             var val1 = obj1.data.quantity;
                             var val2 = obj2.data.quantity;
                             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -217,14 +214,14 @@ exports.EatCell = function (_a) {
         onEat(eatFoodStockDto);
     };
     return (value.quantity !== 0 ?
-        react_1["default"].createElement(core_1.Grid, { container: true, wrap: "nowrap", alignItems: "center", justify: "flex-start", spacing: 2 },
-            react_1["default"].createElement(core_1.Grid, { item: true },
+        react_1["default"].createElement(core_1.Grid, { container: true, alignItems: "center", justify: "center", spacing: 2 },
+            react_1["default"].createElement(core_1.Grid, { item: true, xs: 12, md: 6 },
                 react_1["default"].createElement(exports.FoodPortionControl, { maxQuantity: value.quantity, servingDesc: value.foodItemDto.servingDesc, baseServing: value.foodItemDto.servingSize, quantity: currentQuantity, onPortionChange: onPortionChange })),
-            react_1["default"].createElement(core_1.Grid, { item: true },
+            react_1["default"].createElement(core_1.Grid, { item: true, xs: 6, md: 3 },
                 react_1["default"].createElement(core_1.RadioGroup, { "aria-label": "gender", name: "condition", value: condition, onChange: function (event) { setCondition(event.target.value); } },
                     react_1["default"].createElement(core_1.FormControlLabel, { value: "raw", disabled: !value.hasRaw, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Raw" }),
                     react_1["default"].createElement(core_1.FormControlLabel, { value: "cooked", disabled: !value.hasCooked, control: react_1["default"].createElement(core_1.Radio, { size: "small", color: "primary" }), label: "Cooked" }))),
-            react_1["default"].createElement(core_1.Grid, { item: true },
+            react_1["default"].createElement(core_1.Grid, { item: true, xs: 6, md: 3 },
                 react_1["default"].createElement(core_1.Button, { variant: "contained", color: "primary", onClick: handleOnEatClick }, "Eat")))
         :
             react_1["default"].createElement(core_1.Grid, { container: true, wrap: "nowrap", alignItems: "center", justify: "center", spacing: 2 },
@@ -307,7 +304,6 @@ var getServingInUnits = function (quantity, baseServing) {
 };
 exports.FoodPortionControl = function (_a) {
     var servingDesc = _a.servingDesc, baseServing = _a.baseServing, quantity = _a.quantity, onPortionChange = _a.onPortionChange, maxQuantity = _a.maxQuantity;
-    console.log(quantity, maxQuantity);
     var _b = react_1.useState(false), minusDisabled = _b[0], setMinusDisabled = _b[1];
     var plusDisabledStmt = maxQuantity && quantity === maxQuantity ? true : false;
     var _c = react_1.useState(plusDisabledStmt), plusDisabled = _c[0], setPlusDisabled = _c[1];

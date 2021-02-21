@@ -17,8 +17,6 @@ export const fetchFoodItems = (foodName, rowIndex) : AppThunk<FoodItemsActions> 
   });
 };
 
-
-
 export const fetchFoodStock = (actionsOnSuccess = [] as any[]) : AppThunk<FoodStockActions> => async (dispatch, getState, getFirebase) => {
   apiRequest({
     loading: true,
@@ -143,7 +141,7 @@ export const addMeal = (mealDto: MealDto, callBackOnSuccess: () => void ) : AppT
 
 
 export const editMeal = (mealDto: MealDto, callBackOnSuccess: () => void) : AppThunk<MealsActions> => async (dispatch, getState, getFirebase) => {
-  //dispatch({ type: DIALOG_LOADING });
+  dispatch({ type: DIALOG_LOADING });
   apiRequest({
     dispatch,
     getFirebase,
@@ -156,13 +154,13 @@ export const editMeal = (mealDto: MealDto, callBackOnSuccess: () => void) : AppT
       dispatch({ type: EDIT_MEAL, payload: mealDto });
       callBackOnSuccess();
     },
-    onError: () => {
-      
+    onError: (error) => {
+      console.log(error);
     }
   });
 };
 
-export const deleteMeal = (id: number) : AppThunk<MealsActions> => async (dispatch, getState, getFirebase) => {
+export const deleteMeal = (id: number, callBack: () => void) : AppThunk<MealsActions> => async (dispatch, getState, getFirebase) => {
   dispatch({ type: DIALOG_LOADING });
   apiRequest({
     dispatch,
@@ -171,7 +169,10 @@ export const deleteMeal = (id: number) : AppThunk<MealsActions> => async (dispat
       method: 'delete',
       url: `foodstock/meals/${id}`,
     },
-    onSuccess: () => dispatch({ type: DELETE_MEAL, payload: id }),
+    onSuccess: () => {
+      dispatch({ type: DELETE_MEAL, payload: id });
+      callBack();
+    }
   });
 };
 

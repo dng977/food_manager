@@ -27,6 +27,8 @@ var reducer = function (state, action) {
     switch (action.type) {
         case foodTypes_1.FETCH_FOOD_ITEMS:
             return __assign(__assign({}, state), { searchedItems: __assign(__assign({}, state.searchedItems), action.payload), food_loading: false });
+        case foodTypes_1.CLEAR_FOOD_ITEMS:
+            return __assign(__assign({}, state), { searchedItems: {}, food_loading: false });
         case receiptTypes_1.EDIT_RECEIPT_ITEM:
             return __assign(__assign({}, state), { searchedItems: lodash_1["default"].omit(state.searchedItems, action.payload.id) });
         case foodTypes_1.FETCH_FOODSTOCK:

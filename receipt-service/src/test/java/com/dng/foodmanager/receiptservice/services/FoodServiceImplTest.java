@@ -33,11 +33,13 @@ class FoodServiceImplTest {
     DtoConverter dtoConverter;
     @Mock
     MealRepository mealRepository;
+    @Mock
+    MealItemRepository mealItemRepository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        foodItemService = new FoodServiceImpl(foodItemRepository,foodStockRepository,dtoConverter, nutritionStateRepository, userRepository, mealRepository);
+        foodItemService = new FoodServiceImpl(foodItemRepository,foodStockRepository,dtoConverter, nutritionStateRepository, userRepository, mealRepository, mealItemRepository);
     }
 
     @Test

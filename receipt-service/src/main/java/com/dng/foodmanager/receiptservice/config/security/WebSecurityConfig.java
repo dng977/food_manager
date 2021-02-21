@@ -45,27 +45,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationEntryPoint restAuthenticationEntryPoint() {
-        return new AuthenticationEntryPoint() {
-            @Override
-            public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-                                 AuthenticationException e) throws IOException, ServletException {
-                Map<String, Object> errorObject = new HashMap<>();
-                int errorCode = 401;
-                errorObject.put("message", "Access Denied");
-                errorObject.put("error", HttpStatus.UNAUTHORIZED);
-                errorObject.put("code", errorCode);
-                errorObject.put("timestamp", new Timestamp(new Date().getTime()));
-                httpServletResponse.setContentType("application/json;charset=UTF-8");
-                httpServletResponse.setStatus(errorCode);
-                httpServletResponse.getWriter().write(objectMapper.writeValueAsString(errorObject));
-            }
+        return (httpServletRequest, httpServletResponse, e) -> {
+            Map<String, Object> errorObject = new HashMap<>();
+            int errorCode = 401;
+            errorObject.put("message", "Access Denied");
+            errorObject.put("error", HttpStatus.UNAUTHORIZED);
+            errorObject.put("code", errorCode);
+            errorObject.put("timestamp", new Timestamp(new Date().getTime()));
+            httpServletResponse.setContentType("application/json;charset=UTF-8");
+            httpServletResponse.setStatus(errorCode);
+            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(errorObject));
         };
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://192.168.0.154:3000", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "DELETE", "PUT"));
         configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type", "Accept"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

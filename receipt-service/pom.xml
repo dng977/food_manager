@@ -189,6 +189,7 @@
 						<optionalAnnotation>org.springframework.lang.Nullable</optionalAnnotation>
 					</optionalAnnotations>
 					<mapEnum>asEnum</mapEnum>
+					<nonConstEnums>true</nonConstEnums>
 					<classPatterns>
 						<pattern>com.dng.foodmanager.receiptservice.dto.**</pattern>
 					</classPatterns>

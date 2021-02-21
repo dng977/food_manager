@@ -1,21 +1,25 @@
-export const styles = {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.styles = void 0;
+var styles = {
   palette: {
     secondary: {
-      main: '#c62828',
-    },
+      main: '#c62828'
+    }
   },
   overrides: {
-    MuiRadio:{
+    MuiRadio: {
       root: {
-        padding: "3px",
+        padding: "3px"
       }
     },
-    MuiTable:{
-      root:{
-        // borderCollapse: 'separate',
+    MuiTable: {
+      root: {// borderCollapse: 'separate',
       }
     },
-
     MUIDataTableHeadCell: {
       fixedHeader: {
         fontWeight: 'bold',
@@ -24,7 +28,7 @@ export const styles = {
         color: 'rgba(0, 0, 0, 0.60)'
       }
     },
-    MUIDataTableSelectCell:{
+    MUIDataTableSelectCell: {
       fixedHeader: {
         fontWeight: 'bold',
         borderTop: 'ridge solid rgba(224, 224, 224, 1)',
@@ -32,21 +36,21 @@ export const styles = {
         color: 'rgba(0, 0, 0, 0.60)'
       }
     },
-    MUIDataTableBody:{
-      emptyTitle:{
+    MUIDataTableBody: {
+      emptyTitle: {
         textAlign: 'center'
       }
     },
-    MuiTableCell:{
+    MuiTableCell: {
       body: {
         borderRight: 'inset',
         borderRightWidth: 'thin',
         borderBottom: 'inset',
         borderBotttomWidth: 'medium',
-        padding: '10px',
-        // '&:hover': {
+        padding: '10px' // '&:hover': {
         //   padding: '10px'
         // }
+
       }
     },
     MUIDataTableBodyRow: {
@@ -56,3 +60,4 @@ export const styles = {
     }
   }
 };
+exports.styles = styles;

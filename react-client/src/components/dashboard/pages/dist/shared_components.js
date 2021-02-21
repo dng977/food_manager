@@ -21,6 +21,8 @@ var CheckRounded_1 = require("@material-ui/icons/CheckRounded");
 var Autocomplete_1 = require("@material-ui/lab/Autocomplete");
 var react_redux_1 = require("react-redux");
 var foodActions_1 = require("../../../redux_store/food_store/foodActions");
+var foodTypes_1 = require("../../../redux_store/food_store/foodTypes");
+var redux_1 = require("redux");
 exports.EmptyTable = function (props) {
     return (react_1["default"].createElement(core_1.TableBody, null,
         react_1["default"].createElement(core_1.TableRow, null,
@@ -30,7 +32,6 @@ exports.EmptyTable = function (props) {
 exports.DeleteAlertDialog = function (_a) {
     var dialogTitle = _a.dialogTitle, onDeleteDialogNo = _a.onDeleteDialogNo, onDeleteDialogYes = _a.onDeleteDialogYes, openDeleteDialog = _a.openDeleteDialog, error = _a.error;
     var loading = react_redux_1.useSelector(function (state) { return state.feedback.dialogLoading; });
-    console.log("render Dialog: ", openDeleteDialog);
     return (react_1["default"].createElement(core_1.Dialog, { open: openDeleteDialog, onClose: onDeleteDialogNo, "aria-labelledby": "alert-dialog-title", "aria-describedby": "alert-dialog-description" }, loading ?
         react_1["default"].createElement(core_1.DialogTitle, null, "Deleting...") :
         error ?
@@ -53,13 +54,16 @@ exports.DeleteAlertDialog.propTypes = {
     loading: prop_types_1["default"].bool,
     error: prop_types_1["default"].string
 };
+var mapDispatchToProps = function (dispatch) {
+    return __assign({ clearFoodItems: function () { return dispatch({ type: foodTypes_1.CLEAR_FOOD_ITEMS }); }, deleteSearchRow: function (rowIndex) { return dispatch({ type: foodTypes_1.DELETE_SEARCH_ROW, payload: rowIndex }); }, dispatch: dispatch }, redux_1.bindActionCreators({ fetchFoodItems: foodActions_1.fetchFoodItems }, dispatch));
+};
 var mapStateToProps = function (state) {
     return {
         foodItems: state.food.searchedItems,
         loading: state.food.food_loading
     };
 };
-var reduxConnector = react_redux_1.connect(mapStateToProps, { fetchFoodItems: foodActions_1.fetchFoodItems });
+var reduxConnector = react_redux_1.connect(mapStateToProps, mapDispatchToProps);
 exports.FoodLookUp = reduxConnector(function (props) {
     //Default props
     props = __assign({ label: "Search", editMode: false, hasConfirmButton: true, width: 180, required: true }, props);
@@ -68,6 +72,7 @@ exports.FoodLookUp = reduxConnector(function (props) {
     var _b = react_1.useState(''), input = _b[0], setInput = _b[1];
     var _c = react_1.useState(input), debouncedInput = _c[0], setDebouncedInput = _c[1];
     var foodItems = props.rowIndex in props.foodItems ? props.foodItems[props.rowIndex] : [];
+    var timerId = null;
     react_1.useEffect(function () {
         var timerId = setTimeout(function () {
             setDebouncedInput(input);
@@ -76,21 +81,36 @@ exports.FoodLookUp = reduxConnector(function (props) {
             clearTimeout(timerId);
         };
     }, [input]);
+    // const onInputChange = (input) => {
+    //   clearTimeout(timerId);
+    //   timerId = setTimeout(() => {
+    //     setDebouncedInput(input);
+    //   }, 1000);
+    // }
     react_1.useEffect(function () {
-        // if(props.initSelectedValue){
-        //   console.log("SET INIT VALUE", props.initSelectedValue)
-        //   setSelectedValue(props.initSelectedValue);
-        // }
         if (debouncedInput.length && (!foodItems.length || !foodItems.some(function (item) { return item.name === debouncedInput; }))) {
-            props.fetchFoodItems(debouncedInput, props.rowIndex);
+            if (!(selectedValue && selectedValue.name === debouncedInput)) {
+                // console.log(selectedValue, debouncedInput);
+                // console.log('DEBOUNCED');
+                props.fetchFoodItems(debouncedInput, props.rowIndex);
+            }
         }
     }, [debouncedInput]);
+    react_1.useEffect(function () {
+        if (selectedValue != props.initSelectedValue) {
+            setSelectedValue(props.initSelectedValue);
+        }
+    }, [props.initSelectedValue]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(core_1.Grid, { item: true, xs: 12 },
-            react_1["default"].createElement(Autocomplete_1["default"], { value: props.initSelectedValue, loading: props.loading, fullWidth: true, style: { width: props.width }, onChange: function (event, newValue) {
+            react_1["default"].createElement(Autocomplete_1["default"], { value: selectedValue, loading: props.loading, fullWidth: true, style: { width: props.width }, onChange: function (event, newValue) {
                     setSelectedValue(newValue);
-                    if (props.onChange)
+                    if (props.onChange) {
                         props.onChange(newValue);
+                        if (!newValue) {
+                            props.deleteSearchRow(props.rowIndex);
+                        }
+                    }
                 }, onInputChange: function (event, newValue) {
                     setInput(newValue);
                 }, options: foodItems, getOptionSelected: function (option, value) { return option.name === value.name; }, getOptionLabel: function (option) { return option.name; }, renderInput: function (params) { return (react_1["default"].createElement(core_2.TextField, __assign({ variant: "outlined" }, params, { label: props.label, size: "small", required: props.required }))); } })),

@@ -123,7 +123,6 @@ exports.fetchReceiptImage = function (id) { return function (dispatch, getState,
 }); }; };
 exports.deleteReceipt = function (id, callback) { return function (dispatch, _getState, getFirebase) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        callback();
         v1_1["default"]({
             loading: true,
             dispatch: dispatch,
@@ -132,7 +131,10 @@ exports.deleteReceipt = function (id, callback) { return function (dispatch, _ge
                 method: 'delete',
                 url: "receipts/" + id
             },
-            onSuccess: function (_response) { return dispatch({ type: receiptTypes_1.DELETE_RECEIPT, payload: id }); }
+            onSuccess: function (_response) {
+                dispatch({ type: receiptTypes_1.DELETE_RECEIPT, payload: id });
+                callback();
+            }
         });
         return [2 /*return*/];
     });

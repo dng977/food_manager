@@ -6,6 +6,7 @@ export const FOOD_LOADING = "FOOD_LOADING";
 
 export const FETCH_FOOD_ITEMS = 'FETCH_FOOD_ITEMS';
 export const CLEAR_FOOD_ITEMS = 'CLEAR_FOOD_ITEMS';
+export const DELETE_SEARCH_ROW = 'DELETE_SEARCH_ROW';
 
 export const ADD_RECEIPT_ITEMS_TO_FOODSTOCK = 'ADD_RECEIPT_ITEMS_TO_FOODSTOCK';
 export const FETCH_FOODSTOCK = 'FETCH_FOODSTOCK';
@@ -28,9 +29,16 @@ interface FetchFoodItemsAction {
   type: typeof FETCH_FOOD_ITEMS;
   payload: IdMap<FoodItemDto[]>;
 }
+interface ClearFoodItemsAction {
+  type: typeof CLEAR_FOOD_ITEMS;
+}
+interface DeleteSearchRowAction {
+  type: typeof DELETE_SEARCH_ROW;
+  payload: number;
+}
+export type FoodItemsActions = FetchFoodItemsAction | ClearFoodItemsAction | FoodLoadingAction | DeleteSearchRowAction;
 
 //FOOD STOCK
-export type FoodItemsActions = FetchFoodItemsAction | FoodLoadingAction;
 interface FetchFoodStockAction {
   type: typeof FETCH_FOODSTOCK;
   payload: FoodStockDto[];
@@ -62,4 +70,4 @@ interface DeleteMealsAction {
 export type MealsActions = DeleteMealsAction | EditMealAction | FetchMealsAction | FoodLoadingAction | ClearMessageAction;
 
 //FOOD
-export type FoodActionTypes = FoodStockActions | MealsActions | FetchFoodItemsAction;
+export type FoodActionTypes = FoodStockActions | MealsActions | FoodItemsActions;

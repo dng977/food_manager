@@ -38,7 +38,7 @@ class Dashboard extends React.PureComponent {
 
   constructor() {
     super();
-    this.state = { anchorEl: null, open: true, init: true };
+    this.state = { anchorEl: null, open: false, init: true };
     this.dashboardRoutes = dashboardRoutes.slice(0, 4);
   }
 

@@ -1,5 +1,6 @@
 package com.dng.foodmanager.receiptservice.domain;
 
+import com.dng.foodmanager.receiptservice.dto.food_dtos.FoodItemDto;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
@@ -67,5 +68,19 @@ public class FoodItem extends BaseEntity {
 
     public Optional<ServingUnit> getServingUnit() {
         return Optional.ofNullable(servingUnit);
+    }
+
+    public FoodItemDto toDto() {
+        return new FoodItemDto(
+                this.getId(),
+                this.getName(),
+                this.getDefaultQuantity(),
+                this.getServingSize(),
+                this.getServingDesc(),
+                null,
+                this.getNutritionRaw().isPresent(),
+                this.getNutritionCooked().isPresent()
+        );
+        //TODO get nutrition as well
     }
 }

@@ -15,44 +15,40 @@ import {History} from 'history'
 
 
 
-type AddMealDialogPropTypes = {
+type AddEditMealDialogPropTypes = {
   onCancel: () => any;
   onConfirm: (mealDto: MealDto) => void;
   openDialog: boolean;
   error: string;
+  mealDto?: MealDto;
+  title: string;
 }
-export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMealDialogPropTypes) => {
-  console.log("render add meal dialog: ", openDialog)
+export const AddEditMealDialog = ({ onCancel, onConfirm, error, openDialog, mealDto, title }: AddEditMealDialogPropTypes) => {
+  const isEdit = mealDto != null;
   const loading = useSelector((state: RootState) => state.feedback.dialogLoading);
-  const [ name, setName ] = useState('');
-  const [ description, setDescription ] = useState('');
-  const [ servings, setServings ] = useState(null);
-  const [ ingredientList, setIngredientList ] = useState<Array<{ mealItemDto: MealItemDto, foodItemDto: FoodItemDto }>>([ null ]);
+  const [ name, setName ] = useState(isEdit ? mealDto.name : '');
+  const [ description, setDescription ] = useState(isEdit ? mealDto.description : '');
+  const [ servings, setServings ] = useState(isEdit ? mealDto.servings : null);
+  const [ ingredientList, setIngredientList ] = useState<MealItemDto[]>(isEdit ? mealDto.ingredients.concat([null]) : [ null ]);
 
   const onPortionChange = (indexToChange: number, servingInGrams: number) => {
-    console.log("On port change");
-    // ingredientList[indexToChange].mealItemDto.quantity = servingInGrams;
-    // setIngredientList(ingredientList);
     setIngredientList(ingredientList.map((ingredient, ind) => {
       if (ind === indexToChange)
-        ingredient.mealItemDto.quantity = servingInGrams;
+        ingredient.quantity = servingInGrams;
       return ingredient;
     }));
   }
   const onConditionChange = (indexToChange: number, newCondition: string) => {
-    // ingredientList[indexToChange].mealItemDto.cooked = newCondition === "raw" ? false : true;
-    // setIngredientList(ingredientList);
     setIngredientList(ingredientList.map((ingredient, ind) => {
       if (ind === indexToChange)
-        ingredient.mealItemDto.cooked = newCondition === "raw" ? false : true;
+        ingredient.cooked = newCondition === "raw" ? false : true;
       return ingredient;
     }));
   }
 
   const updateIngredientList = (newFoodItem: FoodItemDto, selFoodIndex: number) => {
-    console.log("updIngList");
     let lastIndex = ingredientList.length - 1;
-    const reducer = (acc: Array<{ mealItemDto: MealItemDto, foodItemDto: FoodItemDto }>, cur: { mealItemDto: MealItemDto; foodItemDto: FoodItemDto; }, idx: number) => {
+    const reducer = (acc: MealItemDto[], cur: MealItemDto, idx: number) => {
 
       //Add the previous element if index is different from selFood
       if (idx !== selFoodIndex) {
@@ -60,24 +56,27 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
       }
       //If there is a new ingredient
       if (newFoodItem && idx === lastIndex) {
-        return acc.concat([ { mealItemDto: { foodItemId: newFoodItem.id, quantity: newFoodItem.servingSize, cooked: false }, foodItemDto: newFoodItem }, null ]);
+        return acc.concat([  { foodItemDto: newFoodItem, quantity: newFoodItem.servingSize, cooked: false } , null ]);
       }
       if (newFoodItem && idx !== lastIndex) {
-        return acc.concat([ { mealItemDto: { foodItemId: newFoodItem.id, quantity: newFoodItem.servingSize, cooked: false }, foodItemDto: newFoodItem } ]);
+
+        return acc.concat([ { foodItemDto: newFoodItem, quantity: newFoodItem.servingSize, cooked: false }  ]);
       }
       if (!newFoodItem) {
+        
         return acc;
       }
     }
     let newList = ingredientList.reduce(reducer, []);
-    console.log(newList);
     setIngredientList(newList);
 
   }
   const onClose = () => {
-    setIngredientList([ null ]);
-    setServings(null);
-    console.log("on clse:", ingredientList)
+    if(!isEdit){
+      setIngredientList([ null ]);
+      setServings(null);
+    }
+
     onCancel();
   }
 
@@ -85,11 +84,11 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
   const createMealDto = (): MealDto => {
     let totalQuantity = 0;
     let ingredients = ingredientList.filter(ing => ing !== null).map(ingredient => {
-      totalQuantity += ingredient.mealItemDto.quantity;
-      return ingredient.mealItemDto;
+      totalQuantity += ingredient.quantity;
+      return ingredient;
     });
     return {
-      id: null,
+      id: isEdit ? mealDto.id : null,
       name: name,
       description: description,
       ingredients: ingredients,
@@ -99,7 +98,6 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
     };
   }
 
-  console.log("before render");
   return (
     <ThemeProvider theme={dialogTheme}>
       <Dialog
@@ -111,7 +109,7 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
       >{
           loading ?
 
-            <DialogTitle>Adding...</DialogTitle> :
+            <DialogTitle>{mealDto ? "Editing..." : "Adding..."}</DialogTitle> :
             error ?
               <>
                 <DialogTitle>{`${error}`}</DialogTitle>
@@ -123,15 +121,13 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
               </>
               : openDialog ?
                 <>
-                  <DialogTitle id="alert-dialog-title">Add a new Meal</DialogTitle>
-                  <form onSubmit={() => { onConfirm(createMealDto()); setIngredientList([ null ]); }}>
+                  <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+                  <form onSubmit={() => { onConfirm(createMealDto()); if(!isEdit) setIngredientList([ null ]); }}>
                     <DialogContent dividers>
                       <Grid container direction="column" alignItems="stretch" justify="flex-start" spacing={3}>
-                        {/* <Grid item>
-                        <Typography>Name</Typography>
-                      </Grid> */}
                         <Grid item>
                           <TextField
+                            value={name}
                             onChange={(event) => setName(event.target.value)}
                             label="Name"
                             autoFocus
@@ -143,48 +139,38 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
                           />
                         </Grid>
                         <Divider light />
-
-                        {/* <Grid item>
-                          <Typography>Ingredients</Typography>
-                        </Grid> */}
                         <Grid item>
                           <Grid container direction="column" alignItems="flex-start" justify="flex-start" spacing={1}>
-                            {ingredientList.map((ingredientTuple, index) => {
-                              console.log("ingredientTuple: ", ingredientTuple);
-                              let mealItemDto: MealItemDto = null;
-                              let foodItemDto: FoodItemDto = null;
-                              if (ingredientTuple !== null) {
-                                mealItemDto = ingredientTuple.mealItemDto;
-                                foodItemDto = ingredientTuple.foodItemDto;
-                              }
+                            {ingredientList.map((ingredient, index) => {
+                              // console.log("ingredientTuple: ", ingredient);
                               return (
                                 <Grid item container alignItems="center" justify="flex-start" spacing={3} key={index} >
                                   <Grid item>
                                     <FoodLookUp
                                       label={index === (ingredientList.length - 1) ? "Add ingredient" : "#" + (index + 1)}
-                                      initSelectedValue={foodItemDto}
+                                      initSelectedValue={ingredient ? ingredient.foodItemDto: null}
                                       width={200}
-                                      rowIndex={0}
+                                      rowIndex={index}
                                       hasConfirmButton={false}
                                       onChange={selectedFood => updateIngredientList(selectedFood, index)}
                                       required={ingredientList.length <= 1}
                                     />
                                   </Grid>
-                                  {ingredientTuple === null ? null :
+                                  {ingredient === null ? null :
                                     <>
                                       <Grid item>
                                         <FoodPortionControl
                                           maxQuantity={null}
-                                          servingDesc={foodItemDto.servingDesc}
-                                          baseServing={foodItemDto.servingSize}
+                                          servingDesc={ingredient.foodItemDto.servingDesc}
+                                          baseServing={ingredient.foodItemDto.servingSize}
                                           onPortionChange={servingInGrams => onPortionChange(index, servingInGrams)}
-                                          quantity={mealItemDto.quantity}
+                                          quantity={ingredient.quantity}
                                         />
                                       </Grid>
                                       <Grid item>
-                                        <RadioGroup aria-label="gender" name="condition" value={mealItemDto.cooked ? "cooked" : "raw"} onChange={event => { onConditionChange(index, event.target.value) }}>
-                                          <FormControlLabel value="raw" disabled={!foodItemDto.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
-                                          <FormControlLabel value="cooked" disabled={!foodItemDto.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
+                                        <RadioGroup aria-label="gender" name="condition" value={ingredient.cooked ? "cooked" : "raw"} onChange={event => { onConditionChange(index, event.target.value) }}>
+                                          <FormControlLabel value="raw" disabled={!ingredient.foodItemDto.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
+                                          <FormControlLabel value="cooked" disabled={!ingredient.foodItemDto.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
                                         </RadioGroup>
                                       </Grid>
                                     </>
@@ -212,7 +198,7 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
                               labelId="servings-select-label"
                               id="servings-select"
                               label="Servings LABEL"
-                              value={servings}
+                              value={servings ? servings : ''}
                               required
                               onChange={({ target }) => setServings(target.value as number)}
                             >
@@ -230,6 +216,7 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
                         <Divider />
                         <Grid item >
                           <TextField
+                            value={description}
                             onChange={(event) => setDescription(event.target.value)}
                             id="desc"
                             label="Description"
@@ -248,7 +235,7 @@ export const AddMealDialog = ({ onCancel, onConfirm, error, openDialog }: AddMea
                         Cancel
                   </Button>
                       <Button fullWidth type="submit" variant="contained"  color="primary">
-                        Add
+                        {mealDto ? "Edit" : "Add"}
                   </Button>
                     </DialogActions>
                   </form>
@@ -287,7 +274,7 @@ export class MealsTable extends React.Component<MealTableProps> {
     rowsPerPage: 5,
     rowsPerPageOptions: [],
     filterType: "dropdown",
-    responsive: "standard",
+    responsive: "simple",
     // tableBodyHeight: "600px",
     tableBodyMaxHeight: "800px",
 
@@ -309,11 +296,7 @@ export class MealsTable extends React.Component<MealTableProps> {
     //   //setRowsSelected(rowsSelected)
 
     // },
-    expandableRowsOnClick: true,
-    onRowClick: (rowData, { dataIndex }) => {
-      this.props.history.push(`${this.props.locationPath}/meal/${dataIndex}`);
-    },
-
+    expandableRowsOnClick: true
   };
 
   columns = [
@@ -358,7 +341,6 @@ export class MealsTable extends React.Component<MealTableProps> {
         },
         sortCompare: (order) => {
           return (obj1: { data: MealDto }, obj2: { data: MealDto }) => {
-            console.log(order);
             let val1 = obj1.data.quantityLeft;
             let val2 = obj2.data.quantityLeft;
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -375,11 +357,14 @@ export class MealsTable extends React.Component<MealTableProps> {
     //   }
     // },
     {
-      name: 'Info',
+      name: 'Details',
       options: {
         sort: false,
-        customBodyRender: ({ rowIndex }) => {
-          return <IconButton color="primary" onClick={() => { this.props.editMeal(rowIndex) }} >
+        customBodyRender: (value) => {
+          // console.log("Info - value: ", value);
+          return <IconButton color="primary" onClick={() => {
+            this.props.history.push(`${this.props.locationPath}/meal/${value.id}`);
+          }} >
             <KeyboardArrowRightRoundedIcon />
           </IconButton>
 
@@ -416,7 +401,6 @@ export const EatMealCell = ({ value, onEat, onPrepare }: EatMealCellProps) => {
   const quantityStmt = baseServing <= value.quantityLeft ? baseServing : value.quantityLeft;
   const [ quantity, setQuantity ] = React.useState(quantityStmt)
   const onPortionChange = (servingInGrams) => {
-    console.log("onport change-serving in grams: ", servingInGrams);
     setQuantity(servingInGrams)
   }
 

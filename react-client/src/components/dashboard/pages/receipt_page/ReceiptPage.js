@@ -102,7 +102,7 @@ const ReceiptPage = (props) => {
   const onDeleteDialogYes = () => {
     console.log("on delete")
     props.deleteReceipt(params.id, () => {
-      history.push(path.replace('/:id', ''));
+      history.replace(path.replace('/:id', ''));
     })
 
   };

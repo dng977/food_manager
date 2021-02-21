@@ -65,7 +65,7 @@ var FoodStock = /** @class */ (function (_super) {
             _this.setState({ tableNumber: newValue });
         };
         _this.closeAddFoodDialog = function () { _this.setState({ openAddFoodDialog: false }); };
-        _this.closeAddMealDialog = function () { _this.setState({ openAddMealDialog: false }); };
+        _this.closeAddEditMealDialog = function () { _this.setState({ openAddEditMealDialog: false }); };
         _this.onDeleteClick = function () {
             _this.setState({ openDeleteDialog: true });
         };
@@ -83,7 +83,7 @@ var FoodStock = /** @class */ (function (_super) {
         _this.state = {
             openDeleteDialog: false,
             openAddFoodDialog: false,
-            openAddMealDialog: false,
+            openAddEditMealDialog: false,
             rowsSelected: [],
             tableNumber: 1
         };
@@ -122,8 +122,8 @@ var FoodStock = /** @class */ (function (_super) {
                                             react_1["default"].createElement(components_1.AddNewFoodDialog, { openDialog: this.state.openAddFoodDialog, dialogTitle: "Add a new food", error: this.props.message, onCancel: this.closeAddFoodDialog, onConfirm: function (foodItemId, quantity) { return _this.props.addFoodItem(foodItemId, quantity, _this.closeAddFoodDialog); } }))
                                         :
                                             react_1["default"].createElement(react_1["default"].Fragment, null,
-                                                react_1["default"].createElement(core_1.Button, { variant: "contained", color: "primary", startIcon: react_1["default"].createElement(AddRounded_1["default"], null), onClick: function () { _this.setState({ openAddMealDialog: true }); } }, "Add a new Meal"),
-                                                react_1["default"].createElement(meals_components_1.AddMealDialog, { openDialog: this.state.openAddMealDialog, error: this.props.message, onCancel: this.closeAddMealDialog, onConfirm: function (mealDto) { return _this.props.addMeal(mealDto, _this.closeAddMealDialog); } }))))),
+                                                react_1["default"].createElement(core_1.Button, { variant: "contained", color: "primary", startIcon: react_1["default"].createElement(AddRounded_1["default"], null), onClick: function () { _this.setState({ openAddEditMealDialog: true }); } }, "Add a new Meal"),
+                                                react_1["default"].createElement(meals_components_1.AddEditMealDialog, { title: "Add a new meal", openDialog: this.state.openAddEditMealDialog, error: this.props.message, onCancel: this.closeAddEditMealDialog, onConfirm: function (mealDto) { return _this.props.addMeal(mealDto, _this.closeAddEditMealDialog); } }))))),
                             this.state.tableNumber === 0 ?
                                 react_1["default"].createElement(core_1.Grid, { item: true },
                                     react_1["default"].createElement(core_1.Grid, { container: true, spacing: 2, alignItems: "center", justify: "flex-end" },

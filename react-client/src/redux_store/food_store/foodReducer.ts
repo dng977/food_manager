@@ -1,4 +1,4 @@
-import { DELETE_FOODSTOCK, EDIT_FOODSTOCK, FETCH_FOODSTOCK, FETCH_FOOD_ITEMS, FOOD_LOADING, FETCH_MEALS, DELETE_MEAL, EDIT_MEAL, FoodActionTypes } from './foodTypes';
+import { DELETE_FOODSTOCK, EDIT_FOODSTOCK, FETCH_FOODSTOCK, FETCH_FOOD_ITEMS, FOOD_LOADING, FETCH_MEALS, DELETE_MEAL, EDIT_MEAL, FoodActionTypes, CLEAR_FOOD_ITEMS, DELETE_SEARCH_ROW } from './foodTypes';
 import _ from 'lodash';
 import { EditReceiptItemAction, EDIT_RECEIPT_ITEM } from '../receipt_store/receiptTypes';
 import { IdMap } from '../sharedTypes';
@@ -21,8 +21,23 @@ const reducer = (state = initState, action: FoodActionTypes | EditReceiptItemAct
   switch (action.type) {
     case FETCH_FOOD_ITEMS:
       return { ...state, searchedItems: {...state.searchedItems, ...action.payload }, food_loading: false };
-    case EDIT_RECEIPT_ITEM:
-      return { ...state, searchedItems: _.omit(state.searchedItems, action.payload.id)}
+    case CLEAR_FOOD_ITEMS:
+      return { ...state, searchedItems: {}, food_loading: false };
+    case DELETE_SEARCH_ROW:
+      let rowIndex = action.payload;
+      let newSearchedItems = _.omit(state.searchedItems, rowIndex);
+      let newIndex = 0;
+      for(const [key,value] of Object.entries(newSearchedItems)){
+        let numKey = parseInt(key);
+        if(numKey > rowIndex){
+          newSearchedItems[numKey - 1] = value;
+          delete newSearchedItems[numKey];
+     
+        }
+           }
+      return {...state, searchedItems: newSearchedItems}
+    // case EDIT_RECEIPT_ITEM:
+    //   return { ...state, searchedItems: _.omit(state.searchedItems, action.payload.id)}
     case FETCH_FOODSTOCK:
       return {...state, foodStock: {...(_.mapKeys(action.payload, (value) => value.foodItemDto.id))}, searchedItems: {}}
     case EDIT_FOODSTOCK:

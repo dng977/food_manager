@@ -37,7 +37,6 @@ export const dialogTheme = createMuiTheme({
 })
 
 export const AddNewFoodDialog = ({ dialogTitle, onCancel, onConfirm, error, openDialog }) => {
-  console.log("render add dialog: ", openDialog)
   const loading = useSelector((state: RootState) => state.feedback.dialogLoading);
   const [ selectedFood, setSelectedFood ] = useState<FoodItemDto | null>(null);
   const [ servingInGrams, setServingInGrams ] = React.useState(0)
@@ -148,7 +147,7 @@ export class FoodTable extends React.Component<FoodTableProps> {
     rowsPerPage: 5,
     rowsPerPageOptions: [],
     filterType: "dropdown",
-    responsive: "standard",
+    responsive: "simple",
     // tableBodyHeight: "600px",
     tableBodyMaxHeight: "800px",
     selectableRows: "multiple",
@@ -163,7 +162,6 @@ export class FoodTable extends React.Component<FoodTableProps> {
     sort: false,
     rowsSelected: [],
     onRowSelectionChange: (_currentRowsSelected, _allRowsSelected, rowsSelected) => {
-      console.log(rowsSelected)
       this.props.setRowsSelected(rowsSelected)
       //setRowsSelected(rowsSelected)
 
@@ -200,7 +198,6 @@ export class FoodTable extends React.Component<FoodTableProps> {
         },
         sortCompare: (order) => {
           return (obj1, obj2) => {
-            console.log(order);
             let val1 = obj1.data.quantity;
             let val2 = obj2.data.quantity;
             return (val1 - val2) * (order === 'asc' ? 1 : -1);
@@ -272,17 +269,17 @@ export class FoodTable extends React.Component<FoodTableProps> {
 
     return (
       value.quantity !== 0 ?
-        <Grid container wrap="nowrap" alignItems="center" justify="flex-start" spacing={2}>
-          <Grid item>
+        <Grid container alignItems="center" justify="center" spacing={2}>
+          <Grid item xs={12} md={6}>
             <FoodPortionControl maxQuantity={value.quantity} servingDesc={value.foodItemDto.servingDesc} baseServing={value.foodItemDto.servingSize} quantity={currentQuantity} onPortionChange={onPortionChange} />
           </Grid>
-          <Grid item>
+          <Grid item xs={6} md={3}>
             <RadioGroup aria-label="gender" name="condition" value={condition} onChange={event => { setCondition(event.target.value) }}>
               <FormControlLabel value="raw" disabled={!value.hasRaw} control={<Radio size="small" color="primary" />} label="Raw" />
               <FormControlLabel value="cooked" disabled={!value.hasCooked} control={<Radio size="small" color="primary" />} label="Cooked" />
             </RadioGroup>
           </Grid>
-          <Grid item>
+          <Grid item xs={6} md={3}>
             <Button variant="contained" color="primary" onClick={handleOnEatClick}>
               Eat
           	</Button>
@@ -428,7 +425,6 @@ type FoodPortionControlType = {
 }
 
 export const FoodPortionControl = ({ servingDesc, baseServing, quantity, onPortionChange, maxQuantity }: FoodPortionControlType) => {
-  console.log(quantity, maxQuantity);
   const [minusDisabled, setMinusDisabled] = useState(false);
   const plusDisabledStmt = maxQuantity && quantity === maxQuantity ? true : false;
   const [plusDisabled, setPlusDisabled] = useState(plusDisabledStmt);

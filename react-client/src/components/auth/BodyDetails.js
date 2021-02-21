@@ -29,6 +29,7 @@ const BodyDetails = (props) => {
 
   if (props.userDetails) {
     let previousState = history.location.state ? history.location.state.from : '/dashboard';
+    console.log(previousState);
     return <Redirect to={previousState === '/signup' ? '/dashboard' : previousState}/>;
   };
   return (

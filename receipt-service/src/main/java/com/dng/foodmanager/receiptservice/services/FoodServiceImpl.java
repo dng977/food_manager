@@ -8,11 +8,9 @@ import com.dng.foodmanager.receiptservice.repositories.*;
 import com.dng.foodmanager.receiptservice.util.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-import javax.websocket.MessageHandler;
 import java.sql.SQLDataException;
 import java.time.LocalDate;
 import java.util.*;
@@ -28,6 +26,7 @@ public class FoodServiceImpl implements FoodService {
     private final NutritionStateRepository nutritionStateRepository;
     private final UserRepository userRepository;
     private final MealRepository mealRepository;
+    private final MealItemRepository mealItemRepository;
 
 
     @Override
@@ -194,9 +193,11 @@ public class FoodServiceImpl implements FoodService {
 
     private Meal getMealFromRepository(Long mealId) throws NoSuchElementException {
         Optional<Meal> mealOptional = mealId == null ? Optional.empty() : mealRepository.findById(mealId);
-        Meal meal = mealOptional.orElseThrow(() -> new NoSuchElementException("Meal Item with id=" + mealId+ " is not present."));
+        Meal meal = mealOptional.orElseThrow(() -> new NoSuchElementException("Meal Item with id=" + mealId + " is not present."));
         return meal;
     }
+
+    @Transactional
     @Override
     public void editMeal(String userId, MealDto mealDto) {
         Meal meal = getMealFromRepository(mealDto.getId());
@@ -205,8 +206,28 @@ public class FoodServiceImpl implements FoodService {
         if (mealDto.getQuantity().isPresent()) meal.setQuantity(mealDto.getQuantity().get());
         if (mealDto.getQuantityLeft().isPresent()) meal.setQuantityLeft(mealDto.getQuantityLeft().get());
         if (mealDto.getServings().isPresent()) meal.setServings(mealDto.getServings().get());
-        if (mealDto.getIngredients().isPresent()) meal.setIngredients(mealDto.getIngredients().get().stream().map(mealItemDto ->
-                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).orElseThrow(),mealItemDto.isCooked(), mealItemDto.getQuantity())).collect(Collectors.toList()));
+
+        List<MealItem> oldIngredients = meal.getIngredients();
+        List<Long> modifiedIngredientsIds = new ArrayList<>();
+        if (mealDto.getIngredients().isPresent()){
+            meal.setIngredients(mealDto.getIngredients().get().stream().map(mealItemDto -> {
+                MealItem modifiedIngredient;
+                Optional<MealItem> mealItemOptional = oldIngredients.stream().filter(mealItem -> mealItem.getFoodItem().getId() == mealItemDto.getFoodItemDto().getId()).findFirst();
+                if(mealItemOptional.isPresent()){
+                    modifiedIngredient = mealItemOptional.get();
+                    modifiedIngredient.updateMealItem(mealItemDto.isCooked(), mealItemDto.getQuantity());
+                }else{
+                    modifiedIngredient =  new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemDto().getId()).orElseThrow(), mealItemDto.isCooked(), mealItemDto.getQuantity());
+                }
+                modifiedIngredientsIds.add(modifiedIngredient.getId());
+                return modifiedIngredient;
+            }).collect(Collectors.toList()));
+
+            //Each mealId that is not inside the modifiedIngredientIds will be deleted
+
+            mealItemRepository.deleteAll(oldIngredients.stream().filter(mealItem -> ! modifiedIngredientsIds.contains(mealItem.getId())).collect(Collectors.toList()));
+        }
+
         mealRepository.save(meal);
 
     }
@@ -223,7 +244,7 @@ public class FoodServiceImpl implements FoodService {
         meal.setQuantityLeft(quantity);
         meal.setServings(mealDto.getServings().orElseThrow(() -> new IllegalArgumentException("No servings provided")));
         meal.setIngredients(mealDto.getIngredients().orElse(List.of()).stream().map(mealItemDto ->
-                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemId()).orElseThrow(),mealItemDto.isCooked(),  mealItemDto.getQuantity())).collect(Collectors.toList()));
+                new MealItem(meal, foodItemRepository.findById(mealItemDto.getFoodItemDto().getId()).orElseThrow(), mealItemDto.isCooked(), mealItemDto.getQuantity())).collect(Collectors.toList()));
         mealRepository.save(meal);
 
         return mealRepository.findByUserId(userId).stream().map(Meal::toDto).collect(Collectors.toList());
@@ -236,10 +257,10 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public List<MealDto> fetchMeals(String uid) {
-        return  mealRepository.findByUserId(uid).stream().map(Meal::toDto).collect(Collectors.toList());
+        return mealRepository.findByUserId(uid).stream().map(Meal::toDto).collect(Collectors.toList());
     }
 
-    private void updateNutritionForSingleFood(NutritionState nutritionState, FoodItem foodItem,int quantity, boolean cooked){
+    private void updateNutritionForSingleFood(NutritionState nutritionState, FoodItem foodItem, int quantity, boolean cooked) {
         Optional<FoodNutrition> foodNutritionOptional = cooked ? foodItem.getNutritionCooked() : foodItem.getNutritionRaw();
         if (foodNutritionOptional.isEmpty())
             throw new IllegalArgumentException("Nutrition info for either raw or cooked isn't present.");
@@ -317,14 +338,14 @@ public class FoodServiceImpl implements FoodService {
         Optional<NutritionState> nutritionStateOptional = nutritionStateRepository.findByUserIdAndDate(userId, LocalDate.now()); //todays date - must be fixed to get users locale
         //If there is already such state
         nutritionState = nutritionStateOptional.orElseGet(() -> new NutritionState(userId, LocalDate.now()));
-        for (MealItem mealItem : meal.getIngredients()){
+        for (MealItem mealItem : meal.getIngredients()) {
             log.debug("mealItem quantity : " + mealItem.getQuantity());
             log.debug("meal quantity : " + meal.getQuantity());
             log.debug("amountEaten: " + amountEaten);
 
             int proportionalItemQuantity = (int) ((mealItem.getQuantity().floatValue() / meal.getQuantity().floatValue()) * amountEaten);
             log.debug("Prop item quantity:  " + proportionalItemQuantity);
-            updateNutritionForSingleFood(nutritionState,mealItem.getFoodItem(), proportionalItemQuantity, mealItem.isCooked());
+            updateNutritionForSingleFood(nutritionState, mealItem.getFoodItem(), proportionalItemQuantity, mealItem.isCooked());
         }
         nutritionStateRepository.save(nutritionState);
 

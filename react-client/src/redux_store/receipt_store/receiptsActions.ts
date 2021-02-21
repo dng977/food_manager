@@ -75,7 +75,6 @@ export const fetchReceiptImage = (id: number): AppThunk<FetchReceiptImageAction>
   });
 };
 export const deleteReceipt = (id: number, callback): AppThunk<DeleteReceiptAction> => async (dispatch, _getState, getFirebase) => {
-  callback();
 
   apiRequest({
     loading: true,
@@ -85,7 +84,10 @@ export const deleteReceipt = (id: number, callback): AppThunk<DeleteReceiptActio
       method: 'delete',
       url: `receipts/${id}`,
     },
-    onSuccess: _response => dispatch({ type: DELETE_RECEIPT, payload: id })
+    onSuccess: _response => {
+      dispatch({ type: DELETE_RECEIPT, payload: id });
+      callback();
+    }
   });
 
 };

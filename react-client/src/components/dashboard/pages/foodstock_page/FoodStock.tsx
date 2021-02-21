@@ -12,7 +12,7 @@ import { ClearMessageAction, CLEAR_MESSAGE } from '../../../../redux_store/feedb
 import { getFoodStock, getMeals } from '../selectors';
 import { DeleteAlertDialog } from '../shared_components';
 import { AddNewFoodDialog, FoodTable } from './components';
-import { AddMealDialog, MealsTable } from './meals_components';
+import { AddEditMealDialog, MealsTable } from './meals_components';
 import { FoodActionTypes } from '../../../../redux_store/food_store/foodTypes';
 import { RootState } from '../../../../redux_store/rootReducer';
 
@@ -48,7 +48,7 @@ type FoodStockProps = PropsFromRedux & RouteComponentProps;
 type FoodStockState = {
     openDeleteDialog: boolean;
     openAddFoodDialog: boolean;
-    openAddMealDialog: boolean;
+    openAddEditMealDialog: boolean;
     rowsSelected: number[];
     tableNumber: number;
 }
@@ -62,7 +62,7 @@ class FoodStock extends React.Component<FoodStockProps, FoodStockState> {
     this.state = {
       openDeleteDialog: false,
       openAddFoodDialog: false,
-      openAddMealDialog: false,
+      openAddEditMealDialog: false,
       rowsSelected: [],
       tableNumber: 1,
     }
@@ -93,7 +93,7 @@ class FoodStock extends React.Component<FoodStockProps, FoodStockState> {
   }
 
   closeAddFoodDialog = () => { this.setState({ openAddFoodDialog: false }) };
-  closeAddMealDialog = () => { this.setState({ openAddMealDialog: false }) };
+  closeAddEditMealDialog = () => { this.setState({ openAddEditMealDialog: false }) };
 
 
   onDeleteClick = () => {
@@ -141,14 +141,15 @@ class FoodStock extends React.Component<FoodStockProps, FoodStockState> {
                         </>
                         :
                         <>
-                          <Button variant="contained" color="primary" startIcon={<AddRoundedIcon />} onClick={() => { this.setState({ openAddMealDialog: true }) }}>
+                          <Button variant="contained" color="primary" startIcon={<AddRoundedIcon />} onClick={() => { this.setState({ openAddEditMealDialog: true }) }}>
                             Add a new Meal
                     </Button>
-                          <AddMealDialog
-                            openDialog={this.state.openAddMealDialog}
+                          <AddEditMealDialog
+                            title="Add a new meal"
+                            openDialog={this.state.openAddEditMealDialog}
                             error={this.props.message}
-                            onCancel={this.closeAddMealDialog}
-                            onConfirm={(mealDto) => this.props.addMeal(mealDto, this.closeAddMealDialog)}
+                            onCancel={this.closeAddEditMealDialog}
+                            onConfirm={(mealDto) => this.props.addMeal(mealDto, this.closeAddEditMealDialog)}
                           />
                         </>
                       }
