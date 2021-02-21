@@ -309,7 +309,7 @@ type QuantityCellPropTypes = {
 }
 
 // export const QuantityCell = React.memo(({ submitEdit, value, hasEditMode }) => {
-export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyContents }: QuantityCellPropTypes) => {
+export const QuantityCell = ({ submitEdit, foodItem, hasEditMode=true, emptyContents, mealQuantity }: QuantityCellPropTypes) => {
 
   //console.log("before", currentQuantity);
 
