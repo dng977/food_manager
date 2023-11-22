@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6606edf5-5bb1-4399-a9e1-eed165b9da77" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/checksums/checksums.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/checksums/md5-checksums.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/checksums/sha1-checksums.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/dependencies-accessors/dependencies-accessors.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/dependencies-accessors/gc.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/fileChanges/last-build.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/8.2.1/gc.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/file-system.probe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/.gradle/vcs-1/gc.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fm-server/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/Dockerfile-db" beforeDir="false" afterPath="$PROJECT_DIR$/db/Dockerfile-db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/run-initialization.sh" beforeDir="false" afterPath="$PROJECT_DIR$/db/run-initialization.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/../mvn_stuff/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/../mvn_stuff/mvnw.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mvn_stuff/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/ReceiptServiceApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/ReceiptServiceApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/api/RestResponseEntityExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/api/RestResponseEntityExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/api/v1/FoodHistoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/api/v1/FoodHistoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/api/v1/FoodStockController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/api/v1/FoodStockController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/api/v1/MealsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/api/v1/MealsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/api/v1/NutritionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/api/v1/NutritionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/api/v1/ReceiptController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/api/v1/ReceiptController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/api/v1/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/api/v1/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/api/v1/WholeFoodController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/api/v1/WholeFoodController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/bootstrap/DataConfigProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/bootstrap/DataConfigProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/bootstrap/DataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/bootstrap/DataLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/config/BeanConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/config/BeanConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/config/security/AudienceValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/config/security/AudienceValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/config/security/CustomPrincipal.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/config/security/CustomPrincipal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/config/security/FirebaseConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/config/security/FirebaseConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/config/security/SecurityUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/config/security/SecurityUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/config/security/TokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/config/security/TokenFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/config/security/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/config/security/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/converters/ImageToReceipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/converters/ImageToReceipt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/ActivityFactor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/ActivityFactor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/BaseEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/BaseEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/Food.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/Food.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/FoodHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/FoodHistory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/FoodNutrition.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/FoodNutrition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/FoodReference.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/FoodReference.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/FoodStock.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/FoodStock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/LifeStageGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/LifeStageGroup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/Meal.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/Meal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/MealItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/MealItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/NutritionRDA.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/NutritionRDA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/NutritionState.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/NutritionState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/Receipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/Receipt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/ReceiptItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/ReceiptItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/ReceiptItemStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/ReceiptItemStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/ServingUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/ServingUnit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/Store.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/Store.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/WholeFood.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/WholeFood.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/id_classes/FoodStockId.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/id_classes/FoodStockId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/id_classes/MealItemId.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/id_classes/MealItemId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/domain/id_classes/NutritionStateId.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/domain/id_classes/NutritionStateId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/ActivityDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/ActivityDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/ChronoUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/ChronoUnit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/UserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/deprecated/FoodStockAddDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/deprecated/FoodStockAddDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/deprecated/WholeFoodReceiptDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/deprecated/WholeFoodReceiptDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/food_dtos/EatFoodDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/food_dtos/EatFoodDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/food_dtos/FoodHistoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/food_dtos/FoodHistoryDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/food_dtos/FoodStockDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/food_dtos/FoodStockDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/food_dtos/MealDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/food_dtos/MealDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/food_dtos/MealItemDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/food_dtos/MealItemDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/food_dtos/WholeFoodDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/food_dtos/WholeFoodDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/nutrition_dtos/NutritionRdaDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/nutrition_dtos/NutritionRdaDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/nutrition_dtos/NutritionStateDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/nutrition_dtos/NutritionStateDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/receipt_dtos/ReceiptDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/receipt_dtos/ReceiptDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/dto/receipt_dtos/ReceiptItemDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/dto/receipt_dtos/ReceiptItemDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/FoodHistoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/FoodHistoryRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/FoodStockRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/FoodStockRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/LifeStageGroupRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/LifeStageGroupRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/MealItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/MealItemRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/MealRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/MealRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/NutritionRDARepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/NutritionRDARepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/NutritionStateRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/NutritionStateRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/ReceiptItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/ReceiptItemRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/ReceiptRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/ReceiptRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/repositories/WholeFoodRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/repositories/WholeFoodRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/FileStorageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/FileStorageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/FirebaseStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/FirebaseStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/FoodHistoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/FoodHistoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/FoodService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/FoodService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/MealService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/MealService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/MealServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/MealServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/NutritionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/NutritionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/NutritionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/NutritionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/ReceiptService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/ReceiptService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/ReceiptServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/ReceiptServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/WholeFoodService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/WholeFoodService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/WholeFoodServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/WholeFoodServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/services/exceptions/ResourceNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/services/exceptions/ResourceNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/util/DtoConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/util/DtoConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/util/NutritionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/util/NutritionUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/util/NutritionUtilImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/util/NutritionUtilImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/receiptservice/util/OptionalChecksUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/java/com/dng/foodmanager/util/OptionalChecksUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/main/resources/data/sql/food_nutrition_bulk.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/main/resources/data/sql/food_nutrition_bulk.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/DemoApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/DemoApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/api/ReceiptControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/api/ReceiptControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/converters/ImageToReceiptTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/converters/ImageToReceiptTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/converters/test" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/converters/test" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/converters/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/converters/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/converters/testImageJXT.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/converters/testImageJXT.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/domain/WholeFoodTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/domain/WholeFoodTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/repositories/ReceiptRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/repositories/ReceiptRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/repositories/WholeFoodRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/repositories/WholeFoodRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/services/ReceiptServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/services/ReceiptServiceImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/receiptservice/services/WholeFoodServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../fm-server/src/test/java/com/dng/foodmanager/services/WholeFoodServiceImplTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="2XCzuxupHxehxrq2CGmHUgTk17o" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "new__changes",
+    "last_opened_file_path": "/Users/dgarbelyanski/IdeaProjects/food_manager/docker"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6606edf5-5bb1-4399-a9e1-eed165b9da77" name="Changes" comment="" />
+      <created>1698148075333</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1698148075333</updated>
+    </task>
+    <servers />
+  </component>
+</project>

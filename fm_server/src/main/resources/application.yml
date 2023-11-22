@@ -1,0 +1,52 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: receipt-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fm_db
+    username: admin
+    password: Passw0rd!
+  jpa:
+    show-sql: true
+#    generate-ddl: true
+#    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
+#    properties.hibernate.hbm2ddl.import_files: classpath:/data/sql/food_nutrition_bulk.sql,classpath:/data/sql/food_items_bulk.sql,classpath:/data/sql/nutrition_rda_data/lifestagegroup_data.sql, classpath:/data/sql/nutrition_rda_data/nutritionRDA_data.sql
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
+firebase:
+  credential:
+    resource-path: food-manager-bb596-firebase-adminsdk-asq3n-98af5fc484.json
+
+
+data:
+  -
+    runOnUpdate: false
+    path: data/sql/lifestagegroup_data.sql
+  -
+    runOnUpdate: false
+    path: data/sql/nutritionRDA_data.sql
+  -
+    runOnUpdate: false
+    path: data/sql/food_nutrition_bulk.sql
+  -
+    runOnUpdate: false
+    path: data/sql/food_items_bulk.sql
+
+adminUID: 3DcbNo5tzhdn7zZKtq27gGrkepa2
+#
+#auth0:
+#  audience: receipt-service
+
+#okta:
+#  oauth2:
+#    issuer: https://dev-588838-admin.okta.com/oauth2/default
+#    clientId: 0oajphh3qFDXTZ0nF4x6
+#    clientSecret: A_2BfSgSbLihpVQiRy22xNT8iPYBZ1Wlfj_37-3V
+#    scopes: openid

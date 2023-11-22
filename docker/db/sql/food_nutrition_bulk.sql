@@ -1,0 +1,11 @@
+BEGIN TRANSACTION
+DELETE FROM food_nutrition
+
+BULK INSERT food_nutrition
+FROM '/usr/src/app/sql/food_nutrition/NUTRITION_MAIN.csv'
+WITH (
+KEEPIDENTITY,
+FORMAT='CSV',
+FIRSTROW=2
+)
+COMMIT

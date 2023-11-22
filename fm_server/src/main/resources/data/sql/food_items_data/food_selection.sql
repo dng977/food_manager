@@ -1,0 +1,1 @@
+SELECT ndb_no, shrt_desc, gmwt_1,gmwt_desc1,gmwt_2, gmwt_desc2,[water_(g)] FROM food_nutrition WHERE shrt_desc LIKE '%watercress%'

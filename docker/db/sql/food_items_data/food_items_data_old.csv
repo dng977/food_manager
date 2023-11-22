@@ -1,0 +1,210 @@
+id,name, default_quantity, serving_desc,serving_size,serving_unit,fk_nutrition_raw,fk_nutrition_cooked
+1,artichoke,200,,100,0,11007,11008
+2,asparagus,250,spear,25,0,11011,11012
+3,asparagus frozen,300,spear,15,0,11018,11019
+4,beet greens,300,one,40,0,11086,11087
+5,broccoli,250,whole,250,0,11090,11091
+6,broccoli frozen,1000,spears,150,0,11094,11095
+7,brussels sprout,500,piece,20,0,11098,11099
+8,cabbage red/white,1200,head,1200,0,11109,11110
+9,cabbage savoy,1200,head,1200,0,11114,11115
+10,celery,300,stalk,32,0,11143,11144
+11,collard greens,,cup,190,2,11161,11162
+12,garden cress,200,cup,50,2,11203,11204
+13,cucumber,350,whole,350,0,11206,
+14,pickled cucumber,450,one,50,0,,11937
+15,eggplant,450,whole,450,0,11209,11210
+16,courgette (zucchini),200,medium,200,0,11477,11478
+17,garlic,45,clove,6,0,11215,
+18,kale,200,packet,200,3,11233,11234
+19,leek,120,whole,120,0,11246,11247
+20,romaine lettuce,440,head,220,0,11251,
+21,green leaf lettuce,360,head,360,0,11253,
+22,iceberg lettuce,450,head(15cm),450,0,11252,
+23,redleaf lettuce,310,head,310,0,11257,
+24,onion,300,small(5cm),60,0,11282,11283
+25,spring onion,100,cup,100,2,11291,
+26,green pepper,150,whole,150,0,11333,11334
+27,red pepper,150,whole,150,0,11821,11822
+28,yellow pepper,150,whole,150,0,11951,11823
+29,chilli pepper,150,whole,45,0,11819,
+30,spinach,240,packet,240,3,11457,11458
+31,swiss chard,200,packet,100,3,11147,11148
+32,tomato,500,small(5cm),100,0,11529,11530
+33,tomato sun-dried,100,piece,2,0,11955,
+34,tomato passata,500,can,500,0,11547,
+35,tomato canned,400,can,400,0,11531,
+36,water cress,100,packet,100,3,11591,
+37,beet root,500,small(5cm),82,0,11080,11081
+38,beetroot (pickled),230,small(5cm),230,0,11609,
+39,carrot,1000,medium(15-17cm),60,0,11124,11125
+40,cauliflower,840,whole,840,0,11135,11136
+41,corn,125,1 ear(cob),125,0,11167,11168
+42,corn frozen,1000,cup,165,2,,11179
+43,corn canned,260,can,130,3,11172,
+44,ginger root,30,tsp,2,1,11216,
+45,parsnip,160,20cm,160,0,11298,11299
+46,pumpkin,1000,cup(mashed),245,2,11422,11423
+47,radish,,,,,,
+48,sweet potato,700,large(15-20cm),700,0,,11510
+49,turnip,,,,,,
+50,potato,1000,medium(6-8cm),200,0,,11363
+51,winter squash,,,,,,
+52,apple,540,medium(6cm),90,0,9003,9005
+53,apple dried,86,cup,86,2,9011,9012
+54,avocado,300,medium,150,0,9037,
+55,apricot,300,medium,50,0,9021,
+56,banana,660,medium,110,0,9040,
+57,banana dried,200,cup,100,2,9041,
+58,blackberry,144,cup,144,2,9042,
+59,blueberry,150,cup,150,2,9050,
+60,blueberry frozen,400,cup,150,2,9054,
+61,sweet cherry,140,cup,140,2,9070,
+62,coconut meat,240,cup,80,2,12104,
+63,coconut water,1000,cup,240,2,12119,
+64,cranberry,200,cup,100,2,9078,
+65,blackcurrant,224,cup,112,2,9083,
+66,date (degletnoor),200,one,7,0,9087,
+67,date (medjool),200,one,24,0,9421,
+68,elderberry,290,cup,145,2,9088,
+69,fig,200,medium,50,0,9089,
+70,fig dried,200,one,8,0,9094,
+71,grapefruit,300,medium(10cm),300,0,9112,
+72,grapes,200,one,5,0,9132,
+73,honeydew melon,2000,whole,2000,3,9184,
+74,kiwi,420,one,70,0,9148,
+75,lemon,300,medium,60,0,9150,
+76,lime,300,one,60,0,9159,
+77,tangerine (mandarin),480,medium(6cm),80,0,9218,
+78,mango,350,medium,350,0,9176,
+79,mango dried,100,packet,100,3,9178,
+80,nectarine,240,medium(6cm),120,0,9191,
+81,olive,200,one,4,0,9193,
+82,orange,360,medium(8cm),180,0,9200,
+83,peach,650,small(6cm),130,0,9236,
+84,peach dried,320,cup,160,2,9246,9247
+85,pear,600,small(5cm width),100,0,9252,
+86,pear dried,180,cup,180,2,9259,
+87,pineapple,900,one,900,0,9266,
+88,plum,300,medium(5cm),60,0,9279,
+89,prune (driedplum),200,one,10,0,9291,9292
+90,raspberry,240,cup,120,2,9302,
+91,raspberry frozen,350,cup,140,2,9518,
+92,strawberry,150,cup,150,2,9316,
+93,strawberry frozen,500,cup,200,2,9318,
+94,watermelon,8000,20cm width,8000,0,9326,
+95,feta cheese,200,pack,200,3,1019,
+96,mozzarella,150,pack,150,3,1026,
+97,cheddar cheese,400,pack,400,3,1009,
+98,milk whole,1000,cup,250,2,1077,
+99,milk semi-skimmed,1000,cup,250,2,1079,
+100,milk skimmed,1000,cup,250,2,1082,
+101,almond milk,1000,cup,250,2,14091,
+102,goat's milk,1000,cup,250,2,1106,
+103,yogurt whl milk,500,pot,500,3,1116,
+104,yogurt low fat,500,pot,500,3,1117,
+105,yogurt greek whl milk,500,pot,500,3,1293,
+106,yogurt greek low fat,500,pot,500,3,1287,
+107,butter,250,tbsp,14,1,1145,
+108,egg,270,medium,45,0,1123,1129
+109,bread pitta white wheat,360,pitta,60,0,18041,
+110,bread pitta whole wheat,360,pitta,60,0,18042,
+111,bread white wheat,800,slice,50,0,18069,18070
+112,bread whole wheat,800,slice,40,0,18075,18076
+113,wheat flour white plain,1000,cup,125,2,20581,
+114,wheat flour white self-rising,1000,cup,125,2,20082,
+115,oats,1000,cup(dry),81,2,8120,8121
+116,oat bran,800,cup,95,2,20033,20034
+117,rice white long grain,1000,cup,185,2,20444,20445
+118,rice brown medium grain,1000,cup,190,2,20040,20041
+119,rice noodles,250,packet,250,3,20133,20134
+120,rolls whole wheat,320,large bap,80,0,28313,
+121,almonds,200,20 kernels(=30g),30,0,12061,12063
+122,almonds roasted w/salt,200,20 kernels(=30g),30,0,12563,
+123,almond butter (roasted),170,tbsp,16,1,12195,
+124,brazil nuts,200,10 kernels(=30g),30,0,12078,
+125,cashew nuts,200,15 kernels(=30g),30,0,12087,12085
+126,cashew nuts roasted w/salt,200,16 kernels(=30g),30,0,12585,
+127,cashew butter,170,tbsp,16,1,12088,
+128,chestnuts roasted,400,cup,140,2,12167,
+129,chia seeds,200,tbsp,15,1,12006,
+130,flax seeds,100,tbsp,10,1,12220,
+131,hazelnuts,200,20 kernels(=30g),30,0,12120,12122
+132,macadamia,200,15 kernels(=30g),30,0,12131,12132
+133,pecan nuts,200,15 kernels(=30g),30,0,12142,12143
+134,pine nuts,100,tbsp,15,1,12147,
+135,pistachio nuts,200,30 kernels(=30g),30,0,12151,12152
+136,pistachio nuts roasted w/salt,200,30 kernels(=30g),30,0,12652,
+137,pumpkin seeds,100,cup,64,2,12014,12016
+138,sesame seeds,100,tbsp,9,1,12023,12024
+139,sunflower seeds,250,tbsp,8,0,12036,12037
+140,walnuts,200,10 half-kernels(=30g),30,0,12155,
+141,sunflower oil,800,tbsp(800g=1L),14,1,4506,
+142,olive oil,900,tbsp(900g=1L),14,1,4053,
+143,coconut oil,280,tbsp(280=300ml),14,1,4047,
+144,basil fresh,30,tbsp(chopped),3,1,2044,
+145,basil dried,15,tsp,0.7,1,2003,
+146,cinamon ground,40,tsp,2.6,1,2010,
+147,cloves ground,35,tsp,2.1,1,2011,
+148,cumin seed,40,tsp,2.1,1,2014,
+149,dill fresh,20,5 sprigs,1,1,2045,
+150,dill dried,13,tsp,1,0,2017,
+151,oregano dried,12,tsp,1.8,1,2027,
+152,parsley fresh,30,tbsp,3.8,1,11297,
+153,parsley dried,6,tbsp,1.6,1,2029,
+154,peppermint fresh,10,tbsp(chopped),1.6,1,2064,
+155,rosemary fresh,20,tbsp,1.7,1,2063,
+156,rosemary dried,20,tbsp,3.3,1,2036,
+157,saffron,1,tsp,0.7,1,2037,
+158,sage ground,15,tsp,0.7,1,2038,
+159,soy sauce,150,tbsp,18,1,16124,
+160,thyme dried,,tsp,1,1,2042,
+161,thyme fresh,,tsp,0.8,1,2049,
+162,turmeric ground,,tsp,3,1,2043,
+163,curry powder,,tbsp,6.3,1,2015,
+164,ginger ground,,tsp,1.8,1,2021,
+165,paprika,,tsp,2.3,1,2028,
+166,pepper black,,tsp,2.3,1,2030,
+167,pepper red/cayenne,,tsp,1.8,1,2031,
+168,savory ground,,tsp,1.4,1,2039,
+169,salt table,,tsp,6,1,2047,
+170,mustard,,tsp,5,1,2046,
+171,vinegar cider,,tbsp,15,1,2048,
+172,vinegar balsamic,,tbsp,16,1,2069,
+173,vinegar red wine,,tbsp,15,1,2068,
+174,teriyaki sauce,,tbsp,18,1,6112,
+175,barbecue sauce,,tbsp,17,1,6150,
+176,mayonnaise regular,,tbsp,14,1,4025,
+177,mayonnaise light,,tbsp,15,1,4011,
+178,chickpeas,,cup,164,2,16056,16057
+179,beans kidney,,cup,177,2,,16028
+180,beans kidney red,,cup,177,2,,16033
+181,beans navy,,cup,182,2,16037,16038
+182,beans black,,cup,172,2,,16015
+183,beans white,,cup,179,2,,16050
+184,beans pinto,,cup,193,2,,16043
+185,beans french,,cup,180,2,16022,16023
+186,lentils,,cup,192,2,,16070
+187,peas frozen,,cup,160,0,11312,11313
+188,peas,,cup,150,2,11304,11305
+189,peanuts,,cup,146,2,16087,16390
+190,peanuts roasted w/salt,,cup,145,2,16090,
+191,peanut butter smooth,,tbsp,16,1,16398,
+192,peanut butter crunchy,,tbsp,16,1,16397,
+193,mushrooms white button,,cup(cooked),156,2,11260,11261
+194,mushrooms portabello (large flat),,piece(cooked),50,0,11265,11243
+195,mushrooms shiitake,,one(cooked),18,0,11238,11269
+196,beef burger 15% fat,180,patty(raw=230g),90,0,,23568
+197,pork mince 4% fat,500,packet,500,0,,10976
+198,pork mince 16% fat,400,packet,400,0,,10975
+199,pork loin boneless,240,steak(raw=175g),120,0,,10064
+200,pork shoulder,460,steak(raw=150g),115,0,,10082
+201,chicken breast fillet,240,fillet(raw=160g),120,0,,5063
+202,chicken thigh,240,fillet(raw=160g),120,0,,5098
+203,chicken drumsticks,900,drumstick(raw=130g),100,0,,5069
+204,chicken wings,850,wing(raw=105g),85,0,,5103
+205,salmon,210,fillet(raw=120g),105,0,15236,15237
+206,mackerel,270,whole(raw=340g),270,0,15046,15047
+207,tuna canned water,120,can(with water=160g),120,0,15121,
+208,cod,180,fillet(raw=230g),180,0,15016,
+211,honey,500,tbsp,20,1,19296,

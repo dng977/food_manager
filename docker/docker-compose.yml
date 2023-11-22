@@ -1,0 +1,36 @@
+version: "3.7"
+services:
+#  fm-server:
+#    image: 'fm-server:latest'
+#    build:
+#      context: ../
+#      dockerfile: ./docker/Dockerfile-fm-server
+#    container_name: c-fm-server
+#    volumes:
+#      - db-init:/app/data/sql
+#    depends_on:
+#      - mssql-db
+#    ports:
+#      - "9090:9090"
+#  react-client:
+#    image: 'react-client:latest'
+#    build:
+#      context: ../
+#      dockerfile: ./docker/Dockerfile-react-client
+#    container_name: c-react-client
+#    depends_on:
+#      - fm-server
+#    ports:
+#      - "5000:80"
+  postgres-db:
+    container_name: postgres-db
+    image: postgres
+    environment:
+       POSTGRES_PASSWORD: Passw0rd!
+       POSTGRES_USER: admin
+       POSTGRES_DB: fm_db
+    volumes:
+      - ./db/sql/food_nutrition:/var/lib/postgresql/data/food_nutrition
+      - ./db/sql/food_items_data:/var/lib/postgresql/data/food_items_data
+    ports:
+      - "5432:5432"

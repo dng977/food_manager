@@ -1,0 +1,10 @@
+14.0
+8
+1       SQLCHAR             0       41      ","       1     id                                         ""
+2       SQLCHAR             0       255     ","       3     name                                       ""
+3       SQLCHAR             0       12      ","       2     default_quantity                           ""
+4       SQLCHAR             0       255     ","       4     serving_desc                               ""
+5       SQLCHAR             0       12      ","       5     serving_size                               ""
+6       SQLCHAR             0       12      ","       6     serving_unit                               ""
+7       SQLCHAR             0       41      ","       8     fk_nutrition_raw                           ""
+8       SQLCHAR             0       41      "\r\n"    7     fk_nutrition_cooked                        ""

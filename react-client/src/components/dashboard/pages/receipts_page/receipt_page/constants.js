@@ -1,0 +1,7 @@
+
+export const itemStatus = {
+  UNRECOGNIZED: 'UNRECOGNIZED',
+  UNSURE: 'UNSURE',
+  RECOGNIZED: 'RECOGNIZED',
+  INSTOCK: 'INSTOCK'
+}

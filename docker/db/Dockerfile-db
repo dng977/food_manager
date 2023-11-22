@@ -1,0 +1,6 @@
+FROM postgres
+
+ENV POSTGRES_PASSWORD=Passw0rd!
+ENV POSTGRES_USER=admin
+ENV POSTGRES_DB fm_db
+
